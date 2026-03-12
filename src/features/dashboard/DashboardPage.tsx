@@ -1,25 +1,37 @@
 /**
- * Dashboard Page - shows current health status and progress tracking
- * Displays assessment history and trends over time
+ * Dashboard Page
+ * Professional UX-focused dashboard with clear information hierarchy
  */
 
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { fetchHealthData, fetchProgressData } from '@services/assessmentService'
-import { getScoreInterpretation, calculateImprovement } from '@utils/scoring'
-import { TIME_RANGES } from '@utils/constants'
-import Card from '@components/ui/Card'
-import Button from '@components/ui/Button'
-import Badge from '@components/ui/Badge'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { fetchHealthData, fetchProgressData } from "@services/assessmentService"
+import { getScoreInterpretation, calculateImprovement } from "@utils/scoring"
+import { TIME_RANGES } from "@utils/constants"
+
+import Card from "@components/ui/Card"
+import Button from "@components/ui/Button"
+import Badge from "@components/ui/Badge"
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts"
 
 type TimeRange = keyof typeof TIME_RANGES
 
 function DashboardPage() {
   const navigate = useNavigate()
+
   const [healthData, setHealthData] = useState<any>(null)
   const [progressData, setProgressData] = useState<any[]>([])
-  const [selectedRange, setSelectedRange] = useState<TimeRange>('MONTH')
+  const [selectedRange, setSelectedRange] = useState<TimeRange>("MONTH")
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -29,10 +41,11 @@ function DashboardPage() {
         setHealthData(data)
 
         const range = TIME_RANGES[selectedRange]
-        const progress = await fetchProgressData('user-default', range.days)
+        const progress = await fetchProgressData("user-default", range.days)
+
         setProgressData(progress)
       } catch (err) {
-        console.error('Error loading dashboard data:', err)
+        console.error("Dashboard error:", err)
       } finally {
         setIsLoading(false)
       }
@@ -43,16 +56,10 @@ function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 py-lg">
-        <div className="max-w-6xl mx-auto px-lg">
-          <div className="animate-pulse space-y-md">
-            <div className="h-12 bg-slate-200 rounded-lg w-1/3"></div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-40 bg-slate-200 rounded-lg"></div>
-              ))}
-            </div>
-          </div>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="animate-pulse text-center space-y-4">
+          <div className="h-10 w-64 bg-slate-200 rounded-lg mx-auto"></div>
+          <div className="h-6 w-40 bg-slate-200 rounded-lg mx-auto"></div>
         </div>
       </div>
     )
@@ -60,223 +67,218 @@ function DashboardPage() {
 
   if (!healthData) {
     return (
-      <div className="min-h-screen bg-slate-50 py-lg">
-        <div className="max-w-6xl mx-auto px-lg text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-md">No Assessment Yet</h2>
-          <p className="text-slate-600 mb-lg">
-            Start your first assessment to begin tracking your musculoskeletal health.
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Card className="max-w-lg text-center">
+          <h2 className="text-xl font-semibold mb-3">No Assessment Found</h2>
+          <p className="text-slate-600 mb-6">
+            Start your first assessment to begin tracking your musculoskeletal
+            health.
           </p>
-          <Button onClick={() => navigate('/assessment')}>
+
+          <Button onClick={() => navigate("/assessment")}>
             Start Assessment
           </Button>
-        </div>
+        </Card>
       </div>
     )
   }
 
   const current = healthData.currentAssessment
+  const interpretation = getScoreInterpretation(current.overallScore)
   const hasHistory = progressData.length > 1
-  const interpretation = current ? getScoreInterpretation(current.overallScore) : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 py-lg">
-      <div className="max-w-6xl mx-auto px-lg">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-10">
+      <div className="max-w-7xl mx-auto px-6">
+
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-2xl gap-md">
+
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent mb-md">
-              Your Health Dashboard
+            <h1 className="text-4xl font-bold text-slate-900">
+              Health Dashboard
             </h1>
-            <p className="text-slate-600 font-medium">
+
+            <p className="text-slate-500 mt-2">
               Track your musculoskeletal health progress over time
             </p>
           </div>
-          <Button onClick={() => navigate('/assessment')} size="lg">
-            + New Assessment
+
+          <Button size="lg" onClick={() => navigate("/assessment")}>
+            New Assessment
           </Button>
         </div>
 
-        {/* Current Status */}
-        {current && (
-          <Card className="mb-lg bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
-              {/* Overall Score */}
-              <div className="text-center">
-                <h3 className="text-sm font-semibold text-primary-600 mb-md">Overall Health Score</h3>
-                <div className="flex items-end justify-center gap-xs mb-md">
-                  <span className="text-5xl font-bold text-primary-700">{current.overallScore}</span>
-                  <span className="text-xl text-primary-600">/100</span>
-                </div>
-                <Badge variant={interpretation?.color as any}>
-                  {interpretation?.label}
-                </Badge>
-              </div>
+        {/* Primary Metrics */}
 
-              {/* Component Scores */}
-              <div className="space-y-md">
-                <div>
-                  <p className="text-sm text-primary-600 font-semibold mb-xs">Pain Level</p>
-                  <p className="text-2xl font-bold text-slate-900">{current.painScore}</p>
-                  <div className="w-full bg-slate-300 rounded-full h-2 mt-sm">
-                    <div
-                      className="bg-danger-500 h-2 rounded-full"
-                      style={{ width: `${current.painScore}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
 
-              <div className="space-y-md">
-                <div>
-                  <p className="text-sm text-primary-600 font-semibold mb-xs">Mobility</p>
-                  <p className="text-2xl font-bold text-slate-900">{current.mobilityScore}</p>
-                  <div className="w-full bg-slate-300 rounded-full h-2 mt-sm">
-                    <div
-                      className="bg-warning-500 h-2 rounded-full"
-                      style={{ width: `${current.mobilityScore}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Card className="text-center">
+            <h3 className="text-sm text-slate-500 mb-2">Overall Score</h3>
 
-            <div className="border-t border-primary-200 mt-lg pt-md">
-              <p className="text-sm text-primary-700 leading-relaxed">
-                <span className="font-semibold">Last Updated:</span> {new Date(current.createdAt).toLocaleDateString()}
-              </p>
+            <p className="text-5xl font-bold text-primary-600">
+              {current.overallScore}
+            </p>
+
+            <Badge className="mt-3">{interpretation.label}</Badge>
+          </Card>
+
+          <Card>
+            <h3 className="text-sm text-slate-500 mb-2">Pain Level</h3>
+
+            <p className="text-3xl font-semibold mb-3">
+              {current.painScore}
+            </p>
+
+            <div className="h-2 rounded bg-slate-200">
+              <div
+                className="h-2 rounded bg-red-500"
+                style={{ width: `${current.painScore}%` }}
+              />
             </div>
           </Card>
-        )}
+
+          <Card>
+            <h3 className="text-sm text-slate-500 mb-2">Mobility</h3>
+
+            <p className="text-3xl font-semibold mb-3">
+              {current.mobilityScore}
+            </p>
+
+            <div className="h-2 rounded bg-slate-200">
+              <div
+                className="h-2 rounded bg-amber-500"
+                style={{ width: `${current.mobilityScore}%` }}
+              />
+            </div>
+          </Card>
+
+        </div>
 
         {/* Progress Chart */}
-        {hasHistory && progressData.length > 0 && (
-          <Card className="mb-lg">
-            <div className="mb-lg">
-              <div className="flex items-center justify-between mb-md">
-                <h2 className="text-xl font-semibold text-slate-900">Progress Over Time</h2>
-                <div className="flex gap-sm">
-                  {Object.entries(TIME_RANGES).map(([key, value]) => (
-                    <button
-                      key={key}
-                      onClick={() => setSelectedRange(key as TimeRange)}
-                      className={`px-md py-sm rounded-md text-sm font-medium transition-colors ${
-                        selectedRange === key
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                      }`}
-                    >
-                      {value.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              {/* Chart */}
-              <div className="w-full h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={progressData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fill: '#64748b', fontSize: 12 }}
-                    />
-                    <YAxis
-                      domain={[0, 100]}
-                      tick={{ fill: '#64748b', fontSize: 12 }}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#fff',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: '0.5rem',
-                      }}
-                      formatter={(value) => [(value as number).toFixed(0), '']}
-                    />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="overallScore"
-                      stroke="#0284c7"
-                      name="Overall Score"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="painScore"
-                      stroke="#ef4444"
-                      name="Pain Level"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="mobilityScore"
-                      stroke="#f59e0b"
-                      name="Mobility"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+        {hasHistory && (
+          <Card className="mb-10">
+
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-semibold">
+                Health Progress
+              </h2>
+
+              <div className="flex gap-2">
+                {Object.entries(TIME_RANGES).map(([key, value]) => (
+                  <button
+                    key={key}
+                    onClick={() => setSelectedRange(key as TimeRange)}
+                    className={`px-3 py-1 rounded text-sm ${
+                      selectedRange === key
+                        ? "bg-primary-600 text-white"
+                        : "bg-slate-200 text-slate-700"
+                    }`}
+                  >
+                    {value.label}
+                  </button>
+                ))}
               </div>
             </div>
+
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={progressData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip />
+                  <Legend />
+
+                  <Line
+                    type="monotone"
+                    dataKey="overallScore"
+                    stroke="#0284c7"
+                    strokeWidth={2}
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="painScore"
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="mobilityScore"
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                  />
+
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
           </Card>
         )}
 
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg">
-          <Card>
-            <h3 className="text-sm font-semibold text-slate-600 mb-md">Total Assessments</h3>
-            <p className="text-3xl font-bold text-slate-900">{healthData.history.length}</p>
-          </Card>
+        {/* Summary */}
+
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
 
           <Card>
-            <h3 className="text-sm font-semibold text-slate-600 mb-md">Latest Assessment</h3>
-            <p className="text-sm text-slate-900">
-              {current ? new Date(current.createdAt).toLocaleDateString() : 'Never'}
+            <h3 className="text-sm text-slate-500 mb-2">
+              Total Assessments
+            </h3>
+
+            <p className="text-3xl font-bold">
+              {healthData.history.length}
             </p>
           </Card>
 
           <Card>
-            <h3 className="text-sm font-semibold text-slate-600 mb-md">
-              {progressData.length > 1 ? 'Overall Trend' : 'Status'}
+            <h3 className="text-sm text-slate-500 mb-2">
+              Latest Assessment
             </h3>
-            {progressData.length > 1 && current ? (
-              <p className="text-sm text-slate-900">
-                {calculateImprovement(progressData[0].overallScore, current.overallScore) > 0 ? (
-                  <span className="text-green-600 font-semibold">↑ Improving</span>
-                ) : (
-                  <span className="text-orange-600 font-semibold">→ Stable</span>
-                )}
-              </p>
-            ) : (
-              <p className="text-sm text-slate-600">First assessment</p>
-            )}
+
+            <p>
+              {new Date(current.createdAt).toLocaleDateString()}
+            </p>
           </Card>
+
+          <Card>
+            <h3 className="text-sm text-slate-500 mb-2">
+              Trend
+            </h3>
+
+            <p className="font-semibold">
+              {calculateImprovement(
+                progressData[0].overallScore,
+                current.overallScore
+              ) > 0
+                ? "Improving"
+                : "Stable"}
+            </p>
+          </Card>
+
         </div>
 
         {/* Recommendations */}
-        {current && (
-          <Card className="mb-lg bg-green-50 border-green-200">
-            <h2 className="text-xl font-semibold text-green-900 mb-md">Recommendations</h2>
-            <ul className="space-y-sm">
-              {current.recommendations.map((rec: string, idx: number) => (
-                <li key={idx} className="flex gap-md text-green-900">
-                  <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        )}
 
-        {/* Actions */}
-        <div className="flex gap-md">
-          <Button fullWidth onClick={() => navigate('/')}>
-            Back to Home
-          </Button>
-        </div>
+        <Card>
+
+          <h2 className="text-lg font-semibold mb-4">
+            Recommendations
+          </h2>
+
+          <ul className="space-y-2">
+            {current.recommendations.map((rec: string, idx: number) => (
+              <li key={idx} className="flex gap-2">
+                <span className="text-green-600">✓</span>
+                <span>{rec}</span>
+              </li>
+            ))}
+          </ul>
+
+        </Card>
+
       </div>
     </div>
   )
