@@ -7,7 +7,9 @@ function LandingPage() {
   const navigate = useNavigate()
 
   return (
+
     <div className="min-h-screen flex flex-col bg-[#f5f5f7] text-[#1d1d1f] font-[Inter]">
+
 
       {/* NAVBAR */}
 
@@ -38,6 +40,7 @@ function LandingPage() {
         </nav>
 
       </header>
+
 
       {/* HERO */}
 
@@ -92,6 +95,7 @@ function LandingPage() {
 
       </section>
 
+
       {/* FEATURES */}
 
       <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-8">
@@ -113,6 +117,7 @@ function LandingPage() {
 
         </Card>
 
+
         <Card className="text-center p-8 hover:shadow-lg transition">
 
           <div className="text-3xl mb-4">📊</div>
@@ -129,6 +134,7 @@ function LandingPage() {
           </p>
 
         </Card>
+
 
         <Card className="text-center p-8 hover:shadow-lg transition">
 
@@ -149,9 +155,82 @@ function LandingPage() {
 
       </section>
 
+
+      {/* HOW IT WORKS */}
+
+      <section className="bg-white border-y border-slate-200 py-24">
+
+        <div className="max-w-5xl mx-auto px-6 text-center">
+
+          <h2 className="text-3xl font-bold mb-12">
+            How MoveWell Works
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-10 text-left">
+
+            <div>
+
+              <div className="text-[#1DB954] font-bold text-xl mb-3">
+                1
+              </div>
+
+              <h4 className="font-semibold mb-2">
+                Take a short assessment
+              </h4>
+
+              <p className="text-sm text-[#6e6e73]">
+                Answer simple questions about pain,
+                mobility and daily movement.
+              </p>
+
+            </div>
+
+
+            <div>
+
+              <div className="text-[#1DB954] font-bold text-xl mb-3">
+                2
+              </div>
+
+              <h4 className="font-semibold mb-2">
+                Get personalized insights
+              </h4>
+
+              <p className="text-sm text-[#6e6e73]">
+                Understand what your health signals mean
+                and where improvement is needed.
+              </p>
+
+            </div>
+
+
+            <div>
+
+              <div className="text-[#1DB954] font-bold text-xl mb-3">
+                3
+              </div>
+
+              <h4 className="font-semibold mb-2">
+                Track your progress
+              </h4>
+
+              <p className="text-sm text-[#6e6e73]">
+                Monitor how your health changes
+                over time with clear dashboards.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
       {/* TRUST */}
 
-      <section className="max-w-4xl mx-auto px-6 pb-20">
+      <section className="max-w-4xl mx-auto px-6 py-20">
 
         <Card className="text-center bg-white p-10">
 
@@ -171,14 +250,17 @@ function LandingPage() {
 
       </section>
 
+
       {/* FOOTER */}
 
       <footer className="border-t border-slate-200 py-10">
 
         <div className="max-w-6xl mx-auto px-6 text-center text-sm text-[#86868b]">
 
-          © 2026 MoveWell  
+          © 2026 MoveWell
+
           <br />
+
           Built to help people move better.
 
         </div>
@@ -186,7 +268,9 @@ function LandingPage() {
       </footer>
 
     </div>
+
   )
+
 }
 
 export default LandingPage

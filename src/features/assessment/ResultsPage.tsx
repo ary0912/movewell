@@ -1,6 +1,6 @@
 /**
  * MoveWell Results Page
- * Clear and human-friendly presentation of health insights
+ * Professional UX-focused presentation of health insights
  */
 
 import { useEffect, useState } from "react"
@@ -61,9 +61,10 @@ function ResultsPage() {
 
       <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7]">
 
-        <div className="animate-pulse space-y-4 text-center">
+        <div className="animate-pulse space-y-6 text-center">
 
-          <div className="h-10 w-60 bg-slate-200 rounded"></div>
+          <div className="h-10 w-60 bg-slate-200 rounded mx-auto"></div>
+          <div className="h-40 w-96 bg-slate-200 rounded"></div>
           <div className="h-32 w-96 bg-slate-200 rounded"></div>
 
         </div>
@@ -76,35 +77,69 @@ function ResultsPage() {
 
   if (!result) return null
 
+
   const interpretation = getScoreInterpretation(result.overallScore)
 
   const previousScore =
     healthData?.history?.[healthData.history.length - 2]?.overallScore
 
-  const improvement = previousScore
-    ? calculateImprovement(previousScore, result.overallScore)
-    : null
+  const improvement =
+    previousScore
+      ? calculateImprovement(previousScore, result.overallScore)
+      : null
 
 
   return (
 
-    <div className="min-h-screen bg-[#f5f5f7] py-12">
+    <div className="min-h-screen bg-[#f5f5f7]">
 
-      <div className="max-w-3xl mx-auto px-6">
+      {/* Navigation */}
+
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
+
+        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+
+          <div className="flex items-center gap-2">
+
+            <div className="w-8 h-8 bg-[#1DB954] rounded-md flex items-center justify-center text-white font-bold">
+              MW
+            </div>
+
+            <span className="font-semibold text-slate-900">
+              MoveWell
+            </span>
+
+          </div>
+
+          <Button size="sm" onClick={() => navigate("/dashboard")}>
+            Dashboard
+          </Button>
+
+        </div>
+
+      </header>
+
+
+      <div className="max-w-4xl mx-auto px-6 py-12">
+
 
         {/* Completion Header */}
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-14">
 
-          <Badge className="mb-4 bg-green-50 text-green-700 border-green-200">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-2xl font-bold">
+            ✓
+          </div>
+
+          <h1 className="text-4xl font-bold text-[#1d1d1f] mb-3">
             Assessment Complete
-          </Badge>
-
-          <h1 className="text-4xl font-bold text-[#1d1d1f] mb-2">
-            Your Health Insights
           </h1>
 
-          <p className="text-[#6e6e73]">
+          <p className="text-lg text-[#6e6e73]">
+            Here are your personalized health insights
+          </p>
+
+          <p className="text-sm text-slate-400 mt-2">
             Completed {new Date(result.createdAt).toLocaleDateString()}
           </p>
 
@@ -119,21 +154,19 @@ function ResultsPage() {
             Overall Health Score
           </p>
 
-          <div className="flex items-end justify-center gap-2 mb-4">
-
-            <span className="text-6xl font-bold text-[#1DB954]">
-              {result.overallScore}
-            </span>
-
-            <span className="text-xl text-[#6e6e73] mb-2">
-              /100
-            </span>
-
+          <div className="text-7xl font-bold text-[#1DB954] leading-none">
+            {result.overallScore}
           </div>
 
-          <Badge variant={interpretation.color as any}>
-            {interpretation.label}
-          </Badge>
+          <div className="text-sm text-slate-500 mt-1">
+            out of 100
+          </div>
+
+          <div className="mt-4">
+            <Badge variant={interpretation.color as any}>
+              {interpretation.label}
+            </Badge>
+          </div>
 
 
           {improvement !== null && (
@@ -165,6 +198,54 @@ function ResultsPage() {
         </Card>
 
 
+        {/* Metric Cards */}
+
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
+
+          {[
+            {
+              label: "Pain Level",
+              value: result.painScore,
+              color: "bg-red-500"
+            },
+            {
+              label: "Mobility",
+              value: result.mobilityScore,
+              color: "bg-amber-500"
+            },
+            {
+              label: "Daily Impact",
+              value: result.impactScore,
+              color: "bg-[#1DB954]"
+            }
+          ].map(metric => (
+
+            <Card key={metric.label} className="p-6">
+
+              <p className="text-sm text-slate-500 mb-2">
+                {metric.label}
+              </p>
+
+              <p className="text-3xl font-bold mb-3">
+                {metric.value}
+              </p>
+
+              <div className="h-2 bg-slate-200 rounded">
+
+                <div
+                  className={`${metric.color} h-2 rounded`}
+                  style={{ width: `${metric.value}%` }}
+                />
+
+              </div>
+
+            </Card>
+
+          ))}
+
+        </div>
+
+
         {/* Summary */}
 
         <Card className="p-8 mb-10">
@@ -180,66 +261,6 @@ function ResultsPage() {
         </Card>
 
 
-        {/* Breakdown */}
-
-        <Card className="p-8 mb-10">
-
-          <h2 className="text-xl font-semibold mb-6">
-            Score Breakdown
-          </h2>
-
-          <div className="space-y-6">
-
-            {[
-              {
-                label: "Pain Level",
-                value: result.painScore,
-                color: "bg-red-500"
-              },
-              {
-                label: "Mobility",
-                value: result.mobilityScore,
-                color: "bg-amber-500"
-              },
-              {
-                label: "Daily Impact",
-                value: result.impactScore,
-                color: "bg-[#1DB954]"
-              }
-            ].map((metric) => (
-
-              <div key={metric.label}>
-
-                <div className="flex justify-between mb-2">
-
-                  <span className="font-medium">
-                    {metric.label}
-                  </span>
-
-                  <span className="font-bold">
-                    {metric.value}
-                  </span>
-
-                </div>
-
-                <div className="h-2 bg-slate-200 rounded">
-
-                  <div
-                    className={`${metric.color} h-2 rounded`}
-                    style={{ width: `${metric.value}%` }}
-                  />
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </Card>
-
-
         {/* Pain Areas */}
 
         <Card className="p-8 mb-10">
@@ -250,21 +271,13 @@ function ResultsPage() {
 
           <div className="flex flex-wrap gap-3">
 
-            {result.formData.painAreas.map((area) => (
+            {result.formData.painAreas.map(area => (
 
               <div
                 key={area}
-                className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg"
+                className="px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm font-medium"
               >
-
-                <p className="font-medium text-red-900">
-                  {BODY_AREA_LABELS[area]}
-                </p>
-
-                <p className="text-sm text-red-700">
-                  Intensity: {result.formData.painIntensity[area]}/10
-                </p>
-
+                {BODY_AREA_LABELS[area]}
               </div>
 
             ))}
@@ -286,9 +299,11 @@ function ResultsPage() {
 
             {result.recommendations.map((rec, idx) => (
 
-              <li key={idx} className="flex gap-3 text-green-900">
+              <li key={idx} className="flex gap-3 items-start text-green-900">
 
-                <span className="font-bold text-green-600">✓</span>
+                <div className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center text-green-700 text-sm">
+                  ✓
+                </div>
 
                 <span>{rec}</span>
 
@@ -297,6 +312,22 @@ function ResultsPage() {
             ))}
 
           </ul>
+
+        </Card>
+
+
+        {/* Next Step Guidance */}
+
+        <Card className="p-6 mb-10 bg-blue-50 border-blue-200">
+
+          <h3 className="font-semibold mb-2">
+            What should you do next?
+          </h3>
+
+          <p className="text-slate-700 text-sm">
+            Continue tracking your health by completing new assessments and
+            monitoring changes in your dashboard over time.
+          </p>
 
         </Card>
 
@@ -316,12 +347,13 @@ function ResultsPage() {
           <Button
             fullWidth
             variant="secondary"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/assessment")}
           >
-            Back to Home
+            Start New Assessment
           </Button>
 
         </div>
+
 
       </div>
 
