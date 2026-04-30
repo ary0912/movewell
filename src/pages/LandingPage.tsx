@@ -1,6 +1,5 @@
 'use client';
 
-import React from "react"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Button } from "@components/ui/Button"
@@ -9,8 +8,6 @@ import Badge from "@components/ui/Badge"
 import { 
   Activity, 
   ShieldCheck, 
-  Zap, 
-  ArrowRight,
   BrainCircuit,
   Target,
   BarChart3
@@ -22,7 +19,7 @@ function LandingPage() {
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } as any
   }
 
   return (

@@ -1,10 +1,9 @@
 "use client" 
 
-import * as React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Activity } from "lucide-react"
+import { Menu, X } from "lucide-react"
 
 const Navbar1 = () => {
   const [isOpen, setIsOpen] = useState(false)

@@ -1,13 +1,11 @@
 'use client';
 
-import React from 'react';
 import { Card } from "@components/ui/Card";
 import Badge from "@components/ui/Badge";
 import { Button } from "@components/ui/Button";
 import { useNavigate } from 'react-router-dom';
 import { 
   Zap, 
-  ShieldCheck, 
   Activity, 
   ChevronRight,
   Stethoscope,

@@ -12,10 +12,8 @@ import StepReview from "./StepReview"
 
 import ProgressIndicator from "@components/common/ProgressIndicator"
 import { Button } from "@components/ui/Button"
-import { Card } from "@components/ui/Card"
 import Badge from "@components/ui/Badge"
 import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
 
 const STEPS = [
   { id: 0, title: "Neural Map", description: "Identify anatomical focus centers." },

@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { fetchHealthData } from "@services/assessmentService"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@components/ui/Card"
+import { Card } from "@components/ui/Card"
 import { Button } from "@components/ui/Button"
 import Badge from "@components/ui/Badge"
-import { getScoreInterpretation, calculateImprovement, generateInsightText } from "@utils/scoring"
+import { getScoreInterpretation, calculateImprovement } from "@utils/scoring"
 import { TIME_RANGES } from "@utils/constants"
 import { 
   LineChart, 

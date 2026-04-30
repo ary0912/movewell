@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAssessment } from "@context/AssessmentContext"
 import { fetchHealthData } from "@services/assessmentService"
@@ -8,6 +8,7 @@ import { Card } from "@components/ui/Card"
 import { Button } from "@components/ui/Button"
 import Badge from "@components/ui/Badge"
 import { getScoreInterpretation, calculateImprovement } from "@utils/scoring"
+import { cn } from "@/lib/utils"
 
 function ResultsPage() {
   const navigate = useNavigate()
