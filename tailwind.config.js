@@ -1,3 +1,5 @@
+import tailwindAnimate from "tailwindcss-animate"
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -7,41 +9,55 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Brand colors
+        // Vibrant Brand - Electric Teal & Amethyst Accents
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c3d66',
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#99f6e4',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#14b8a6',
+          600: '#0d9488', // Deep Teal
+          700: '#0f766e', 
+          800: '#115e59',
+          900: '#134e4a',
+          vibrant: '#00f2fe', // Electric Cyan
         },
-        // Health-focused colors
-        success: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+          purple: '#8b5cf6', // Amethyst
+          pink: '#ec4899',
+          indigo: '#6366f1',
         },
-        warning: {
-          50: '#fef3c7',
-          100: '#fef3c7',
-          500: '#f59e0b',
-          600: '#d97706',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
         },
-        danger: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          500: '#ef4444',
-          600: '#dc2626',
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
         },
-        // Neutral/calm colors
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        // Neutral/calm colors (Ultra-clean tinted palette)
         slate: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -55,41 +71,59 @@ export default {
           900: '#0f172a',
         },
       },
-      spacing: {
-        'xs': '0.5rem',
-        'sm': '1rem',
-        'md': '1.5rem',
-        'lg': '2rem',
-        'xl': '2.5rem',
-        '2xl': '3rem',
-      },
-      fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1rem' }],
-        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
-        'base': ['1rem', { lineHeight: '1.5rem' }],
-        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
-        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-      },
-      borderRadius: {
-        'sm': '0.375rem',
-        'md': '0.5rem',
-        'lg': '0.75rem',
-        'xl': '1rem',
+      backgroundImage: {
+        'mesh-gradient': "radial-gradient(at 0% 0%, hsla(170, 75%, 45%, 0.15) 0px, transparent 50%), radial-gradient(at 50% 0%, hsla(220, 75%, 45%, 0.1) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(280, 75%, 45%, 0.15) 0px, transparent 50%)",
+        'glass-gradient': "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1))",
       },
       boxShadow: {
-        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+        'soft-glow': '0 0 40px -10px rgba(13, 148, 136, 0.2)',
+        'inner-light': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.1)',
+        'premium': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
       },
-      transitionDuration: {
-        '250': '250ms',
-        '350': '350ms',
+      borderRadius: {
+        '3xl': '1.5rem',
+        '4xl': '2rem',
+        'lg': 'var(--radius)',
+        'md': 'calc(var(--radius) - 2px)',
+        'sm': 'calc(var(--radius) - 4px)',
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'border-beam': 'border-beam var(--duration) infinite linear',
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "shine": "shine var(--duration) infinite linear",
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
+        'border-beam': {
+          '100%': {
+            'offset-distance': '100%',
+          },
+        },
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "shine": {
+          "0%": { "background-position": "0% 0%" },
+          "50%": { "background-position": "100% 100%" },
+          to: { "background-position": "0% 0%" },
+        },
       },
     },
   },
-  plugins: [],
+  plugins: [tailwindAnimate],
 }
-

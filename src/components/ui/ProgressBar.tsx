@@ -1,10 +1,5 @@
-/**
- * ProgressBar component - visual indicator of progress
- * Used in multi-step forms and data visualization
- */
-
 import React, { type HTMLAttributes } from 'react';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 
 interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
   current: number;
@@ -18,29 +13,28 @@ const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
     const percentage = Math.round((current / total) * 100);
 
     return (
-      <div ref={ref} className={clsx('w-full', className)} {...rest}>
+      <div ref={ref} className={cn('w-full', className)} {...rest}>
         {showLabel && (
-          <div className="flex justify-between items-center mb-md">
-            <p className="text-sm font-medium text-slate-700">
-              Step {current} of {total}
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              Phase {current} of {total}
             </p>
-            <p className="text-sm font-semibold text-primary-600">
-              {percentage}%
+            <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
+              {percentage}% Complete
             </p>
           </div>
         )}
         <div
-          className="w-full h-2 bg-slate-200 rounded-full overflow-hidden"
+          className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"
           role="progressbar"
           aria-valuenow={current}
           aria-valuemin={1}
           aria-valuemax={total}
-          aria-label={`Progress: Step ${current} of ${total}`}
         >
           <div
-            className={clsx(
-              'h-full bg-primary-600 rounded-full',
-              animated && 'transition-all duration-500'
+            className={cn(
+              'h-full bg-emerald-600 rounded-full',
+              animated && 'transition-all duration-700 ease-in-out'
             )}
             style={{ width: `${percentage}%` }}
           />

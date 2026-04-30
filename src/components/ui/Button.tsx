@@ -1,105 +1,55 @@
-/**
- * Button component - primary UI element
- * Supports multiple variants for different use cases
- * Fully accessible with focus states and semantic HTML
- */
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
 
-import React, { type ButtonHTMLAttributes, type ReactNode } from 'react';
-import clsx from 'clsx';
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98]",
+  {
+    variants: {
+      variant: {
+        primary:
+          "bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 hover:shadow-md",
+        secondary:
+          "bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-200",
+        outline:
+          "border border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-900",
+        ghost: "hover:bg-slate-100 hover:text-slate-900",
+        link: "text-emerald-600 underline-offset-4 hover:underline",
+        clinical: "bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/10", // High contrast dark button for light theme
+      },
+      size: {
+        default: "h-11 px-6 py-2",
+        sm: "h-9 rounded-lg px-4 text-xs",
+        lg: "h-14 rounded-2xl px-10 text-base",
+        icon: "h-11 w-11",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "default",
+    },
+  }
+)
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'tertiary';
-  size?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
-  isDisabled?: boolean;
-  fullWidth?: boolean;
-  children: ReactNode;
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
 }
 
-const variantStyles = {
-  primary:
-    'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800',
-  secondary:
-    'bg-slate-200 text-slate-900 hover:bg-slate-300 active:bg-slate-400',
-  tertiary:
-    'text-primary-600 hover:bg-primary-50 active:bg-primary-100',
-};
-
-const sizeStyles = {
-  sm: 'px-sm py-xs text-sm',
-  md: 'px-md py-sm text-base',
-  lg: 'px-lg py-md text-lg',
-};
-
-const baseStyles = `
-  inline-flex items-center justify-center
-  font-medium rounded-md
-  transition-colors duration-250
-  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500
-  disabled:opacity-50 disabled:cursor-not-allowed
-`;
-
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      variant = 'primary',
-      size = 'md',
-      isLoading = false,
-      isDisabled = false,
-      fullWidth = false,
-      className,
-      children,
-      ...rest
-    },
-    ref
-  ) => {
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
     return (
-      <button
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        className={clsx(
-          baseStyles,
-          variantStyles[variant],
-          sizeStyles[size],
-          fullWidth && 'w-full',
-          className
-        )}
-        disabled={isLoading || isDisabled}
-        aria-busy={isLoading}
-        {...rest}
-      >
-        {isLoading ? (
-          <>
-            <svg
-              className="animate-spin -ml-1 mr-sm h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            <span>Loading...</span>
-          </>
-        ) : (
-          children
-        )}
-      </button>
-    );
+        {...props}
+      />
+    )
   }
-);
+)
+Button.displayName = "Button"
 
-Button.displayName = 'Button';
-
-export default Button;
+export { Button, buttonVariants }

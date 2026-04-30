@@ -180,3 +180,32 @@ export function createAssessmentResult(
     createdAt: new Date().toISOString(),
   };
 }
+
+/**
+ * Generate a dynamic insight string based on score improvements and current state
+ */
+export function generateInsightText(
+  improvement: number,
+  painScore: number,
+  mobilityScore: number
+): string {
+  if (improvement > 10) {
+    if (painScore < 30) return `Your pain levels have dropped significantly. Your consistency is paying off.`;
+    return `You've improved by ${improvement}% recently. Keep following your daily routine.`;
+  }
+  if (improvement > 0) {
+    return `You're making steady progress. Small daily habits are moving the needle.`;
+  }
+  if (improvement < -10) {
+    return `Your scores have dipped recently. Let's focus on gentle, restorative movements today.`;
+  }
+  if (improvement < 0) {
+    return `A slight decline recently. Listen to your body and don't push too hard today.`;
+  }
+  
+  // Stable (improvement === 0 or no history)
+  if (painScore > 50) return `Your symptoms are persisting. Focus on pain management strategies today.`;
+  if (mobilityScore > 50) return `Your baseline is stable, but mobility remains a challenge. Let's focus on flexibility.`;
+  
+  return `Your body's baseline is stable. Great job maintaining your current health levels.`;
+}

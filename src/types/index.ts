@@ -63,6 +63,7 @@ export interface ProgressEntry {
   painScore: number;
   mobilityScore: number;
   impactScore: number;
+  recommendations?: string[];
 }
 
 // Health data for dashboard

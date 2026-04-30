@@ -1,276 +1,174 @@
+'use client';
+
+import React from "react"
 import { useNavigate } from "react-router-dom"
-import Button from "@components/ui/Button"
-import Card from "@components/ui/Card"
+import { motion } from "framer-motion"
+import { Button } from "@components/ui/Button"
+import { Card } from "@components/ui/Card"
+import Badge from "@components/ui/Badge"
+import { 
+  Activity, 
+  ShieldCheck, 
+  Zap, 
+  ArrowRight,
+  BrainCircuit,
+  Target,
+  BarChart3
+} from "lucide-react"
 
 function LandingPage() {
-
   const navigate = useNavigate()
 
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  }
+
   return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-emerald-500/10">
+      
+      <main>
+        {/* 1. Hero Section: Typographic Authority */}
+        <section className="max-w-5xl mx-auto px-6 pt-40 pb-32 text-center">
+          <motion.div {...fadeInUp} className="space-y-8">
+            <Badge variant="neutral" className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] bg-white text-slate-500 border-slate-200">
+              The Movement Standard
+            </Badge>
 
-    <div className="min-h-screen flex flex-col bg-[#f5f5f7] text-[#1d1d1f] font-[Inter]">
+            <h1 className="text-5xl md:text-[6rem] font-bold tracking-tight text-slate-900 leading-[0.95] max-w-4xl mx-auto">
+              Move well. <br />
+              <span className="text-slate-400">Live without limits.</span>
+            </h1>
 
+            <p className="max-w-2xl mx-auto text-lg md:text-xl text-slate-500 font-medium leading-relaxed">
+              MoveWell decodes your biomechanical signals to build a personalized blueprint for recovery and performance. Clinical intelligence, simplified.
+            </p>
 
-      {/* NAVBAR */}
-
-      <header className="sticky top-0 bg-white/70 backdrop-blur border-b border-slate-200 z-50">
-
-        <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-
-          <div className="flex items-center gap-3">
-
-            <div className="w-10 h-10 rounded-lg bg-[#1DB954] flex items-center justify-center font-bold text-white">
-              MW
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+              <Button 
+                variant="clinical"
+                size="lg"
+                onClick={() => navigate("/assessment")}
+                className="w-full sm:w-auto"
+              >
+                Start Assessment
+              </Button>
+              <Button 
+                variant="secondary"
+                size="lg"
+                onClick={() => navigate("/dashboard")}
+                className="w-full sm:w-auto"
+              >
+                View Analytics
+              </Button>
             </div>
+          </motion.div>
+        </section>
 
-            <span className="font-semibold text-lg">
-              MoveWell
-            </span>
-
+        {/* 2. Value Proposition: Simple Grid */}
+        <section className="max-w-6xl mx-auto px-6 py-32 border-t border-slate-200">
+          <div className="grid md:grid-cols-3 gap-12">
+             {[
+               { icon: <BrainCircuit />, title: "Neural Map", desc: "Identify anatomical distress centers with longitudinal precision." },
+               { icon: <Activity />, title: "Bio-Sync", desc: "Evaluate joint fluidity and identify hidden mobility restrictions." },
+               { icon: <ShieldCheck />, title: "Protocol", desc: "Adaptive recovery vectors generated through daily biomechanical feedback." }
+             ].map((item, i) => (
+               <div key={i} className="space-y-6">
+                  <div className="text-emerald-600">{item.icon}</div>
+                  <h3 className="text-xl font-bold text-slate-900">{item.title}</h3>
+                  <p className="text-slate-500 font-medium leading-relaxed">{item.desc}</p>
+               </div>
+             ))}
           </div>
+        </section>
 
-          <Button
-            size="sm"
-            className="bg-[#1DB954] hover:bg-[#17a94d] text-white"
-            onClick={() => navigate("/assessment")}
-          >
-            Start Assessment
-          </Button>
-
-        </nav>
-
-      </header>
-
-
-      {/* HERO */}
-
-      <section className="flex-1 flex items-center justify-center px-6 py-28">
-
-        <div className="max-w-4xl text-center">
-
-          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-
-            Your body already
-            <br />
-
-            <span className="text-[#1DB954]">
-              tells a story.
-            </span>
-
-          </h1>
-
-          <p className="text-xl text-[#6e6e73] max-w-2xl mx-auto mb-10 leading-relaxed">
-
-            Pain, stiffness, limited mobility — your body sends signals
-            every day. MoveWell helps you understand those signals
-            and track how your movement improves over time.
-
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-
-            <Button
-              size="lg"
-              className="bg-[#1DB954] hover:bg-[#17a94d] text-white px-8"
-              onClick={() => navigate("/assessment")}
-            >
-              Take Your First Assessment
-            </Button>
-
-            <Button
-              variant="secondary"
-              size="lg"
-              className="px-8"
-            >
-              Learn More
-            </Button>
-
+        {/* 3. Social Proof / Authority */}
+        <section className="py-32 bg-white">
+          <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12 opacity-40 grayscale">
+             <span className="font-black tracking-tighter text-2xl text-slate-400">CLINICAL+</span>
+             <span className="font-black tracking-tighter text-2xl text-slate-400">BIOSTREAM</span>
+             <span className="font-black tracking-tighter text-2xl text-slate-400">RECOVER.AI</span>
+             <span className="font-black tracking-tighter text-2xl text-slate-400">ELITEFORM</span>
           </div>
+        </section>
 
-          <p className="text-sm text-[#86868b] mt-5">
-            Takes under 5 minutes · No account required
-          </p>
-
-        </div>
-
-      </section>
-
-
-      {/* FEATURES */}
-
-      <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-8">
-
-        <Card className="text-center p-8 hover:shadow-lg transition">
-
-          <div className="text-3xl mb-4">🧠</div>
-
-          <h3 className="font-semibold text-lg mb-2">
-            Understand Your Body
-          </h3>
-
-          <p className="text-[#6e6e73] text-sm leading-relaxed">
-
-            Identify patterns in pain and mobility so you can
-            understand what your body is telling you.
-
-          </p>
-
-        </Card>
-
-
-        <Card className="text-center p-8 hover:shadow-lg transition">
-
-          <div className="text-3xl mb-4">📊</div>
-
-          <h3 className="font-semibold text-lg mb-2">
-            Clear Insights
-          </h3>
-
-          <p className="text-[#6e6e73] text-sm leading-relaxed">
-
-            Turn complex health signals into simple, easy-to-understand
-            insights about your movement.
-
-          </p>
-
-        </Card>
-
-
-        <Card className="text-center p-8 hover:shadow-lg transition">
-
-          <div className="text-3xl mb-4">📈</div>
-
-          <h3 className="font-semibold text-lg mb-2">
-            Track Improvement
-          </h3>
-
-          <p className="text-[#6e6e73] text-sm leading-relaxed">
-
-            Monitor how your health changes over time with
-            intuitive dashboards and progress tracking.
-
-          </p>
-
-        </Card>
-
-      </section>
-
-
-      {/* HOW IT WORKS */}
-
-      <section className="bg-white border-y border-slate-200 py-24">
-
-        <div className="max-w-5xl mx-auto px-6 text-center">
-
-          <h2 className="text-3xl font-bold mb-12">
-            How MoveWell Works
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-10 text-left">
-
-            <div>
-
-              <div className="text-[#1DB954] font-bold text-xl mb-3">
-                1
+        {/* 4. Deep Tech: Clear Information Hierarchy */}
+        <section className="max-w-6xl mx-auto px-6 py-40">
+           <div className="grid lg:grid-cols-2 gap-24 items-center">
+              <div className="space-y-10 text-left">
+                 <h2 className="text-4xl md:text-[3.5rem] font-bold tracking-tight text-slate-900 leading-tight">Intelligence at <br />every intersection.</h2>
+                 <p className="text-lg text-slate-500 font-medium leading-relaxed italic">
+                   "The most sophisticated diagnostic is the one you actually use. We built MoveWell to turn complex biomechanics into a simple daily protocol."
+                 </p>
+                 <div className="space-y-6">
+                    {[
+                      { t: "Predictive Analytics", d: "Avoid injury before it manifests in your movement patterns." },
+                      { t: "Longitudinal Tracking", d: "Watch your evolution through high-resolution data streams." }
+                    ].map((feat, idx) => (
+                      <div key={idx} className="flex gap-6">
+                         <div className="mt-1"><Target size={20} className="text-emerald-600" /></div>
+                         <div>
+                            <p className="font-bold text-slate-900">{feat.t}</p>
+                            <p className="text-sm text-slate-500">{feat.d}</p>
+                         </div>
+                      </div>
+                    ))}
+                 </div>
               </div>
 
-              <h4 className="font-semibold mb-2">
-                Take a short assessment
-              </h4>
+              <Card className="p-10 bg-white border-slate-200 relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
+                 <div className="text-slate-100 absolute inset-0 flex items-center justify-center pointer-events-none font-black text-[20rem] opacity-40">
+                   MW
+                 </div>
+                 <div className="relative z-10 text-center space-y-8">
+                    <BarChart3 size={64} className="mx-auto text-emerald-600" />
+                    <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Telemetry stream active</p>
+                 </div>
+              </Card>
+           </div>
+        </section>
 
-              <p className="text-sm text-[#6e6e73]">
-                Answer simple questions about pain,
-                mobility and daily movement.
-              </p>
-
-            </div>
-
-
-            <div>
-
-              <div className="text-[#1DB954] font-bold text-xl mb-3">
-                2
+        {/* 5. Final CTA: Calm Premium */}
+        <section className="max-w-6xl mx-auto px-6 py-40">
+           <div className="p-20 md:p-32 text-center bg-white border border-slate-200 rounded-[2rem] relative overflow-hidden group shadow-xl shadow-slate-200/50">
+              <div className="relative z-10 space-y-12">
+                 <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 leading-tight">
+                    Ready to define your <br />
+                    <span className="text-emerald-600">movement standard?</span>
+                 </h2>
+                 <div className="pt-6">
+                    <Button 
+                      variant="clinical"
+                      size="lg"
+                      onClick={() => navigate("/assessment")}
+                      className="px-16"
+                    >
+                       Get Started
+                    </Button>
+                 </div>
               </div>
+           </div>
+        </section>
 
-              <h4 className="font-semibold mb-2">
-                Get personalized insights
-              </h4>
+      </main>
 
-              <p className="text-sm text-[#6e6e73]">
-                Understand what your health signals mean
-                and where improvement is needed.
-              </p>
-
+      <footer className="py-20 border-t border-slate-200 bg-white">
+         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12 text-slate-400">
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-black text-sm">MW</div>
+               <span className="font-bold text-slate-900 tracking-tight">MoveWell Intelligence</span>
             </div>
-
-
-            <div>
-
-              <div className="text-[#1DB954] font-bold text-xl mb-3">
-                3
-              </div>
-
-              <h4 className="font-semibold mb-2">
-                Track your progress
-              </h4>
-
-              <p className="text-sm text-[#6e6e73]">
-                Monitor how your health changes
-                over time with clear dashboards.
-              </p>
-
+            <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest">
+               <a href="#" className="hover:text-slate-900 transition-colors">Protocol</a>
+               <a href="#" className="hover:text-slate-900 transition-colors">Privacy</a>
+               <a href="#" className="hover:text-slate-900 transition-colors">Clinical</a>
             </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* TRUST */}
-
-      <section className="max-w-4xl mx-auto px-6 py-20">
-
-        <Card className="text-center bg-white p-10">
-
-          <h3 className="font-semibold mb-2">
-            Your health data stays private
-          </h3>
-
-          <p className="text-[#6e6e73] text-sm leading-relaxed">
-
-            MoveWell is designed to help you understand your
-            musculoskeletal health. Your assessment data is never
-            sold or shared with third parties.
-
-          </p>
-
-        </Card>
-
-      </section>
-
-
-      {/* FOOTER */}
-
-      <footer className="border-t border-slate-200 py-10">
-
-        <div className="max-w-6xl mx-auto px-6 text-center text-sm text-[#86868b]">
-
-          © 2026 MoveWell
-
-          <br />
-
-          Built to help people move better.
-
-        </div>
-
+            <p className="text-[10px] font-bold uppercase tracking-widest">© 2026 MoveWell</p>
+         </div>
       </footer>
-
     </div>
-
   )
-
 }
 
 export default LandingPage

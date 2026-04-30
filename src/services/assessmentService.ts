@@ -36,6 +36,7 @@ function initializeUserData(userId: string): HealthData {
       painScore: 70 - i * 0.4 + Math.random() * 8,
       mobilityScore: 60 - i * 0.6 + Math.random() * 12,
       impactScore: 55 - i * 0.3 + Math.random() * 7,
+      recommendations: ["Deep Breathing", "Neck Rotations", "Lower Back Stretch"],
     });
   }
 

@@ -1,10 +1,5 @@
-/**
- * Badge component - visual indicator for status, labels, or scores
- * Color-coded for different states with accessible contrast
- */
-
 import React, { type ReactNode, type HTMLAttributes } from 'react';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
@@ -13,17 +8,17 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantStyles = {
-  success: 'bg-gradient-to-r from-green-100 to-green-50 text-green-900 border-green-300 font-semibold shadow-sm',
-  warning: 'bg-gradient-to-r from-amber-100 to-amber-50 text-amber-900 border-amber-300 font-semibold shadow-sm',
-  danger: 'bg-gradient-to-r from-red-100 to-red-50 text-red-900 border-red-300 font-semibold shadow-sm',
-  info: 'bg-gradient-to-r from-blue-100 to-blue-50 text-blue-900 border-blue-300 font-semibold shadow-sm',
-  neutral: 'bg-gradient-to-r from-slate-100 to-slate-50 text-slate-900 border-slate-300 font-semibold shadow-sm',
+  success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  warning: 'bg-amber-50 text-amber-700 border-amber-200',
+  danger: 'bg-red-50 text-red-700 border-red-200',
+  info: 'bg-blue-50 text-blue-700 border-blue-200',
+  neutral: 'bg-slate-100 text-slate-600 border-slate-200',
 };
 
 const sizeStyles = {
-  sm: 'px-sm py-xs text-xs',
-  md: 'px-md py-sm text-sm',
-  lg: 'px-lg py-md text-base',
+  sm: 'px-2.5 py-0.5 text-[9px]',
+  md: 'px-3 py-1 text-[10px]',
+  lg: 'px-4 py-1.5 text-xs',
 };
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
@@ -31,8 +26,8 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     return (
       <span
         ref={ref}
-        className={clsx(
-          'inline-flex items-center font-semibold rounded-md border',
+        className={cn(
+          'inline-flex items-center font-bold uppercase tracking-widest rounded-full border transition-colors',
           variantStyles[variant],
           sizeStyles[size],
           className
