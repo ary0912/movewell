@@ -11,3 +11,7 @@ export default ProgressBarDefault
 
 // Badge
 export { default as Badge } from './Badge'
+// New UI primitives
+export { default as InsightCard } from './InsightCard'
+export { default as KpiStrip } from './KpiStrip'
+export { default as Tooltip } from './Tooltip'
