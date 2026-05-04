@@ -61,22 +61,8 @@ const Navbar1 = () => {
               </span>
             </div>
 
-            {/* DESKTOP NAV */}
-              <nav aria-label="Main" className="hidden md:flex items-center gap-2 relative">
-
-              {/* Active pill background */}
-              <motion.div
-                layout
-                className="absolute h-10 rounded-full bg-muted"
-                style={{
-                  width: 90,
-                }}
-                animate={{
-                  x: navItems.findIndex(i => i.path === location.pathname) * 90,
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              />
-
+              {/* DESKTOP NAV */}
+              <nav aria-label="Main" className="hidden md:flex items-center gap-2">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path
                 const Icon = item.icon
@@ -87,8 +73,10 @@ const Navbar1 = () => {
                     onClick={() => handleNavigate(item.path)}
                     aria-current={isActive ? 'page' : undefined}
                     className={cn(
-                      "relative z-10 flex items-center gap-2 px-lg h-10 rounded-full text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
-                      isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                      "relative z-10 flex items-center gap-2 px-lg h-10 rounded-full text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60",
+                      isActive
+                        ? 'bg-muted/20 dark:bg-muted/30 text-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/5 dark:hover:bg-muted/10'
                     )}
                   >
                     <Icon size={16} aria-hidden />

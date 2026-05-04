@@ -79,10 +79,10 @@
   }
 
   .btn-primary {
-    @apply bg-primary text-primary-foreground px-6 py-3 rounded-xl;
+    @apply bg-primary text-primary-foreground px-lg py-sm rounded-xl;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground px-6 py-3 rounded-xl border border-border;
+    @apply bg-secondary text-secondary-foreground px-lg py-sm rounded-xl border border-border;
   }
 }
