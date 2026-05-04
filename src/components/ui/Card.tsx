@@ -56,7 +56,7 @@ const Card3D = ({
 }: Card3DProps) => {
   const [hovered, setHovered] = React.useState(false)
 
-  return (
+    return (
     <Motion.button
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -70,8 +70,8 @@ const Card3D = ({
           "shadow-sm hover:shadow-xl",
           className
         )}
-      animate={{ y: hovered ? -6 : 0, scale: hovered ? 1.01 : 1 }}
-      transition={{ type: "spring", stiffness: 220, damping: 24 }}
+      animate={{ y: hovered ? -6 : 0, scale: hovered ? 1.02 : 1 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl pointer-events-none" />
 

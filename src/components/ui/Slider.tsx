@@ -64,9 +64,9 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
           />
 
           <style>{`
-            input[type='range']::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.06); box-shadow: 0 4px 12px rgba(2,6,23,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-            input[type='range']::-webkit-slider-thumb:hover { transform: scale(1.06); box-shadow: 0 6px 18px rgba(2,6,23,0.08); }
-            input[type='range']::-webkit-slider-thumb:active { transform: scale(0.96); }
+            input[type='range']::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.06); box-shadow: 0 4px 12px rgba(2,6,23,0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+            input[type='range']::-webkit-slider-thumb:hover { transform: scale(1.02); box-shadow: 0 6px 18px rgba(2,6,23,0.08); }
+            input[type='range']::-webkit-slider-thumb:active { transform: scale(0.97); }
             input[type='range']::-moz-range-thumb { width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.06); box-shadow: 0 4px 12px rgba(2,6,23,0.06); }
           `}</style>
         </div>

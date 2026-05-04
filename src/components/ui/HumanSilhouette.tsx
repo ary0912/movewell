@@ -110,10 +110,11 @@ const HumanSilhouette: React.FC<HumanSilhouetteProps> = ({
                 cx={area.cx}
                 cy={area.cy}
                 r={area.r}
-                whileTap={{ scale: 0.85 }}
+                whileTap={{ scale: 0.97 }}
                 animate={{
-                  scale: isHovered ? 1.25 : 1,
+                  scale: isHovered ? 1.02 : 1,
                 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
                 className={cn(
                   "transition-all duration-300",
                   isSelected
