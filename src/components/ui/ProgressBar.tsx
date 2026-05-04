@@ -43,7 +43,7 @@ const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
         )}
 
         <div
-          className="relative w-full h-3 rounded-full overflow-hidden bg-muted"
+          className="relative w-full h-md rounded-full overflow-hidden bg-muted"
           role="progressbar"
           aria-label={ariaLabel}
           aria-valuenow={percentage}

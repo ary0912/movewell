@@ -62,7 +62,7 @@ const Navbar1 = () => {
             </div>
 
             {/* DESKTOP NAV */}
-            <nav aria-label="Main" className="hidden md:flex items-center gap-2 relative">
+              <nav aria-label="Main" className="hidden md:flex items-center gap-2 relative">
 
               {/* Active pill background */}
               <motion.div
@@ -87,7 +87,7 @@ const Navbar1 = () => {
                     onClick={() => handleNavigate(item.path)}
                     aria-current={isActive ? 'page' : undefined}
                     className={cn(
-                      "relative z-10 flex items-center gap-2 px-4 h-10 rounded-full text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                      "relative z-10 flex items-center gap-2 px-lg h-10 rounded-full text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                       isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                     )}
                   >
@@ -107,7 +107,7 @@ const Navbar1 = () => {
               {/* CTA */}
               <button
                 onClick={() => handleNavigate("/assessment")}
-                className="hidden md:flex items-center justify-center px-5 h-10 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-md hover:shadow-lg transition-all"
+                className="hidden md:flex items-center justify-center px-lg h-10 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-md hover:shadow-lg transition-all"
               >
                 Start
               </button>

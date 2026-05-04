@@ -47,8 +47,8 @@ const buttonVariants = cva(
 
       size: {
         default: "",
-        sm: "text-xs px-4 py-2",
-        lg: "text-base px-8 py-4",
+        sm: "text-xs px-md py-sm",
+        lg: "text-md px-xl py-md",
       },
     },
 
@@ -103,7 +103,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           type={htmlProps.type ?? "button"}
           aria-busy={isLoading}
           whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.985 }}
+          whileTap={{ scale: 0.97 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
           className={cn("group", buttonVariants({ variant, size }), className)}
           {...htmlProps}
