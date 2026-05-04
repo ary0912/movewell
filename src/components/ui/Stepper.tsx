@@ -1,4 +1,4 @@
-import * as React from 'react'
+// React import not required with `jsx: react-jsx`
 import { cn } from '@/lib/utils'
 
 interface StepperProps {

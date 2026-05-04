@@ -57,7 +57,7 @@ function AssessmentPage() {
     }
   }
 
-  const progress = ((currentStep + 1) / STEPS.length) * 100
+  // progress calculation was replaced by Stepper
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 flex flex-col">
