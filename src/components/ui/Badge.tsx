@@ -16,9 +16,9 @@ const variantStyles: Record<NonNullable<BadgeProps['variant']>, string> = {
 };
 
 const sizeStyles: Record<NonNullable<BadgeProps['size']>, string> = {
-  sm: 'px-2.5 py-0.5 text-[10px] leading-none',
-  md: 'px-3 py-1 text-xs',
-  lg: 'px-4 py-1.5 text-sm',
+  sm: 'px-sm py-0.5 text-[10px] leading-none',
+  md: 'px-md py-1 text-xs',
+  lg: 'px-lg py-1.5 text-sm',
 };
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(

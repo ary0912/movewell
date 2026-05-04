@@ -31,7 +31,7 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
     const percentage = Math.max(0, Math.min(100, ((numeric - min) / Math.max(1, max - min)) * 100))
 
     return (
-      <div className="w-full space-y-4">
+      <div className="w-full space-y-md">
         {(label || showValue) && (
           <div className="flex items-center justify-between">
             {label && <label className="text-sm font-medium text-foreground">{label}</label>}

@@ -28,7 +28,7 @@ const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
     const percentage = Math.max(0, Math.min(100, Math.round((current / Math.max(1, total)) * 100)));
 
     return (
-      <div ref={ref} className={cn('w-full space-y-3', className)} {...rest}>
+      <div ref={ref} className={cn('w-full space-y-sm', className)} {...rest}>
         {showLabel && (
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">

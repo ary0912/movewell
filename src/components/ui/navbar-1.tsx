@@ -36,12 +36,12 @@ const Navbar1 = () => {
             role="banner"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={cn(
-              "flex items-center justify-between px-6 py-3 rounded-full",
-              "bg-background/70 backdrop-blur-xl",
-              "border border-border",
-                 "shadow-[0_6px_18px_rgba(2,6,23,0.06)]"
-            )}
+                className={cn(
+                  "flex items-center justify-between px-lg py-sm rounded-full",
+                  "bg-background/70 backdrop-blur-xl",
+                  "border border-border",
+                  "shadow-[0_6px_18px_rgba(2,6,23,0.06)]"
+                )}
           >
 
             {/* LOGO */}

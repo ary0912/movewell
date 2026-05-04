@@ -18,19 +18,19 @@ const Card = React.forwardRef<
 
   return (
     <Motion.div
-    ref={ref}
-    role="group"
-    initial={{ opacity: 0, y: 6 }}
+      ref={ref}
+      role="group"
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-    className={cn(
-        "rounded-2xl p-6 md:p-8",
+      className={cn(
+        "rounded-lg p-lg md:p-xl",
         "bg-card border border-border",
         "shadow-[0_6px_20px_rgba(2,6,23,0.06)]",
-      "transition-all duration-300",
-      className
-    )}
-    {...rest}
+        "transition-all duration-300",
+        className
+      )}
+      {...rest}
     />
   )
 })
@@ -64,12 +64,12 @@ const Card3D = ({
       type="button"
       aria-label={title}
       className={cn(
-        "group w-full text-left cursor-pointer rounded-2xl p-6",
-        "bg-card border border-border",
-        "transition-all duration-300",
-        "shadow-sm hover:shadow-xl",
-        className
-      )}
+          "group w-full text-left cursor-pointer rounded-lg p-lg",
+          "bg-card border border-border",
+          "transition-all duration-300",
+          "shadow-sm hover:shadow-xl",
+          className
+        )}
       animate={{ y: hovered ? -6 : 0, scale: hovered ? 1.01 : 1 }}
       transition={{ type: "spring", stiffness: 220, damping: 24 }}
     >

@@ -23,23 +23,23 @@ const buttonVariants = cva(
 
         /* primary */
         primary: `
-          bg-primary text-primary-foreground rounded-2xl px-5 py-2.5
+          bg-primary text-primary-foreground rounded-lg px-lg py-sm
           shadow-[0_8px_20px_rgba(2,6,23,0.08)]
           hover:shadow-[0_12px_30px_rgba(2,6,23,0.1)]
         `,
 
         /* secondary */
         secondary: `
-          bg-card text-foreground border border-border rounded-2xl px-5 py-2.5
+          bg-card text-foreground border border-border rounded-lg px-lg py-sm
           hover:bg-muted
         `,
 
         clinical: `
-          bg-foreground text-background rounded-2xl px-5 py-2.5
+          bg-foreground text-background rounded-lg px-lg py-sm
           shadow-[0_8px_24px_rgba(0,0,0,0.08)]
         `,
 
-        rich: `relative overflow-hidden text-left w-full rounded-2xl p-4
+        rich: `relative overflow-hidden text-left w-full rounded-lg p-md
           bg-card border border-border shadow-[0_10px_30px_rgba(2,6,23,0.04)]
           hover:shadow-[0_20px_50px_rgba(2,6,23,0.06)]
         `,
