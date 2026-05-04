@@ -3,7 +3,7 @@
  * Provides centralized state management without Redux
  */
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { AssessmentFormData, AssessmentResult, BodyArea, MobilityQuestion, DailyImpactQuestion } from '../types';
 
 interface AssessmentContextType {
@@ -26,6 +26,9 @@ interface AssessmentContextType {
   // Loading state
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+
+  // Autosave
+  lastSavedAt?: string | null;
 
   // Error state
   error: string | null;
@@ -53,6 +56,38 @@ export function AssessmentProvider({ children }: { children: ReactNode }) {
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+
+  // Load saved draft from localStorage on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('movewell-assessment');
+      if (raw) {
+        const parsed = JSON.parse(raw) as AssessmentFormData & { savedAt?: string };
+        if (parsed) {
+          setFormData((prev) => ({ ...prev, ...parsed }));
+          if (parsed.savedAt) setLastSavedAt(parsed.savedAt);
+        }
+      }
+    } catch (e) {
+      // ignore parse errors
+    }
+  }, []);
+
+  // Persist draft to localStorage (debounced)
+  useEffect(() => {
+    const id = setTimeout(() => {
+      try {
+        const payload = { ...formData, savedAt: new Date().toISOString() };
+        localStorage.setItem('movewell-assessment', JSON.stringify(payload));
+        setLastSavedAt(payload.savedAt);
+      } catch (e) {
+        // ignore
+      }
+    }, 500);
+
+    return () => clearTimeout(id);
+  }, [formData]);
 
   const setPainAreas = useCallback((areas: BodyArea[]) => {
     setFormData((prev: AssessmentFormData) => ({
@@ -107,6 +142,7 @@ export function AssessmentProvider({ children }: { children: ReactNode }) {
     setIsLoading,
     error,
     setError,
+    lastSavedAt,
   };
 
   return (
