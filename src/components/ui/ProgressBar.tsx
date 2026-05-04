@@ -55,11 +55,11 @@ const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
           <motion.div
             className={cn('relative h-full rounded-full bg-gradient-to-r from-primary via-primary to-emerald-400')}
             animate={{ width: `${percentage}%` }}
-            transition={{ duration: animated ? 0.6 : 0 }}
+            transition={{ duration: animated ? 0.3 : 0, ease: 'easeOut' }}
           >
             {animated && (
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-0 left-[-40%] w-[40%] h-full bg-white/30 blur-md animate-shimmer" />
+                <div className="absolute top-0 left-[-40%] w-[40%] h-full bg-white/20 blur-sm animate-shimmer" />
               </div>
             )}
           </motion.div>

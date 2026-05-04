@@ -42,7 +42,7 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
         <div className="relative">
           <div className="h-2 w-full rounded-full bg-muted" aria-hidden />
 
-          <div className="absolute top-0 h-2 rounded-full bg-gradient-to-r from-primary to-emerald-400 transition-all" style={{ width: `${percentage}%` }} />
+          <div className="absolute top-0 h-2 rounded-full bg-gradient-to-r from-primary to-emerald-400 transition-all duration-300" style={{ width: `${percentage}%` }} />
 
           <input
             ref={ref}
@@ -64,10 +64,10 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
           />
 
           <style>{`
-            input[type='range']::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.08); box-shadow: 0 6px 18px rgba(2,6,23,0.08); transition: all 0.12s ease; }
-            input[type='range']::-webkit-slider-thumb:hover { transform: scale(1.06); }
-            input[type='range']::-webkit-slider-thumb:active { transform: scale(0.95); }
-            input[type='range']::-moz-range-thumb { width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.08); }
+            input[type='range']::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.06); box-shadow: 0 4px 12px rgba(2,6,23,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+            input[type='range']::-webkit-slider-thumb:hover { transform: scale(1.06); box-shadow: 0 6px 18px rgba(2,6,23,0.08); }
+            input[type='range']::-webkit-slider-thumb:active { transform: scale(0.96); }
+            input[type='range']::-moz-range-thumb { width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.06); box-shadow: 0 4px 12px rgba(2,6,23,0.06); }
           `}</style>
         </div>
 

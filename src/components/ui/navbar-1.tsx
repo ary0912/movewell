@@ -40,7 +40,7 @@ const Navbar1 = () => {
               "flex items-center justify-between px-6 py-3 rounded-full",
               "bg-background/70 backdrop-blur-xl",
               "border border-border",
-              "shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+                 "shadow-[0_6px_18px_rgba(2,6,23,0.06)]"
             )}
           >
 
@@ -52,8 +52,8 @@ const Navbar1 = () => {
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && handleNavigate('/')}
             >
-              <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-black text-xs shadow-lg shadow-primary/20">
-                MW
+              <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-black text-xs shadow-sm">
+                   MW
               </div>
 
               <span className="font-semibold text-sm tracking-tight hidden sm:block text-foreground">

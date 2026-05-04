@@ -25,7 +25,6 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ variant = 'neutral', size = 'md', className, children, ...rest }, ref) => {
     return (
       <span
-        role="status"
         ref={ref}
         className={cn(
           'inline-flex items-center font-semibold tracking-wide rounded-full border transition-colors',
