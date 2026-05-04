@@ -12,6 +12,7 @@ import StepReview from "./StepReview"
 
 import { Button } from "@components/ui/Button"
 import Stepper from "@components/ui/Stepper"
+import SavedToast from '@components/ui/SavedToast'
 import { motion, AnimatePresence } from "framer-motion"
 
 const STEPS = [
@@ -73,6 +74,8 @@ function AssessmentPage() {
 
         {/* 🚀 FIXED WIDTH */}
         <div className="w-full max-w-[1200px]">
+
+          <SavedToast />
 
           <AnimatePresence mode="wait">
             <motion.div
