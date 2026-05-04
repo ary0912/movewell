@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -6,6 +6,8 @@ import { useAssessment } from "@context/AssessmentContext"
 import { fetchHealthData } from "@services/assessmentService"
 import { Card } from "@components/ui/Card"
 import { Button } from "@components/ui/Button"
+import InsightCard from '@components/ui/InsightCard'
+import KpiStrip from '@components/ui/KpiStrip'
 import { getScoreInterpretation, calculateImprovement } from "@utils/scoring"
 import { cn } from "@/lib/utils"
 import type { HealthData } from "@/types"
@@ -123,47 +125,21 @@ function ResultsPage() {
         {/* =========================
             MAIN INSIGHT
         ========================= */}
-        <Card className="p-8 text-center">
-          <p className="text-lg font-medium text-foreground leading-relaxed">
-            {mainInsight()}
-          </p>
-        </Card>
+        <div>
+          <InsightCard description={mainInsight()} />
+        </div>
 
 
         {/* =========================
             METRICS
         ========================= */}
-        <div className="grid md:grid-cols-3 gap-6">
-
-          {[
-            { label: "Pain", value: result.painScore },
-            { label: "Mobility", value: result.mobilityScore },
-            { label: "Impact", value: result.impactScore }
-          ].map((item) => (
-            <Card
-              key={item.label}
-              className="p-6 text-center hover:-translate-y-1 transition-all duration-300"
-            >
-
-              <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-3">
-                {item.label}
-              </p>
-
-              <p className="text-3xl font-semibold text-foreground tabular-nums">
-                {item.value}
-              </p>
-
-              <div className="mt-5 h-[3px] bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary transition-all duration-700"
-                  style={{ width: `${item.value}%` }}
-                />
-              </div>
-
-            </Card>
-          ))}
-
-        </div>
+        <KpiStrip
+          items={[
+            { label: 'Pain', value: result.painScore },
+            { label: 'Mobility', value: result.mobilityScore },
+            { label: 'Impact', value: result.impactScore }
+          ]}
+        />
 
 
         {/* =========================

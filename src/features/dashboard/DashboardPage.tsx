@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { fetchHealthData } from "@services/assessmentService"
 import { Card } from "@components/ui/Card"
 import { Button } from "@components/ui/Button"
+import KpiStrip from '@components/ui/KpiStrip'
 import { getScoreInterpretation, calculateImprovement } from "@utils/scoring"
 import { TIME_RANGES } from "@utils/constants"
 import { 
@@ -154,34 +155,11 @@ function DashboardPage() {
 
 
             {/* METRICS */}
-            <div className="grid md:grid-cols-3 gap-6">
-
-              {[
-                { label: "Pain", value: current.painScore },
-                { label: "Mobility", value: current.mobilityScore },
-                { label: "Impact", value: current.impactScore }
-              ].map((metric) => (
-                <Card key={metric.label} className="p-6 hover:shadow-md transition-all">
-
-                  <p className="text-[11px] uppercase tracking-widest text-slate-400 mb-3">
-                    {metric.label}
-                  </p>
-
-                  <p className="text-3xl font-semibold text-slate-900">
-                    {Math.round(metric.value)}
-                  </p>
-
-                  <div className="mt-4 h-[3px] bg-slate-200 rounded-full">
-                    <div
-                      className="h-full bg-blue-600 transition-all duration-700"
-                      style={{ width: `${metric.value}%` }}
-                    />
-                  </div>
-
-                </Card>
-              ))}
-
-            </div>
+            <KpiStrip items={[
+              { label: 'Pain', value: Math.round(current.painScore) },
+              { label: 'Mobility', value: Math.round(current.mobilityScore) },
+              { label: 'Impact', value: Math.round(current.impactScore) }
+            ]} />
 
 
             {/* CTA */}
