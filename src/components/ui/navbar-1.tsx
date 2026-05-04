@@ -1,22 +1,23 @@
-"use client" 
+"use client"
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Home, Activity, BarChart3, FlaskConical } from "lucide-react"
+import ThemeToggle from "@components/ui/ThemeToggle"
+import { cn } from "@/lib/utils"
+
+const navItems = [
+  { name: "Home", path: "/", icon: Home },
+  { name: "Assessment", path: "/assessment", icon: Activity },
+  { name: "Dashboard", path: "/dashboard", icon: BarChart3 },
+  { name: "Method", path: "/demo", icon: FlaskConical },
+]
 
 const Navbar1 = () => {
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
-
-  const toggleMenu = () => setIsOpen(!isOpen)
-
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Assessment", path: "/assessment" },
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Methodology", path: "/demo" },
-  ]
+  const location = useLocation()
 
   const handleNavigate = (path: string) => {
     navigate(path)
@@ -24,126 +25,204 @@ const Navbar1 = () => {
   }
 
   return (
-    <div className="flex justify-center w-full py-6 px-4 sticky top-0 z-[100] bg-slate-50/50 backdrop-blur-sm">
-      <div className="flex items-center justify-between px-6 py-3 bg-white border border-slate-200 rounded-full shadow-lg shadow-slate-200/50 w-full max-w-4xl relative z-10">
-        <div 
-          className="flex items-center cursor-pointer group"
-          onClick={() => handleNavigate("/")}
-        >
-          <motion.div
-            className="w-8 h-8 mr-4 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-lg shadow-emerald-600/20"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            whileHover={{ rotate: 10 }}
-            transition={{ duration: 0.3 }}
+    <>
+      {/* =========================
+          TOP NAVBAR (GLASS + PREMIUM)
+      ========================= */}
+      <div className="sticky top-0 z-[100] w-full flex justify-center px-4 pt-6">
+        <div className="w-full max-w-5xl">
+
+          <motion.header
+            role="banner"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={cn(
+              "flex items-center justify-between px-6 py-3 rounded-full",
+              "bg-background/70 backdrop-blur-xl",
+              "border border-border",
+              "shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+            )}
           >
-            MW
-          </motion.div>
-          <span className="font-bold text-sm tracking-tight text-slate-900 hidden sm:block">MoveWell</span>
-        </div>
-        
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
+
+            {/* LOGO */}
+            <div
+              onClick={() => handleNavigate("/")}
+              className="flex items-center gap-3 cursor-pointer group"
+              role="link"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && handleNavigate('/')}
+            >
+              <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-black text-xs shadow-lg shadow-primary/20">
+                MW
+              </div>
+
+              <span className="font-semibold text-sm tracking-tight hidden sm:block text-foreground">
+                MoveWell
+              </span>
+            </div>
+
+            {/* DESKTOP NAV */}
+            <nav aria-label="Main" className="hidden md:flex items-center gap-2 relative">
+
+              {/* Active pill background */}
               <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                whileHover={{ scale: 1.05 }}
+                layout
+                className="absolute h-10 rounded-full bg-muted"
+                style={{
+                  width: 90,
+                }}
+                animate={{
+                  x: navItems.findIndex(i => i.path === location.pathname) * 90,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.path
+                const Icon = item.icon
+
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => handleNavigate(item.path)}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={cn(
+                      "relative z-10 flex items-center gap-2 px-4 h-10 rounded-full text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                      isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    <Icon size={16} aria-hidden />
+                    <span className="hidden md:inline">{item.name}</span>
+                  </button>
+                )
+              })}
+            </nav>
+
+            {/* RIGHT SIDE */}
+            <div className="flex items-center gap-3">
+
+              {/* THEME TOGGLE */}
+              <ThemeToggle />
+
+              {/* CTA */}
+              <button
+                onClick={() => handleNavigate("/assessment")}
+                className="hidden md:flex items-center justify-center px-5 h-10 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-md hover:shadow-lg transition-all"
               >
-                <button 
-                  onClick={() => handleNavigate(item.path)}
-                  className="text-[10px] uppercase tracking-widest font-bold text-slate-500 hover:text-emerald-600 transition-colors"
-                >
-                  {item.name}
-                </button>
-              </motion.div>
-            ))}
-          </nav>
+                Start
+              </button>
 
-        {/* Desktop CTA Button */}
-        <motion.div
-          className="hidden md:block"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <button
-            onClick={() => handleNavigate("/assessment")}
-            className="inline-flex items-center justify-center px-6 py-2 text-[10px] uppercase tracking-widest font-bold text-white bg-slate-900 rounded-full hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/10"
-          >
-            Start Assessment
-          </button>
-        </motion.div>
+              {/* MOBILE MENU */}
+              <button
+                onClick={() => setIsOpen(true)}
+                className="md:hidden p-2"
+                aria-label="Open menu"
+                aria-expanded={isOpen}
+              >
+                <Menu className="w-5 h-5" />
+              </button>
 
-        {/* Mobile Menu Button */}
-        <motion.button className="md:hidden flex items-center" onClick={toggleMenu} whileTap={{ scale: 0.9 }}>
-          <Menu className="h-6 w-6 text-slate-900" />
-        </motion.button>
+            </div>
+          </motion.header>
+        </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* =========================
+          MOBILE NAV (BOTTOM STYLE)
+      ========================= */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-white z-[101] pt-24 px-6 md:hidden"
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="fixed inset-0 z-[200] bg-background"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
           >
-            <motion.button
-              className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900"
-              onClick={toggleMenu}
-              whileTap={{ scale: 0.9 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <X className="h-8 w-8" />
-            </motion.button>
-            
-            <div className="flex flex-col space-y-8">
-              {navItems.map((item, i) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 + 0.1 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <button 
-                    className="text-4xl font-bold tracking-tighter text-slate-900" 
-                    onClick={() => handleNavigate(item.path)}
-                  >
-                    {item.name}
-                  </button>
-                </motion.div>
-              ))}
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="pt-12"
+            {/* CLOSE */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-6 right-6"
+              aria-label="Close menu"
+            >
+              <X className="w-7 h-7" />
+            </button>
+
+            {/* NAV ITEMS */}
+            <div className="flex flex-col justify-center items-center h-full gap-10">
+
+              {navItems.map((item, i) => {
+                const Icon = item.icon
+
+                return (
+                  <motion.button
+                    key={item.name}
+                    onClick={() => handleNavigate(item.path)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.06 }}
+                    className="flex items-center gap-4 text-3xl font-semibold"
+                    aria-label={item.name}
+                  >
+                    <Icon size={28} aria-hidden />
+                    <span>{item.name}</span>
+                  </motion.button>
+                )
+              })}
+
+              <motion.button
+                onClick={() => handleNavigate("/assessment")}
+                className="mt-10 px-10 py-4 bg-primary text-primary-foreground rounded-2xl text-lg font-semibold shadow-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
               >
-                <button
-                  className="inline-flex items-center justify-center w-full px-8 py-5 text-xl font-bold text-white bg-emerald-600 rounded-3xl shadow-xl shadow-emerald-600/20"
-                  onClick={() => handleNavigate("/assessment")}
-                >
-                  Get Started
-                </button>
-              </motion.div>
+                Start Assessment
+              </motion.button>
+
+              <div className="pt-6">
+                <ThemeToggle />
+              </div>
+
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+
+      {/* =========================
+          MOBILE BOTTOM NAV (MODERN)
+      ========================= */}
+      <div className="md:hidden fixed bottom-4 inset-x-0 flex justify-center z-[90]">
+
+        <div className="flex items-center bg-card border border-border rounded-full shadow-xl px-2 py-2 gap-1">
+
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path
+            const Icon = item.icon
+
+            return (
+              <button
+                key={item.name}
+                onClick={() => handleNavigate(item.path)}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  "flex items-center gap-1 px-3 py-2 rounded-full text-xs transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                  isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground'
+                )}
+              >
+                <Icon size={18} aria-hidden />
+                {isActive && <span className="sr-only">{item.name} (current)</span>}
+              </button>
+            )
+          })}
+
+        </div>
+      </div>
+    </>
   )
 }
-
 
 export { Navbar1 }

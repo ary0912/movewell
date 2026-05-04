@@ -1,12 +1,9 @@
-/**
- * Slider component - for numeric input in a range
- * Fully accessible with ARIA labels and keyboard support
- */
+'use client';
 
-import React, { type InputHTMLAttributes } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 
-interface SliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string;
   min?: number;
   max?: number;
@@ -30,46 +27,58 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
     },
     ref
   ) => {
+    const numeric = Number(value ?? min)
+    const percentage = Math.max(0, Math.min(100, ((numeric - min) / Math.max(1, max - min)) * 100))
+
     return (
-      <div className="w-full">
-        {label && (
-          <div className="flex justify-between items-center mb-sm">
-            <label className="font-medium text-sm text-slate-700">
-              {label}
-            </label>
-            {showValue && (
-              <span
-                className="text-lg font-semibold text-primary-600"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {value}{unit}
-              </span>
-            )}
+      <div className="w-full space-y-4">
+        {(label || showValue) && (
+          <div className="flex items-center justify-between">
+            {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+            {showValue && <div className="text-sm font-semibold text-primary tabular-nums">{numeric}{unit}</div>}
           </div>
         )}
-        <input
-          ref={ref}
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          className={clsx(
-            'w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer',
-            'accent-primary-600',
-            className
-          )}
-          {...rest}
-        />
-        <div className="flex justify-between text-xs text-slate-500 mt-sm">
+
+        <div className="relative">
+          <div className="h-2 w-full rounded-full bg-muted" aria-hidden />
+
+          <div className="absolute top-0 h-2 rounded-full bg-gradient-to-r from-primary to-emerald-400 transition-all" style={{ width: `${percentage}%` }} />
+
+          <input
+            ref={ref}
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            aria-valuemin={min}
+            aria-valuemax={max}
+            aria-valuenow={numeric}
+            aria-valuetext={`${numeric}${unit}`}
+            className={clsx(
+              "absolute top-0 w-full h-2 appearance-none bg-transparent cursor-pointer",
+              "focus:outline-none",
+              className
+            )}
+            {...rest}
+          />
+
+          <style>{`
+            input[type='range']::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.08); box-shadow: 0 6px 18px rgba(2,6,23,0.08); transition: all 0.12s ease; }
+            input[type='range']::-webkit-slider-thumb:hover { transform: scale(1.06); }
+            input[type='range']::-webkit-slider-thumb:active { transform: scale(0.95); }
+            input[type='range']::-moz-range-thumb { width: 18px; height: 18px; border-radius: 9999px; background: white; border: 2px solid rgba(2,6,23,0.08); }
+          `}</style>
+        </div>
+
+        <div className="flex justify-between text-xs text-muted-foreground">
           <span>{min}{unit}</span>
           <span>{max}{unit}</span>
         </div>
       </div>
-    );
+    )
   }
-);
+)
 
 Slider.displayName = 'Slider';
 

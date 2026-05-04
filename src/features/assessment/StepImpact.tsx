@@ -1,11 +1,17 @@
+'use client';
+
 /**
- * Step 4: Lifestyle Impact
- * Measures how pain signals interfere with daily performance
+ * Step 4: Lifestyle Impact (UPGRADED)
+ * - Horizontal card layout
+ * - Better visual hierarchy
+ * - Live feedback + scale indicators
+ * - Dark mode compatible
  */
 
 import { useAssessment } from "@context/AssessmentContext"
 import { DAILY_IMPACT_QUESTIONS } from "@utils/constants"
 import { Card } from "@components/ui/Card"
+import { cn } from "@/lib/utils"
 
 function StepImpact() {
   const { formData, setDailyImpact } = useAssessment()
@@ -26,6 +32,7 @@ function StepImpact() {
         })
       }
     }
+
     setDailyImpact(updated)
   }
 
@@ -37,14 +44,23 @@ function StepImpact() {
 
   return (
     <div className="space-y-12">
+
+      {/* =========================
+          HEADER
+      ========================= */}
       <div className="max-w-2xl">
-        <p className="text-xl text-slate-500 font-medium leading-relaxed italic">
-          How do these signals interfere with your life performance? 
-          Measure the impact on your fundamental daily vectors.
+        <p className="text-lg text-muted-foreground font-medium leading-relaxed italic">
+          Measure how your condition impacts core daily functions.
+          Focus on real-life performance, not just symptoms.
         </p>
       </div>
 
-      <div className="grid gap-6">
+
+      {/* =========================
+          CARDS (HORIZONTAL)
+      ========================= */}
+      <div className="space-y-6">
+
         {DAILY_IMPACT_QUESTIONS.map((question) => {
           const answer = formData.dailyImpact.find((q) => q.id === question.id)
           const impact = answer?.impact || 0
@@ -52,29 +68,48 @@ function StepImpact() {
           return (
             <Card
               key={question.id}
-              className="p-10 border-slate-200 bg-white shadow-sm hover:shadow-md transition-all"
+              className="p-6 md:p-8 flex flex-col gap-6 hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-8">
-                <label
-                  htmlFor={`impact-${question.id}`}
-                  className="text-xl font-bold text-slate-900 flex items-center gap-4 tracking-tight"
-                >
-                  <span className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-2xl shadow-inner">
+
+              {/* TOP ROW */}
+              <div className="flex items-center justify-between gap-6">
+
+                {/* LEFT (ICON + TEXT) */}
+                <div className="flex items-center gap-4">
+
+                  <div className="w-12 h-12 rounded-xl bg-muted border border-border flex items-center justify-center text-xl shadow-inner">
                     {categoryIcons[question.category]}
-                  </span>
-                  {question.description}
-                </label>
-                <div className="flex items-center gap-4 shrink-0">
-                   <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Impact</span>
-                   <span className="text-5xl font-bold text-emerald-600 tabular-nums leading-none">
-                     {impact}
-                   </span>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-muted-foreground uppercase tracking-widest">
+                      {question.category}
+                    </p>
+                    <p className="text-lg font-semibold text-foreground leading-tight">
+                      {question.description}
+                    </p>
+                  </div>
+
                 </div>
+
+                {/* RIGHT (VALUE) */}
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+                    Impact
+                  </p>
+                  <div className="text-4xl font-bold text-primary tabular-nums leading-none">
+                    {impact}
+                  </div>
+                </div>
+
               </div>
 
-              <div className="relative pt-4">
+
+              {/* SLIDER SECTION */}
+              <div className="space-y-4">
+
+                {/* SLIDER */}
                 <input
-                  id={`impact-${question.id}`}
                   type="range"
                   min="0"
                   max="10"
@@ -85,18 +120,44 @@ function StepImpact() {
                       parseInt(e.target.value)
                     )
                   }
-                  className="w-full h-2 rounded-full appearance-none cursor-pointer bg-slate-100 accent-emerald-600 transition-all hover:bg-slate-200"
-                  aria-label={question.description}
+                  className={cn(
+                    "w-full h-[4px] rounded-full appearance-none cursor-pointer transition-all",
+                    "bg-muted",
+                    "accent-primary"
+                  )}
                 />
-                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-300 mt-6">
-                  <span>Baseline</span>
-                  <span>Moderate</span>
-                  <span>Severe Signal</span>
+
+                {/* SCALE */}
+                <div className="flex justify-between text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+
+                  <span className={cn(impact === 0 && "text-foreground")}>
+                    Baseline
+                  </span>
+
+                  <span className={cn(impact >= 4 && impact <= 6 && "text-foreground")}>
+                    Moderate
+                  </span>
+
+                  <span className={cn(impact >= 8 && "text-foreground")}>
+                    Severe
+                  </span>
+
                 </div>
+
+                {/* PROGRESS BAR (NEW VISUAL FEEDBACK) */}
+                <div className="h-[3px] bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all duration-500"
+                    style={{ width: `${impact * 10}%` }}
+                  />
+                </div>
+
               </div>
+
             </Card>
           )
         })}
+
       </div>
     </div>
   )

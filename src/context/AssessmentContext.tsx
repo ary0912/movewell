@@ -46,6 +46,7 @@ const initialFormData: AssessmentFormData = {
 /**
  * Provider component for assessment context
  */
+/* eslint-disable react-refresh/only-export-components */
 export function AssessmentProvider({ children }: { children: ReactNode }) {
   const [formData, setFormData] = useState<AssessmentFormData>(initialFormData);
   const [currentStep, setCurrentStep] = useState(0);

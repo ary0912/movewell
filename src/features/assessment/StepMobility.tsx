@@ -1,11 +1,16 @@
+'use client';
+
 /**
- * Step 3: Mobility
- * Evaluate movement difficulty across common activities
+ * Step 3: Mobility (UPGRADED)
+ * - Horizontal layout
+ * - Theme tokens (dark mode ready)
+ * - Better hierarchy + feedback
  */
 
 import { useAssessment } from "@context/AssessmentContext"
 import { MOBILITY_QUESTIONS } from "@utils/constants"
 import { Card } from "@components/ui/Card"
+import { cn } from "@/lib/utils"
 
 function StepMobility() {
   const { formData, setMobilityDifficulty } = useAssessment()
@@ -26,19 +31,25 @@ function StepMobility() {
         })
       }
     }
+
     setMobilityDifficulty(updated)
   }
 
   return (
     <div className="space-y-12">
+
+      {/* HEADER */}
       <div className="max-w-2xl">
-        <p className="text-xl text-slate-500 font-medium leading-relaxed italic">
-          Evaluate the fluidity of your joint movements. 
-          Identify any resistance or restriction in your primary motion vectors.
+        <p className="text-lg text-muted-foreground font-medium leading-relaxed italic">
+          Evaluate how freely your body moves.
+          Focus on resistance, stiffness, and limitation in motion.
         </p>
       </div>
 
-      <div className="grid gap-6">
+
+      {/* CARDS */}
+      <div className="space-y-6">
+
         {MOBILITY_QUESTIONS.map((question) => {
           const answer = formData.mobilityDifficulty.find((q) => q.id === question.id)
           const difficulty = answer?.difficulty || 0
@@ -46,24 +57,41 @@ function StepMobility() {
           return (
             <Card
               key={question.id}
-              className="p-10 border-slate-200 bg-white shadow-sm hover:shadow-md transition-all"
+              className="p-6 md:p-8 flex flex-col gap-6 hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-8">
-                <label
-                  htmlFor={`mobility-${question.id}`}
-                  className="text-xl font-bold text-slate-900 tracking-tight leading-tight max-w-lg"
-                >
-                  {question.question}
-                </label>
-                <div className="flex items-center gap-4 shrink-0">
-                   <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Resistance</span>
-                   <span className="text-5xl font-bold text-emerald-600 tabular-nums leading-none">
-                     {difficulty}
-                   </span>
+
+              {/* TOP ROW */}
+              <div className="flex items-center justify-between gap-6">
+
+                {/* LEFT */}
+                <div className="max-w-xl">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-1">
+                    Mobility
+                  </p>
+                  <label
+                    htmlFor={`mobility-${question.id}`}
+                    className="text-lg md:text-xl font-semibold text-foreground leading-tight"
+                  >
+                    {question.question}
+                  </label>
                 </div>
+
+                {/* RIGHT VALUE */}
+                <div className="text-right shrink-0">
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+                    Resistance
+                  </p>
+                  <div className="text-4xl font-bold text-primary tabular-nums leading-none">
+                    {difficulty}
+                  </div>
+                </div>
+
               </div>
 
-              <div className="relative pt-4">
+
+              {/* SLIDER */}
+              <div className="space-y-4">
+
                 <input
                   id={`mobility-${question.id}`}
                   type="range"
@@ -76,18 +104,44 @@ function StepMobility() {
                       parseInt(e.target.value)
                     )
                   }
-                  className="w-full h-2 rounded-full appearance-none cursor-pointer bg-slate-100 accent-emerald-600 transition-all hover:bg-slate-200"
-                  aria-label={question.question}
+                  className={cn(
+                    "w-full h-[4px] rounded-full appearance-none cursor-pointer transition-all",
+                    "bg-muted",
+                    "accent-primary"
+                  )}
                 />
-                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-300 mt-6">
-                  <span>Fluid Range</span>
-                  <span>Restricted</span>
-                  <span>Severe Block</span>
+
+                {/* SCALE LABELS */}
+                <div className="flex justify-between text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+
+                  <span className={cn(difficulty === 0 && "text-foreground")}>
+                    Fluid
+                  </span>
+
+                  <span className={cn(difficulty >= 4 && difficulty <= 6 && "text-foreground")}>
+                    Restricted
+                  </span>
+
+                  <span className={cn(difficulty >= 8 && "text-foreground")}>
+                    Severe
+                  </span>
+
                 </div>
+
+                {/* PROGRESS BAR */}
+                <div className="h-[3px] bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all duration-500"
+                    style={{ width: `${difficulty * 10}%` }}
+                  />
+                </div>
+
               </div>
+
             </Card>
           )
         })}
+
       </div>
     </div>
   )

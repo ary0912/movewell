@@ -1,43 +1,73 @@
-import React, { type HTMLAttributes } from 'react';
+'use client';
+
+import React from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
+interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
   current: number;
   total: number;
   showLabel?: boolean;
   animated?: boolean;
+  ariaLabel?: string;
 }
 
 const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
-  ({ current, total, showLabel = true, animated = true, className, ...rest }, ref) => {
-    const percentage = Math.round((current / total) * 100);
+  (
+    {
+      current,
+      total,
+      showLabel = true,
+      animated = true,
+      ariaLabel = 'Progress',
+      className,
+      ...rest
+    },
+    ref
+  ) => {
+    const percentage = Math.max(0, Math.min(100, Math.round((current / Math.max(1, total)) * 100)));
 
     return (
-      <div ref={ref} className={cn('w-full', className)} {...rest}>
+      <div ref={ref} className={cn('w-full space-y-3', className)} {...rest}>
         {showLabel && (
-          <div className="flex justify-between items-center mb-4">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              Phase {current} of {total}
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+              Step {current} of {total}
             </p>
-            <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
-              {percentage}% Complete
-            </p>
+
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-primary tabular-nums">{percentage}%</span>
+              <span className="text-xs text-muted-foreground">Complete</span>
+            </div>
           </div>
         )}
+
         <div
-          className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"
+          className="relative w-full h-3 rounded-full overflow-hidden bg-muted"
           role="progressbar"
-          aria-valuenow={current}
-          aria-valuemin={1}
-          aria-valuemax={total}
+          aria-label={ariaLabel}
+          aria-valuenow={percentage}
+          aria-valuemin={0}
+          aria-valuemax={100}
         >
-          <div
-            className={cn(
-              'h-full bg-emerald-600 rounded-full',
-              animated && 'transition-all duration-700 ease-in-out'
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-emerald-400/10" />
+
+          <motion.div
+            className={cn('relative h-full rounded-full bg-gradient-to-r from-primary via-primary to-emerald-400')}
+            animate={{ width: `${percentage}%` }}
+            transition={{ duration: animated ? 0.6 : 0 }}
+          >
+            {animated && (
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 left-[-40%] w-[40%] h-full bg-white/30 blur-md animate-shimmer" />
+              </div>
             )}
-            style={{ width: `${percentage}%` }}
-          />
+          </motion.div>
+        </div>
+
+        <div className="flex justify-between text-xs text-muted-foreground">
+          <span>Start</span>
+          <span>Finish</span>
         </div>
       </div>
     );

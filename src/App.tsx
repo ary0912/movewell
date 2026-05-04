@@ -12,27 +12,25 @@ function App() {
   const location = useLocation()
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col relative selection:bg-emerald-500/10 selection:text-emerald-700">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <AssessmentProvider>
         <Navbar1 />
-        
-        {/* Main Content Area */}
-        <main className="flex-1 pb-12">
+
+        <main className="flex-1">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
             >
-              <Routes location={location} key={location.pathname}>
+              <Routes location={location}>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/assessment" element={<AssessmentPage />} />
                 <Route path="/results" element={<ResultsPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/demo" element={<DemoPage />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </motion.div>
           </AnimatePresence>

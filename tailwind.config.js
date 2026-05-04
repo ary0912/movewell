@@ -2,6 +2,7 @@ import tailwindAnimate from "tailwindcss-animate"
 
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class", // ✅ REQUIRED
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -9,118 +10,101 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Vibrant Brand - Electric Teal & Amethyst Accents
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488', // Deep Teal
-          700: '#0f766e', 
-          800: '#115e59',
-          900: '#134e4a',
-          vibrant: '#00f2fe', // Electric Cyan
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-          purple: '#8b5cf6', // Amethyst
-          pink: '#ec4899',
-          indigo: '#6366f1',
-        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
+
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
         },
+
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
+
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        // Neutral/calm colors (Ultra-clean tinted palette)
-        slate: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
+
+        // MoveWell Color System (Based on EightShapes)
+        emerald: {
+          '05': '#f0fdf4',
+          '10': '#dcfce7',
+          '20': '#bbf7d0',
+          '30': '#86efac',
+          '40': '#4ade80',
+          '50': '#22c55e', // Primary brand
+          '60': '#16a34a',
+          '70': '#15803d', // Dark brand
+          '80': '#166534',
+          '90': '#064e3b',
+          '95': '#022c1d',
         },
-      },
-      backgroundImage: {
-        'mesh-gradient': "radial-gradient(at 0% 0%, hsla(170, 75%, 45%, 0.15) 0px, transparent 50%), radial-gradient(at 50% 0%, hsla(220, 75%, 45%, 0.1) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(280, 75%, 45%, 0.15) 0px, transparent 50%)",
-        'glass-gradient': "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1))",
-      },
-      boxShadow: {
-        'soft-glow': '0 0 40px -10px rgba(13, 148, 136, 0.2)',
-        'inner-light': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.1)',
-        'premium': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
-      },
-      borderRadius: {
-        '3xl': '1.5rem',
-        '4xl': '2rem',
-        'lg': 'var(--radius)',
-        'md': 'calc(var(--radius) - 2px)',
-        'sm': 'calc(var(--radius) - 4px)',
-      },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'shimmer': 'shimmer 2s linear infinite',
-        'border-beam': 'border-beam var(--duration) infinite linear',
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "shine": "shine var(--duration) infinite linear",
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
+
+        blue: {
+          '05': '#f0f9ff',
+          '10': '#e0f2fe',
+          '20': '#bae6fd',
+          '30': '#7dd3fc',
+          '40': '#38bdf8',
+          '50': '#0ea5e9', // Interactive primary
+          '60': '#0284c7', // Interactive hover
+          '70': '#0369a1', // Interactive active
+          '80': '#075985',
+          '90': '#0c3d66',
+          '95': '#051e2d',
         },
-        shimmer: {
-          '100%': { transform: 'translateX(100%)' },
+
+        gray: {
+          '02': '#fafafa',
+          '05': '#f5f5f5',
+          '10': '#ebebeb',
+          '20': '#d4d4d4',
+          '30': '#bdbdbd',
+          '70': '#4a4a4a',
+          '80': '#323232',
+          '90': '#1a1a1a',
+          '95': '#0d0d0d',
         },
-        'border-beam': {
-          '100%': {
-            'offset-distance': '100%',
-          },
+
+        // Feedback Colors
+        success: {
+          '05': '#f0fdf4',
+          '20': '#bbf7d0',
+          '50': '#22c55e',
+          '80': '#166534',
         },
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+
+        warning: {
+          '05': '#fffbeb',
+          '20': '#fde68a',
+          '50': '#fbbf24',
+          '80': '#92400e',
         },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+
+        error: {
+          '05': '#fef2f2',
+          '20': '#fecaca',
+          '50': '#ef4444',
+          '80': '#7f1d1d',
         },
-        "shine": {
-          "0%": { "background-position": "0% 0%" },
-          "50%": { "background-position": "100% 100%" },
-          to: { "background-position": "0% 0%" },
+
+        info: {
+          '05': '#f0f9ff',
+          '20': '#bae6fd',
+          '50': '#0ea5e9',
+          '80': '#075985',
         },
       },
     },

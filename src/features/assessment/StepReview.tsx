@@ -1,6 +1,11 @@
+'use client';
+
 /**
- * Step 5: Review & Submit
- * Review answers before submitting assessment
+ * Step 5: Review & Submit (UPGRADED)
+ * - Horizontal summary layout
+ * - Premium hierarchy
+ * - Dark mode ready
+ * - Strong final CTA experience
  */
 
 import { useState } from "react"
@@ -35,115 +40,180 @@ function StepReview({ onComplete }: StepReviewProps) {
       const result = await submitAssessment(formData)
       setResult(result)
       setSubmitted(true)
+
       setTimeout(() => {
         onComplete()
       }, 1500)
     } catch (err) {
       setError("Failed to synthesize baseline. Please verify your connection.")
-      console.error("Submission error:", err)
+      console.error(err)
     } finally {
       setIsLoading(false)
     }
   }
 
+  /* =========================
+     SUCCESS STATE
+  ========================= */
   if (submitted) {
     return (
-      <div className="text-center py-20 space-y-8 animate-fadeInUp">
-        <div className="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-5xl shadow-sm animate-float">
+      <div className="text-center py-24 space-y-8 animate-fadeInUp">
+
+        <div className="w-24 h-24 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto text-5xl animate-float">
           ✓
         </div>
-        <div className="space-y-4">
-          <h3 className="text-4xl font-bold text-slate-900 tracking-tight">
-            Synthesis Complete.
+
+        <div className="space-y-3">
+          <h3 className="text-4xl font-semibold text-foreground tracking-tight">
+            Synthesis Complete
           </h3>
-          <p className="text-xl text-slate-500 font-medium italic">
-            Generating your longitudinal health blueprint...
+
+          <p className="text-lg text-muted-foreground">
+            Generating your health blueprint...
           </p>
         </div>
+
       </div>
     )
   }
 
   return (
     <div className="space-y-12">
-      <div className="grid gap-8">
-        {/* Pain Areas */}
-        <Card className="p-10 border-slate-200 bg-white">
-          <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-8">
-            Decoded Neural Nodes
-          </h4>
-          <div className="flex flex-wrap gap-4">
-            {formData.painAreas.map((area) => (
-              <Badge
-                key={area}
-                variant="success"
-                className="px-6 py-2"
-              >
-                {BODY_AREA_LABELS[area]}
-              </Badge>
-            ))}
-          </div>
-        </Card>
 
-        {/* Intensity Metrics */}
-        <Card className="p-10 border-slate-200 bg-white">
-          <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-8">
-            Signal Strength Matrix
-          </h4>
-          <div className="space-y-6">
-            {formData.painAreas.map((area) => (
-              <div key={area} className="flex justify-between items-center group">
-                <span className="text-lg font-bold text-slate-700">
+      {/* =========================
+          GRID LAYOUT
+      ========================= */}
+      <div className="grid lg:grid-cols-12 gap-8">
+
+        {/* LEFT SIDE */}
+        <div className="lg:col-span-7 space-y-8">
+
+          {/* Pain Areas */}
+          <Card className="p-8 space-y-6">
+            <div>
+              <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">
+                Selected Areas
+              </p>
+              <h4 className="text-lg font-semibold text-foreground">
+                Neural Nodes
+              </h4>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              {formData.painAreas.map((area) => (
+                <Badge key={area} className="px-4 py-2">
                   {BODY_AREA_LABELS[area]}
-                </span>
-                <div className="flex items-center gap-4">
-                  <div className="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-emerald-500 rounded-full" 
-                      style={{ width: `${(formData.painIntensity[area] || 0) * 10}%` }} 
-                    />
-                  </div>
-                  <span className="font-bold text-emerald-600 w-8 text-right tabular-nums">
-                    {formData.painIntensity[area] || 0}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+                </Badge>
+              ))}
+            </div>
+          </Card>
 
-        {/* Security Info */}
-        <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-6">
-          <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xl shadow-sm">
-             🔒
-          </div>
-          <p className="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest">
-            End-to-End Encryption Active • Your health data is locally synthesized.
-          </p>
+
+          {/* Intensity */}
+          <Card className="p-8 space-y-6">
+            <div>
+              <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">
+                Pain Signals
+              </p>
+              <h4 className="text-lg font-semibold text-foreground">
+                Intensity Overview
+              </h4>
+            </div>
+
+            <div className="space-y-5">
+              {formData.painAreas.map((area) => {
+                const value = formData.painIntensity[area] || 0
+
+                return (
+                  <div key={area} className="flex items-center justify-between">
+
+                    <span className="text-sm text-foreground font-medium">
+                      {BODY_AREA_LABELS[area]}
+                    </span>
+
+                    <div className="flex items-center gap-4">
+
+                      <div className="w-32 h-[3px] bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary transition-all"
+                          style={{ width: `${value * 10}%` }}
+                        />
+                      </div>
+
+                      <span className="text-sm font-semibold text-primary w-6 text-right tabular-nums">
+                        {value}
+                      </span>
+
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </Card>
+
         </div>
+
+
+        {/* RIGHT SIDE */}
+        <div className="lg:col-span-5 space-y-6">
+
+          {/* Security */}
+          <Card className="p-6 flex items-start gap-4">
+
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-lg">
+              🔒
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                Secure Processing
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Your data is processed locally and securely.
+              </p>
+            </div>
+
+          </Card>
+
+
+          {/* CTA */}
+          <Card className="p-6 space-y-6">
+
+            <div>
+              <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">
+                Final Step
+              </p>
+              <h4 className="text-lg font-semibold text-foreground">
+                Generate Results
+              </h4>
+            </div>
+
+            <Button
+              size="lg"
+              onClick={handleSubmit}
+              isLoading={isLoading}
+              disabled={isLoading}
+              className="w-full h-14"
+            >
+              {isLoading ? "Synthesizing..." : "Generate Report"}
+            </Button>
+
+          </Card>
+
+        </div>
+
       </div>
 
+
+      {/* ERROR */}
       {error && (
-        <Card className="p-6 bg-red-50 border-red-100">
-          <p className="text-red-900 text-sm font-bold">
+        <Card className="p-6 border-destructive/20 bg-destructive/5">
+          <p className="text-sm font-medium text-destructive">
             ⚠️ {error}
           </p>
         </Card>
       )}
 
-      {/* Submit Action */}
-      <div className="pt-8">
-        <Button
-          variant="clinical"
-          size="lg"
-          onClick={handleSubmit}
-          isLoading={isLoading}
-          disabled={isLoading}
-          className="w-full h-16 text-lg"
-        >
-          {isLoading ? "Synthesizing..." : "Finalize Baseline"}
-        </Button>
-      </div>
     </div>
   )
 }
