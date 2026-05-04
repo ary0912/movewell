@@ -9,6 +9,24 @@ export default {
   ],
   theme: {
     extend: {
+      spacing: {
+        xs: '4px',
+        sm: '8px',
+        md: '12px',
+        lg: '16px',
+        xl: '24px',
+        '2xl': '32px',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'md': '10px',
+        'lg': '16px',
+      },
+      transitionDuration: {
+        100: '100ms',
+        200: '200ms',
+        300: '300ms',
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
