@@ -11,6 +11,7 @@ import StepImpact from "./StepImpact"
 import StepReview from "./StepReview"
 
 import { Button } from "@components/ui/Button"
+import Stepper from "@components/ui/Stepper"
 import { motion, AnimatePresence } from "framer-motion"
 
 const STEPS = [
@@ -56,24 +57,14 @@ function AssessmentPage() {
     }
   }
 
-  const progress = ((currentStep + 1) / STEPS.length) * 100
+  // progress calculation was replaced by Stepper
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 flex flex-col">
 
       {/* PROGRESS */}
       <div className="max-w-[1200px] mx-auto w-full px-6 pt-12">
-        <div className="flex justify-between text-[11px] font-medium text-muted-foreground mb-3">
-          <span>Step {currentStep + 1}</span>
-          <span>{STEPS.length}</span>
-        </div>
-
-        <div className="h-[3px] bg-muted rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        <Stepper steps={STEPS.map(s => s.title)} current={currentStep} onSelect={(i) => setCurrentStep(i)} />
       </div>
 
 

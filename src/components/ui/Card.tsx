@@ -21,12 +21,12 @@ const Card = React.forwardRef<
     ref={ref}
     role="group"
     initial={{ opacity: 0, y: 6 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.36 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
     className={cn(
-      "rounded-2xl p-6 md:p-8",
-      "bg-card border border-border",
-      "shadow-[0_2px_8px_rgba(2,6,23,0.04)]",
+        "rounded-2xl p-6 md:p-8",
+        "bg-card border border-border",
+        "shadow-[0_6px_20px_rgba(2,6,23,0.06)]",
       "transition-all duration-300",
       className
     )}
@@ -71,7 +71,7 @@ const Card3D = ({
         className
       )}
       animate={{ y: hovered ? -6 : 0, scale: hovered ? 1.01 : 1 }}
-      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      transition={{ type: "spring", stiffness: 220, damping: 24 }}
     >
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl pointer-events-none" />
 

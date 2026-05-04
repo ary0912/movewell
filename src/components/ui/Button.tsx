@@ -13,7 +13,7 @@ const Motion = motion
 const buttonVariants = cva(
   `inline-flex items-center justify-center gap-2
   whitespace-nowrap text-sm font-medium
-  transition-all duration-200 ease-out
+  transition-all duration-300 ease-out
   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40
   disabled:pointer-events-none disabled:opacity-50
   `,
@@ -104,10 +104,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           aria-busy={isLoading}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.985 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           className={cn("group", buttonVariants({ variant, size }), className)}
           {...htmlProps}
         >
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl pointer-events-none" />
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl pointer-events-none" />
 
           <div className="relative z-10 flex items-center gap-4 w-full">
             {icon && (
@@ -134,6 +135,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         aria-busy={isLoading}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.97 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         className={cn(buttonVariants({ variant, size }), className)}
         disabled={htmlProps.disabled || isLoading}
         {...htmlProps}
