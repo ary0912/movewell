@@ -77,6 +77,16 @@ const HumanSilhouette: React.FC<HumanSilhouetteProps> = ({
               onClick={() => onAreaToggle(area.id as BodyArea)}
               onMouseEnter={() => setHovered(area.id as BodyArea)}
               onMouseLeave={() => setHovered(null)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onAreaToggle(area.id as BodyArea)
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-pressed={isSelected}
+              aria-label={area.label}
               className="cursor-pointer"
             >
               {/* PULSE */}
