@@ -37,10 +37,10 @@ function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-pulse space-y-3">
-          <div className="h-4 w-40 bg-slate-200 rounded mx-auto"></div>
-          <div className="h-2 w-24 bg-slate-200 rounded mx-auto"></div>
+          <div className="h-4 w-40 bg-muted rounded mx-auto"></div>
+          <div className="h-2 w-24 bg-muted rounded mx-auto"></div>
         </div>
       </div>
     )
@@ -48,10 +48,10 @@ function DashboardPage() {
 
   if (!healthData?.history?.length) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
         <Card className="p-12 text-center max-w-md">
-          <h2 className="text-xl font-semibold mb-3">No data yet</h2>
-          <p className="text-slate-500 mb-8">
+          <h2 className="text-xl font-semibold mb-3 text-foreground">No data yet</h2>
+          <p className="text-muted-foreground mb-8">
             Start an assessment to generate insights.
           </p>
           <Button onClick={() => navigate("/assessment")}>
@@ -73,22 +73,21 @@ function DashboardPage() {
     : null
 
   return (
-    <div className="min-h-screen bg-slate-50 py-24">
+    <div className="min-h-screen bg-background py-24">
       <div className="max-w-6xl mx-auto px-6 space-y-20">
 
         {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
 
           <div className="space-y-4">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               Dashboard
             </p>
 
             <h1 className="text-3xl md:text-5xl font-semibold tracking-tight">
-              Your health <span className="text-slate-400">overview</span>
+              Your health <span className="text-muted-foreground">overview</span>
             </h1>
-
-            <p className="text-slate-500 max-w-md">
+            <p className="text-muted-foreground max-w-md">
               Track how your body evolves over time through consistent assessments.
             </p>
           </div>
@@ -105,7 +104,7 @@ function DashboardPage() {
         <Tabs defaultValue="insights" className="space-y-12">
 
           {/* TABS */}
-          <TabsList className="bg-slate-100 border border-slate-200 rounded-xl p-1">
+          <TabsList className="bg-muted/10 border border-border rounded-xl p-1">
             <TabsTrigger value="insights" className="px-6 py-2 text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-blue-600">
               Insights
             </TabsTrigger>
@@ -122,20 +121,20 @@ function DashboardPage() {
             <Card className="p-12 flex flex-col md:flex-row justify-between items-center gap-10">
 
               <div>
-                <p className="text-xs text-slate-400 uppercase mb-2">
+                <p className="text-xs text-muted-foreground uppercase mb-2">
                   Current Score
                 </p>
 
                 <div className="flex items-baseline gap-3">
-                  <span className="text-[5rem] font-semibold tracking-tight text-slate-900">
+                  <span className="text-[5rem] font-semibold tracking-tight text-foreground">
                     {Math.round(current.overallScore)}
                   </span>
-                  <span className="text-xl text-slate-300">/100</span>
+                  <span className="text-xl text-muted-foreground">/100</span>
                 </div>
               </div>
 
               <div className="text-center md:text-right space-y-2">
-                <p className="text-lg font-medium text-slate-600">
+                <p className="text-lg font-medium text-muted-foreground">
                   {interpretation.label}
                 </p>
 
@@ -186,7 +185,7 @@ function DashboardPage() {
                   <h2 className="text-2xl font-semibold">
                     Progress over time
                   </h2>
-                  <p className="text-slate-500 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     Your score trend across assessments
                   </p>
                 </div>
@@ -199,8 +198,8 @@ function DashboardPage() {
                       className={cn(
                         "px-4 py-2 text-xs rounded-lg",
                         selectedRange === key
-                          ? "bg-blue-600 text-white"
-                          : "bg-slate-100 text-slate-500"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted/10 text-muted-foreground"
                       )}
                     >
                       {key}

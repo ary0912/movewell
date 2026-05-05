@@ -16,7 +16,7 @@ function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-background text-foreground">
 
       <main>
 
@@ -24,16 +24,16 @@ function LandingPage() {
         <section className="max-w-5xl mx-auto px-6 pt-44 pb-36 text-center">
           <motion.div {...fadeInUp} className="space-y-10">
 
-            <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-medium">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
               Movement Intelligence
             </p>
 
             <h1 className="text-[2.5rem] md:text-[4.5rem] font-semibold tracking-tight leading-[1.05]">
               Understand your body <br />
-              <span className="text-slate-400">in under 2 minutes</span>
+              <span className="text-muted-foreground">in under 2 minutes</span>
             </h1>
 
-            <p className="max-w-lg mx-auto text-[1.05rem] text-slate-600 leading-relaxed">
+            <p className="max-w-lg mx-auto text-[1.05rem] text-muted-foreground leading-relaxed">
               Assess pain, track mobility, and understand how your body is changing — with clear, structured insights.
             </p>
 
@@ -60,7 +60,7 @@ function LandingPage() {
 
 
         {/* VALUE PROPS */}
-        <section className="max-w-6xl mx-auto px-6 py-28 border-t border-slate-200">
+        <section className="max-w-6xl mx-auto px-6 py-28 border-t border-border">
           <div className="grid md:grid-cols-3 gap-14">
 
             {[
@@ -86,11 +86,11 @@ function LandingPage() {
                   {item.icon}
                 </div>
 
-                <h3 className="text-[1.05rem] font-semibold text-slate-900">
+                <h3 className="text-[1.05rem] font-semibold text-foreground">
                   {item.title}
                 </h3>
 
-                <p className="text-sm text-slate-600 leading-relaxed max-w-xs">
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
                   {item.desc}
                 </p>
 
@@ -111,7 +111,7 @@ function LandingPage() {
                 Clear insights,<br />not complex dashboards
               </h2>
 
-              <p className="text-slate-600 max-w-md leading-relaxed">
+              <p className="text-muted-foreground max-w-md leading-relaxed">
                 MoveWell transforms your assessment into a structured report — so you can understand what matters instantly.
               </p>
 
@@ -126,7 +126,7 @@ function LandingPage() {
             <Card className="p-12 flex items-center justify-center min-h-[340px] hover:shadow-lg transition-all">
               <div className="text-center space-y-4">
                 <div className="text-6xl font-semibold text-blue-600 tracking-tight">72</div>
-                <p className="text-sm text-slate-500">Current health score</p>
+                <p className="text-sm text-muted-foreground">Current health score</p>
               </div>
             </Card>
 
@@ -136,7 +136,7 @@ function LandingPage() {
 
         {/* FINAL CTA */}
         <section className="max-w-5xl mx-auto px-6 pb-40">
-          <div className="bg-white border border-slate-200 rounded-3xl p-20 text-center space-y-10">
+<div className="bg-card border border-border rounded-3xl p-20 text-center space-y-10">
 
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.1]">
               Start understanding your body today
@@ -158,10 +158,10 @@ function LandingPage() {
 
 
       {/* FOOTER */}
-      <footer className="border-t border-slate-200 py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-slate-500">
+      <footer className="border-t border-border py-16 bg-card">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-muted-foreground">
 
-          <div className="flex items-center gap-2 font-medium text-slate-900">
+          <div className="flex items-center gap-2 font-medium text-foreground">
             <div className="w-7 h-7 bg-blue-600 text-white flex items-center justify-center rounded-md text-xs font-semibold">
               MW
             </div>
@@ -169,9 +169,9 @@ function LandingPage() {
           </div>
 
           <div className="flex gap-6">
-            <span className="hover:text-slate-900 cursor-pointer">Privacy</span>
-            <span className="hover:text-slate-900 cursor-pointer">Terms</span>
-            <span className="hover:text-slate-900 cursor-pointer">Contact</span>
+            <span className="hover:text-foreground cursor-pointer">Privacy</span>
+            <span className="hover:text-foreground cursor-pointer">Terms</span>
+            <span className="hover:text-foreground cursor-pointer">Contact</span>
           </div>
 
           <div>© 2026</div>

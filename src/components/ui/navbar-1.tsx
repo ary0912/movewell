@@ -37,7 +37,7 @@ const Navbar1 = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                  "flex items-center justify-between px-lg py-sm rounded-full",
+                  "flex items-center justify-between px-lg py-sm rounded-lg",
                   "bg-background/70 backdrop-blur-xl",
                   "border border-border",
                   "shadow-[0_6px_18px_rgba(2,6,23,0.06)]"
@@ -73,10 +73,10 @@ const Navbar1 = () => {
                     onClick={() => handleNavigate(item.path)}
                     aria-current={isActive ? 'page' : undefined}
                     className={cn(
-                      "relative z-10 flex items-center gap-2 px-lg h-10 rounded-full text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60",
+                      "relative z-10 flex items-center gap-2 px-lg h-10 rounded-lg text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60",
                       isActive
-                        ? 'bg-muted/20 dark:bg-muted/30 text-foreground'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/5 dark:hover:bg-muted/10'
+                        ? 'bg-muted/20 dark:bg-muted/30 text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/10 dark:hover:bg-muted/20'
                     )}
                   >
                     <Icon size={16} aria-hidden />
@@ -95,7 +95,7 @@ const Navbar1 = () => {
               {/* CTA */}
               <button
                 onClick={() => handleNavigate("/assessment")}
-                className="hidden md:flex items-center justify-center px-lg h-10 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-md hover:shadow-lg transition-all"
+                className="hidden md:flex items-center justify-center px-lg h-10 rounded-lg bg-primary text-primary-foreground text-sm font-semibold shadow-md hover:shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
               >
                 Start
               </button>

@@ -14,7 +14,20 @@ const Card = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
   // Filter out native HTML drag/animation handlers to avoid conflicting framer-motion types
-  const { onDrag: _onDrag, onDragStart: _onDragStart, onDragEnd: _onDragEnd, onDragEnter: _onDragEnter, onDragLeave: _onDragLeave, onDragOver: _onDragOver, onDrop: _onDrop, onAnimationStart: _onAnimationStart, onAnimationEnd: _onAnimationEnd, onAnimationIteration: _onAnimationIteration, ...rest } = props as React.HTMLAttributes<HTMLDivElement>
+  // Remove native drag/animation event handlers to avoid Framer Motion type conflicts
+  const {
+    onDrag,
+    onDragStart,
+    onDragEnd,
+    onDragEnter,
+    onDragLeave,
+    onDragOver,
+    onDrop,
+    onAnimationStart,
+    onAnimationEnd,
+    onAnimationIteration,
+    ...rest
+  } = props as React.HTMLAttributes<HTMLDivElement>
 
   return (
     <Motion.div
