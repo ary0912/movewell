@@ -1,99 +1,306 @@
 'use client'
 
 import React from 'react'
+
+import { motion } from 'framer-motion'
+
 import { Card } from './Card'
 import { Button } from './Button'
-import { cn } from '@/lib/utils'
-import { motion } from "framer-motion"
 
-interface InsightCardProps extends React.HTMLAttributes<HTMLDivElement> {
+import { cn } from '@/lib/utils'
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+interface InsightCardProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+
   title?: string
+
   description?: string
+
   body?: string
+
   actionLabel?: string
+
   onAction?: () => void
+
   icon?: React.ReactNode
-  variant?: "ochre" | "teal" | "peach" | "lavender" | "cream"
+
+  variant?:
+  | 'ochre'
+  | 'teal'
+  | 'peach'
+  | 'lavender'
+  | 'cream'
+
+  badge?: string
+
+  meta?: string
 }
+
+/* =========================================================
+   COMPONENT
+========================================================= */
 
 export default function InsightCard({
   title,
+
   description,
   body,
-  actionLabel = 'Execute Protocol',
+
+  actionLabel = 'View insights',
+
   onAction,
+
   icon,
-  variant = "ochre",
+
+  variant = 'ochre',
+
+  badge,
+  meta,
+
   className,
+
   ...rest
 }: InsightCardProps) {
 
-  const content = description ?? body ?? ''
+  const content =
+    description ?? body ?? ''
+
+  const isLightVariant =
+    variant === 'cream' ||
+    variant === 'lavender' ||
+    variant === 'ochre' ||
+    variant === 'peach'
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{
+        opacity: 0,
+        y: 8,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.42,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
+
       <Card
         variant={variant}
         className={cn(
-          "relative overflow-hidden p-8 group transition-all duration-500",
+
+          `
+          relative
+
+          overflow-hidden
+
+          p-6 md:p-7
+          `,
+
           className
         )}
         {...rest}
       >
-        {/* TOP DECORATIVE ELEMENT */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 -rotate-45 translate-x-16 -translate-y-16 group-hover:bg-white/10 transition-all duration-700" />
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+        {/* =================================================
+            CONTENT
+        ================================================= */}
 
-          {/* LEFT CONTENT */}
-          <div className="flex items-start gap-6 max-w-2xl">
+        <div
+          className="
+            relative z-10
 
-            {icon && (
-              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-sm">
-                {icon}
+            flex flex-col
+
+            gap-8
+          "
+        >
+
+          {/* =============================================
+              TOP
+          ============================================= */}
+
+          <div
+            className="
+              flex items-start
+              justify-between
+              gap-6
+            "
+          >
+
+            {/* LEFT */}
+            <div
+              className="
+                flex items-start
+                gap-4
+              "
+            >
+
+              {/* ICON */}
+              {icon && (
+                <div
+                  className={cn(
+                    `
+                    flex h-11 w-11 shrink-0
+                    items-center justify-center
+
+                    rounded-2xl
+
+                    border
+                    `,
+
+                    isLightVariant
+                      ? `
+                        border-black/5
+                        bg-white/60
+                        `
+                      : `
+                        border-white/10
+                        bg-white/10
+                        `
+                  )}
+                >
+                  {icon}
+                </div>
+              )}
+
+              {/* TEXT */}
+              <div className="space-y-3">
+
+                {/* META */}
+                {(badge || meta) && (
+                  <div
+                    className="
+                      flex flex-wrap
+                      items-center
+                      gap-2
+                    "
+                  >
+
+                    {badge && (
+                      <div
+                        className={cn(
+                          `
+                          rounded-full
+
+                          px-2.5 py-1
+
+                          text-[11px]
+                          font-medium
+
+                          tracking-[0.02em]
+                          `,
+                          isLightVariant
+                            ? `
+                              bg-black/5
+                              text-clay-muted
+                              `
+                            : `
+                              bg-white/10
+                              text-white/80
+                              `
+                        )}
+                      >
+                        {badge}
+                      </div>
+                    )}
+
+                    {meta && (
+                      <span
+                        className={cn(
+                          `
+                          text-[12px]
+                          `,
+                          isLightVariant
+                            ? 'text-clay-muted'
+                            : 'text-white/70'
+                        )}
+                      >
+                        {meta}
+                      </span>
+                    )}
+
+                  </div>
+                )}
+
+                {/* TITLE */}
+                {title && (
+                  <h3
+                    className={cn(
+                      `
+                      text-[24px]
+                      font-semibold
+
+                      leading-[1.08]
+                      tracking-[-0.03em]
+                      `,
+                      isLightVariant
+                        ? 'text-clay-ink'
+                        : 'text-white'
+                    )}
+                  >
+                    {title}
+                  </h3>
+                )}
+
+                {/* DESCRIPTION */}
+                <p
+                  className={cn(
+                    `
+                    max-w-2xl
+
+                    text-[15px]
+                    leading-[1.75]
+                    `,
+                    isLightVariant
+                      ? 'text-clay-body'
+                      : 'text-white/80'
+                  )}
+                >
+                  {content}
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* CTA */}
+            {onAction && (
+              <div className="shrink-0">
+
+                <Button
+                  variant={
+                    isLightVariant
+                      ? 'primary'
+                      : 'onColor'
+                  }
+                  onClick={onAction}
+                  className="
+                    h-11
+
+                    whitespace-nowrap
+
+                    px-5
+                  "
+                >
+                  {actionLabel}
+                </Button>
+
               </div>
             )}
 
-            <div className="space-y-3">
-              {title && (
-                <h3 className={cn(
-                  "text-2xl font-bold tracking-tight",
-                  variant === "cream" ? "text-clay-ink" : "text-white"
-                )}>
-                  {title}
-                </h3>
-              )}
-
-              <p className={cn(
-                "text-sm font-medium leading-relaxed max-w-xl",
-                variant === "cream" ? "text-clay-body" : "text-white/80"
-              )}>
-                {content}
-              </p>
-            </div>
-
           </div>
-
-          {/* CTA */}
-          {onAction && (
-            <div className="flex-shrink-0 pt-4 md:pt-0">
-              <Button
-                variant={variant === "cream" ? "primary" : "onColor"}
-                onClick={onAction}
-                className="whitespace-nowrap px-8 h-12 shadow-lg group-hover:scale-105 transition-transform"
-              >
-                {actionLabel}
-              </Button>
-            </div>
-          )}
 
         </div>
 
       </Card>
+
     </motion.div>
   )
 }

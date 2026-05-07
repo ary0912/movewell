@@ -1,54 +1,198 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from 'react'
 
-interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label?: string;
-  min?: number;
-  max?: number;
-  step?: number;
-  showValue?: boolean;
-  unit?: string;
+import { cn } from '@/lib/utils'
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+interface SliderProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'type'
+  > {
+
+  label?: string
+
+  min?: number
+
+  max?: number
+
+  step?: number
+
+  showValue?: boolean
+
+  unit?: string
+
+  leftLabel?: string
+
+  rightLabel?: string
 }
 
-const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
+/* =========================================================
+   COMPONENT
+========================================================= */
+
+const Slider = React.forwardRef<
+  HTMLInputElement,
+  SliderProps
+>(
   (
     {
       label,
+
       min = 0,
       max = 10,
       step = 1,
+
       showValue = true,
+
       unit = '',
+
+      leftLabel,
+      rightLabel,
+
       value = 0,
+
       className,
+
       ...rest
     },
     ref
   ) => {
-    const numeric = Number(value ?? min)
-    const percentage = Math.max(0, Math.min(100, ((numeric - min) / Math.max(1, max - min)) * 100))
+
+    /* =====================================================
+       VALUE
+    ===================================================== */
+
+    const numericValue =
+      Number(value ?? min)
+
+    const percentage =
+      Math.max(
+        0,
+        Math.min(
+          100,
+          (
+            (numericValue - min) /
+            Math.max(1, max - min)
+          ) * 100
+        )
+      )
 
     return (
-      <div className={cn("w-full space-y-4", className)}>
+      <div
+        className={cn(
+
+          `
+          w-full
+          space-y-3
+          `,
+
+          className
+        )}
+      >
+
+        {/* =================================================
+            HEADER
+        ================================================= */}
+
         {(label || showValue) && (
-          <div className="flex items-center justify-between">
-            {label && <label className="text-[10px] font-bold text-clay-muted uppercase tracking-[0.2em]">{label}</label>}
-            {showValue && <div className="text-sm font-black text-clay-primary tabular-nums">{numeric}{unit}</div>}
+          <div
+            className="
+              flex items-center
+              justify-between
+              gap-4
+            "
+          >
+
+            {/* LABEL */}
+            {label && (
+              <label
+                className="
+                  text-[13px]
+                  font-medium
+
+                  tracking-[-0.01em]
+
+                  text-clay-ink
+                "
+              >
+                {label}
+              </label>
+            )}
+
+            {/* VALUE */}
+            {showValue && (
+              <div
+                className="
+                  text-[14px]
+                  font-medium
+
+                  tracking-[-0.02em]
+
+                  text-clay-body
+
+                  tabular-nums
+                "
+              >
+                {numericValue}
+                {unit}
+              </div>
+            )}
+
           </div>
         )}
 
-        <div className="relative h-6 flex items-center group">
-          {/* TRACK BACKGROUND */}
-          <div className="h-1.5 w-full rounded-full bg-clay-surface-strong shadow-inner" aria-hidden />
+        {/* =================================================
+            SLIDER
+        ================================================= */}
 
-          {/* FILL TRACK */}
-          <div 
-            className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-clay-primary transition-all duration-300" 
-            style={{ width: `${percentage}%` }} 
-          />
+        <div
+          className="
+            relative
 
+            flex items-center
+          "
+        >
+
+          {/* TRACK */}
+          <div
+            className="
+              absolute
+
+              h-1.5 w-full
+
+              overflow-hidden
+
+              rounded-full
+
+              bg-clay-surface-strong
+            "
+            aria-hidden="true"
+          >
+
+            {/* FILL */}
+            <div
+              className="
+                h-full
+
+                rounded-full
+
+                bg-clay-primary
+
+                transition-all duration-200
+              "
+              style={{
+                width: `${percentage}%`,
+              }}
+            />
+
+          </div>
+
+          {/* INPUT */}
           <input
             ref={ref}
             type="range"
@@ -58,53 +202,118 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
             value={value}
             aria-valuemin={min}
             aria-valuemax={max}
-            aria-valuenow={numeric}
-            aria-valuetext={`${numeric}${unit}`}
-            className={cn(
-              "absolute top-0 w-full h-full appearance-none bg-transparent cursor-pointer z-10",
-              "focus:outline-none"
-            )}
+            aria-valuenow={numericValue}
+            aria-valuetext={`${numericValue}${unit}`}
+            className="
+              slider-thumb
+
+              relative z-10
+
+              h-6 w-full
+
+              cursor-pointer
+
+              appearance-none
+
+              bg-transparent
+
+              focus:outline-none
+            "
             {...rest}
           />
 
-          <style>{`
-            input[type='range']::-webkit-slider-thumb { 
-              appearance: none; 
-              width: 24px; 
-              height: 24px; 
-              border-radius: 6px; 
-              background: white; 
-              border: 1px solid #e0e0e0; 
-              box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
-              transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-            }
-            input[type='range']::-webkit-slider-thumb:hover { 
-              transform: scale(1.1); 
-              box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); 
-            }
-            input[type='range']::-webkit-slider-thumb:active { 
-              transform: scale(0.95); 
-            }
-            input[type='range']::-moz-range-thumb { 
-              width: 24px; 
-              height: 24px; 
-              border-radius: 6px; 
-              background: white; 
-              border: 1px solid #e0e0e0; 
-              box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
-            }
-          `}</style>
         </div>
 
-        <div className="flex justify-between text-[10px] font-bold text-clay-muted uppercase tracking-widest">
-          <span>{min}{unit}</span>
-          <span>{max}{unit}</span>
+        {/* =================================================
+            FOOTER
+        ================================================= */}
+
+        <div
+          className="
+            flex items-center
+            justify-between
+
+            text-[12px]
+
+            text-clay-muted
+          "
+        >
+
+          <span>
+            {leftLabel ??
+              `${min}${unit}`}
+          </span>
+
+          <span>
+            {rightLabel ??
+              `${max}${unit}`}
+          </span>
+
         </div>
+
+        {/* =================================================
+            STYLES
+        ================================================= */}
+
+        <style>{`
+
+          .slider-thumb::-webkit-slider-thumb {
+
+            appearance: none;
+
+            height: 18px;
+            width: 18px;
+
+            border-radius: 9999px;
+
+            border: 1px solid rgba(0,0,0,0.08);
+
+            background: white;
+
+            box-shadow:
+              0 2px 8px rgba(0,0,0,0.08);
+
+            transition:
+              transform 0.16s ease,
+              box-shadow 0.16s ease;
+          }
+
+          .slider-thumb::-webkit-slider-thumb:hover {
+
+            transform: scale(1.03);
+
+            box-shadow:
+              0 4px 14px rgba(0,0,0,0.12);
+          }
+
+          .slider-thumb::-webkit-slider-thumb:active {
+
+            transform: scale(0.98);
+          }
+
+          .slider-thumb::-moz-range-thumb {
+
+            height: 18px;
+            width: 18px;
+
+            border-radius: 9999px;
+
+            border: 1px solid rgba(0,0,0,0.08);
+
+            background: white;
+
+            box-shadow:
+              0 2px 8px rgba(0,0,0,0.08);
+          }
+
+        `}</style>
+
       </div>
     )
   }
 )
 
-Slider.displayName = 'Slider';
+Slider.displayName =
+  'Slider'
 
-export default Slider;
+export default Slider

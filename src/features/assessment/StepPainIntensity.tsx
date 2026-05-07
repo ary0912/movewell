@@ -1,20 +1,33 @@
 'use client';
 
 import type { BodyArea } from "../../types";
+
 import { BODY_AREA_LABELS } from "@utils/constants";
+
 import { Card } from "@components/ui/Card";
+
 import { cn } from "@/lib/utils";
+
 import { useFormContext } from "react-hook-form";
-import type { AssessmentFormValues } from "@utils/schemas";
+
+import type {
+  AssessmentFormValues,
+} from "@utils/schemas";
 
 import {
   Activity,
   AlertTriangle,
-  ArrowRight,
   HeartPulse,
   Sparkles,
   Waves,
+  Zap,
 } from "lucide-react";
+
+import { motion } from "framer-motion";
+
+/* =========================================================
+   AREA CONFIG
+========================================================= */
 
 const painAreaConfig: Record<
   string,
@@ -25,63 +38,99 @@ const painAreaConfig: Record<
     icon: React.ElementType;
   }
 > = {
+
   neck: {
-    label: "Neck Region",
+    label: "Neck",
     accent:
-      "bg-clay-brand-lavender/20 text-clay-ink",
+      "bg-clay-brand-lavender/14 text-clay-ink",
     glow:
-      "from-clay-brand-lavender/15 to-transparent",
+      "from-clay-brand-lavender/8 via-transparent to-transparent",
     icon: Waves,
   },
 
   shoulder: {
-    label: "Shoulder Region",
+    label: "Shoulders",
     accent:
-      "bg-clay-brand-peach/20 text-clay-ink",
+      "bg-clay-brand-peach/14 text-clay-ink",
     glow:
-      "from-clay-brand-peach/15 to-transparent",
+      "from-clay-brand-peach/8 via-transparent to-transparent",
     icon: Activity,
   },
 
   upperBack: {
     label: "Upper Back",
     accent:
-      "bg-clay-brand-ochre/20 text-clay-ink",
+      "bg-clay-brand-ochre/14 text-clay-ink",
     glow:
-      "from-clay-brand-ochre/15 to-transparent",
+      "from-clay-brand-ochre/8 via-transparent to-transparent",
     icon: Activity,
   },
 
   lowerBack: {
     label: "Lower Back",
     accent:
-      "bg-clay-brand-mint/25 text-clay-ink",
+      "bg-clay-brand-mint/16 text-clay-ink",
     glow:
-      "from-clay-brand-mint/15 to-transparent",
+      "from-clay-brand-mint/8 via-transparent to-transparent",
     icon: Activity,
   },
 
   knee: {
-    label: "Knee Joint",
+    label: "Knees",
     accent:
-      "bg-clay-brand-pink/15 text-clay-ink",
+      "bg-clay-brand-pink/12 text-clay-ink",
     glow:
-      "from-clay-brand-pink/10 to-transparent",
+      "from-clay-brand-pink/8 via-transparent to-transparent",
     icon: HeartPulse,
   },
 
   hip: {
-    label: "Hip Region",
+    label: "Hips",
     accent:
-      "bg-clay-brand-lavender/20 text-clay-ink",
+      "bg-clay-brand-lavender/14 text-clay-ink",
     glow:
-      "from-clay-brand-lavender/15 to-transparent",
+      "from-clay-brand-lavender/8 via-transparent to-transparent",
     icon: Activity,
+  },
+
+  elbow: {
+    label: "Elbows",
+    accent:
+      "bg-clay-brand-peach/12 text-clay-ink",
+    glow:
+      "from-clay-brand-peach/8 via-transparent to-transparent",
+    icon: Zap,
+  },
+
+  wrist: {
+    label: "Wrists",
+    accent:
+      "bg-clay-brand-mint/14 text-clay-ink",
+    glow:
+      "from-clay-brand-mint/8 via-transparent to-transparent",
+    icon: Waves,
+  },
+
+  ankle: {
+    label: "Ankles",
+    accent:
+      "bg-clay-brand-ochre/12 text-clay-ink",
+    glow:
+      "from-clay-brand-ochre/8 via-transparent to-transparent",
+    icon: HeartPulse,
   },
 };
 
+/* =========================================================
+   COMPONENT
+========================================================= */
+
 function StepPainIntensity() {
-  const { watch, setValue } =
+
+  const {
+    watch,
+    setValue,
+  } =
     useFormContext<AssessmentFormValues>();
 
   const painAreas =
@@ -90,18 +139,28 @@ function StepPainIntensity() {
   const painIntensity =
     watch("painIntensity") || {};
 
+  /* =====================================================
+     UPDATE
+  ===================================================== */
+
   const handleIntensityChange = (
     area: BodyArea,
     value: number
   ) => {
+
     setValue(
       `painIntensity.${area}`,
       value,
       {
         shouldValidate: true,
+        shouldDirty: true,
       }
     );
   };
+
+  /* =====================================================
+     METRICS
+  ===================================================== */
 
   const overallAverage =
     painAreas.length > 0
@@ -115,163 +174,378 @@ function StepPainIntensity() {
       )
       : 0;
 
+  const highPainCount =
+    painAreas.filter(
+      (area) =>
+        (painIntensity[area] || 0) >= 7
+    ).length;
+
   const getSeverity = (
     intensity: number
   ) => {
-    if (intensity <= 2)
+
+    if (intensity <= 2) {
+
       return {
         label: "Minimal",
         tone:
-          "bg-clay-brand-mint/25 text-clay-ink",
+          "bg-clay-brand-mint/14 text-clay-ink",
       };
+    }
 
-    if (intensity <= 5)
+    if (intensity <= 5) {
+
       return {
         label: "Moderate",
         tone:
-          "bg-clay-brand-peach/20 text-clay-ink",
+          "bg-clay-brand-peach/14 text-clay-ink",
       };
+    }
 
-    if (intensity <= 7)
+    if (intensity <= 7) {
+
       return {
         label: "Elevated",
         tone:
-          "bg-clay-brand-ochre/25 text-clay-ink",
+          "bg-clay-brand-ochre/14 text-clay-ink",
       };
+    }
 
     return {
       label: "Severe",
       tone:
-        "bg-clay-brand-pink/20 text-clay-ink",
+        "bg-clay-brand-pink/14 text-clay-ink",
     };
   };
 
-  return (
-    <div className="space-y-14">
+  /* =====================================================
+     EMPTY STATE
+  ===================================================== */
 
-      {/* INTRO */}
-      <section className="max-w-3xl">
+  if (painAreas.length === 0) {
 
-        <div className="inline-flex items-center gap-2 rounded-full bg-clay-surface-card px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-clay-muted">
-          <Sparkles size={14} />
-          Pain Signal Mapping
+    return (
+
+      <div
+        className="
+          relative overflow-hidden
+
+          rounded-[32px]
+
+          border border-dashed border-clay-hairline
+
+          bg-clay-surface-soft
+
+          px-8 py-14
+        "
+      >
+
+        <div
+          className="
+            absolute inset-0
+
+            bg-gradient-to-br
+
+            from-clay-brand-peach/8
+            via-transparent
+            to-clay-brand-lavender/8
+          "
+        />
+
+        <div
+          className="
+            relative z-10
+
+            flex flex-col items-center
+
+            text-center
+          "
+        >
+
+          <div
+            className="
+              flex h-16 w-16
+              items-center justify-center
+
+              rounded-[24px]
+
+              bg-white
+
+              shadow-sm
+            "
+          >
+
+            <AlertTriangle
+              size={28}
+              className="
+                text-clay-muted
+              "
+            />
+
+          </div>
+
+          <h3
+            className="
+              mt-7
+
+              text-[1.6rem]
+
+              tracking-[-0.04em]
+
+              text-clay-ink
+            "
+          >
+            No regions selected
+          </h3>
+
+          <p
+            className="
+              mt-4
+
+              max-w-md
+
+              text-[15px]
+
+              leading-[1.85]
+
+              text-clay-body
+            "
+          >
+            Return to the previous step and
+            select affected regions to continue
+            the intensity assessment.
+          </p>
+
         </div>
 
-        <h2 className="mt-7 clay-display text-[2.2rem] leading-[1.02] tracking-[-0.05em] text-clay-ink md:text-[3rem]">
-          Measure the intensity of your
-          movement discomfort.
-        </h2>
+      </div>
+    );
+  }
 
-        <p className="mt-6 max-w-2xl text-[1rem] leading-[1.9] text-clay-body md:text-[1.05rem]">
-          Quantify how strong each pain signal
-          feels during natural movement,
-          recovery, and day-to-day activity.
-          This helps identify high-stress
-          movement patterns more accurately.
-        </p>
+  /* =====================================================
+     UI
+  ===================================================== */
 
-      </section>
+  return (
 
-      {/* OVERVIEW */}
-      <section className="relative overflow-hidden rounded-[32px] bg-clay-surface-card px-7 py-7 md:px-10 md:py-9">
+    <div className="space-y-6">
 
-        <div className="absolute inset-0 bg-gradient-to-br from-clay-brand-pink/10 via-transparent to-clay-brand-lavender/10 pointer-events-none" />
+      {/* =================================================
+          HERO
+      ================================================= */}
 
-        <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+      <section
+        className="
+          relative overflow-hidden
+
+          rounded-[32px]
+
+          border border-clay-hairline
+
+          bg-white/[0.72]
+
+          px-6 py-6
+
+          backdrop-blur-2xl
+        "
+      >
+
+        <div
+          className="
+            absolute inset-0
+
+            bg-gradient-to-br
+
+            from-clay-brand-peach/5
+            via-transparent
+            to-clay-brand-lavender/5
+          "
+        />
+
+        <div
+          className="
+            relative z-10
+
+            flex flex-col gap-8
+
+            lg:flex-row
+            lg:items-end
+            lg:justify-between
+          "
+        >
 
           {/* LEFT */}
-          <div className="max-w-xl">
 
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-clay-muted">
-              Pain Intensity Baseline
-            </p>
+          <div className="max-w-2xl">
 
-            <div className="mt-4 flex items-end gap-3">
+            <div
+              className="
+                inline-flex items-center gap-2
 
-              <div className="clay-display text-[4.5rem] leading-none tracking-[-0.07em] text-clay-ink">
-                {overallAverage}
-              </div>
+                rounded-full
 
-              <div className="pb-3 text-sm text-clay-muted">
-                /10 average intensity
-              </div>
+                border border-clay-hairline
+
+                bg-clay-surface-soft
+
+                px-4 py-2
+              "
+            >
+
+              <Sparkles size={12} />
+
+              <span
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.16em]
+                  text-clay-muted
+                "
+              >
+                Intensity Mapping
+              </span>
 
             </div>
 
-            <p className="mt-5 text-[15px] leading-[1.9] text-clay-body">
-              Your baseline reflects how intense
-              discomfort currently feels across
-              selected movement regions and
-              affected anatomical zones.
+            <h2
+              className="
+                mt-5
+
+                text-[2.2rem]
+
+                leading-[0.95]
+
+                tracking-[-0.06em]
+
+                text-clay-ink
+
+                clay-display
+
+                md:text-[3.2rem]
+              "
+            >
+              Measure discomfort intensity.
+            </h2>
+
+            <p
+              className="
+                mt-4
+
+                max-w-xl
+
+                text-[15px]
+
+                leading-[1.8]
+
+                text-clay-body
+              "
+            >
+              Adjust the intensity level for each
+              selected movement region.
             </p>
 
           </div>
 
           {/* RIGHT */}
-          <div className="grid grid-cols-3 gap-4">
 
-            {[
-              {
-                label: "Low",
-                value:
-                  painAreas.filter(
-                    (area) =>
-                      (painIntensity[area] ||
-                        0) <= 3
-                  ).length,
-                bg:
-                  "bg-clay-brand-mint/25",
-              },
+          <div
+            className="
+              flex items-center gap-4
+            "
+          >
 
-              {
-                label: "Moderate",
-                value:
-                  painAreas.filter(
-                    (area) => {
-                      const value =
-                        painIntensity[area] ||
-                        0;
+            {/* AVG */}
 
-                      return (
-                        value >= 4 &&
-                        value <= 6
-                      );
-                    }
-                  ).length,
-                bg:
-                  "bg-clay-brand-peach/20",
-              },
+            <div
+              className="
+                rounded-[24px]
 
-              {
-                label: "High",
-                value:
-                  painAreas.filter(
-                    (area) =>
-                      (painIntensity[area] ||
-                        0) >= 7
-                  ).length,
-                bg:
-                  "bg-clay-brand-pink/15",
-              },
-            ].map((item) => (
+                border border-clay-hairline
+
+                bg-white/70
+
+                px-5 py-4
+              "
+            >
+
               <div
-                key={item.label}
-                className={cn(
-                  "rounded-[24px] px-5 py-5 text-center",
-                  item.bg
-                )}
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-clay-muted
+                "
               >
-
-                <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-clay-muted">
-                  {item.label}
-                </div>
-
-                <div className="mt-3 text-[2rem] font-semibold tracking-[-0.05em] text-clay-ink">
-                  {item.value}
-                </div>
-
+                Average
               </div>
-            ))}
+
+              <div
+                className="
+                  mt-2
+
+                  text-[2.8rem]
+
+                  leading-none
+
+                  tracking-[-0.06em]
+
+                  text-clay-ink
+
+                  clay-display
+                "
+              >
+                {overallAverage}
+              </div>
+
+            </div>
+
+            {/* HIGH */}
+
+            <div
+              className="
+                rounded-[24px]
+
+                border border-clay-hairline
+
+                bg-white/70
+
+                px-5 py-4
+              "
+            >
+
+              <div
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-clay-muted
+                "
+              >
+                High
+              </div>
+
+              <div
+                className="
+                  mt-2
+
+                  text-[2.8rem]
+
+                  leading-none
+
+                  tracking-[-0.06em]
+
+                  text-clay-ink
+
+                  clay-display
+                "
+              >
+                {highPainCount}
+              </div>
+
+            </div>
 
           </div>
 
@@ -279,10 +553,20 @@ function StepPainIntensity() {
 
       </section>
 
-      {/* PAIN CARDS */}
-      <div className="space-y-8">
+      {/* =================================================
+          REGION CARDS
+      ================================================= */}
+
+      <div
+        className="
+          grid gap-5
+
+          xl:grid-cols-2
+        "
+      >
 
         {painAreas.map((area) => {
+
           const intensity =
             painIntensity[area] || 0;
 
@@ -290,275 +574,381 @@ function StepPainIntensity() {
             getSeverity(intensity);
 
           const config =
-            painAreaConfig[area] || {
-              label: "Pain Region",
-              accent:
-                "bg-clay-surface-strong text-clay-ink",
-              glow:
-                "from-clay-surface-strong/20 to-transparent",
-              icon: Activity,
-            };
+            painAreaConfig[area];
 
-          const Icon = config.icon;
+          const Icon =
+            config.icon;
 
           return (
-            <Card
+
+            <motion.div
               key={area}
-              variant="cream"
-              hover={false}
-              className="
-                relative overflow-hidden
-                rounded-[32px]
-                border border-clay-hairline/60
-                bg-clay-surface-card
-                px-6 py-7
-                md:px-8 md:py-8
-              "
+
+              initial={{
+                opacity: 0,
+                y: 8,
+              }}
+
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
             >
 
-              {/* Glow */}
-              <div
-                className={cn(
-                  "absolute inset-0 bg-gradient-to-br opacity-80 pointer-events-none",
-                  config.glow
-                )}
-              />
+              <Card
+                variant="cream"
+                hover={false}
+                className="
+                  relative overflow-hidden
 
-              <div className="relative z-10">
+                  rounded-[28px]
 
-                {/* TOP */}
-                <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
+                  border border-clay-hairline/60
 
-                  {/* LEFT */}
-                  <div className="flex gap-5">
+                  bg-white/[0.78]
+
+                  px-5 py-5
+
+                  backdrop-blur-xl
+
+                  transition-all duration-300
+
+                  hover:border-black/5
+                  hover:shadow-[0_10px_30px_rgba(0,0,0,0.03)]
+                "
+              >
+
+                {/* GLOW */}
+
+                <div
+                  className={cn(
+
+                    `
+                    absolute inset-0
+
+                    bg-gradient-to-br
+
+                    opacity-70
+                    `,
+
+                    config.glow
+                  )}
+                />
+
+                <div className="relative z-10">
+
+                  {/* =================================================
+                      HEADER
+                  ================================================= */}
+
+                  <div
+                    className="
+                      flex items-start
+                      justify-between
+                      gap-4
+                    "
+                  >
+
+                    {/* LEFT */}
+
+                    <div className="flex gap-4">
+
+                      <div
+                        className={cn(
+
+                          `
+                          flex h-11 w-11
+                          shrink-0
+                          items-center justify-center
+
+                          rounded-[16px]
+                          `,
+
+                          config.accent
+                        )}
+                      >
+                        <Icon size={18} />
+                      </div>
+
+                      <div>
+
+                        <div
+                          className="
+                            flex flex-wrap
+                            items-center gap-2
+                          "
+                        >
+
+                          <span
+                            className="
+                              text-[10px]
+                              font-semibold
+                              uppercase
+                              tracking-[0.14em]
+                              text-clay-muted
+                            "
+                          >
+                            {config.label}
+                          </span>
+
+                          <span
+                            className={cn(
+
+                              `
+                              rounded-full
+
+                              px-2.5 py-1
+
+                              text-[9px]
+                              font-semibold
+
+                              uppercase
+
+                              tracking-[0.12em]
+                              `,
+
+                              severity.tone
+                            )}
+                          >
+                            {severity.label}
+                          </span>
+
+                        </div>
+
+                        <h3
+                          className="
+                            mt-2
+
+                            text-[1.2rem]
+
+                            leading-[1.1]
+
+                            tracking-[-0.04em]
+
+                            text-clay-ink
+                          "
+                        >
+                          {
+                            BODY_AREA_LABELS[
+                            area
+                            ]
+                          }
+                        </h3>
+
+                      </div>
+
+                    </div>
+
+                    {/* SCORE */}
 
                     <div
-                      className={cn(
-                        "flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px]",
-                        config.accent
-                      )}
+                      className="
+                        flex items-center gap-1.5
+
+                        rounded-[16px]
+
+                        border border-clay-hairline
+
+                        bg-clay-canvas
+
+                        px-3 py-2
+                      "
                     >
-                      <Icon size={24} />
-                    </div>
 
-                    <div className="max-w-2xl">
-
-                      <div className="flex flex-wrap items-center gap-3">
-
-                        <span className="text-[11px] font-semibold uppercase tracking-[0.13em] text-clay-muted">
-                          {config.label}
-                        </span>
-
-                        <span
-                          className={cn(
-                            "rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]",
-                            severity.tone
-                          )}
-                        >
-                          {severity.label}
-                        </span>
-
-                      </div>
-
-                      <label
-                        htmlFor={`intensity-${area}`}
+                      <div
                         className="
-                          mt-4 block
                           text-[1.35rem]
-                          font-semibold
-                          leading-[1.3]
-                          tracking-[-0.03em]
+
+                          leading-none
+
+                          tracking-[-0.05em]
+
                           text-clay-ink
-                          md:text-[1.5rem]
+
+                          clay-display
                         "
                       >
-                        {
-                          BODY_AREA_LABELS[
-                          area
-                          ]
-                        }
-                      </label>
-
-                      <p className="mt-4 max-w-xl text-[15px] leading-[1.85] text-clay-body">
-                        Evaluate how strong or
-                        noticeable discomfort feels
-                        in this region during normal
-                        movement and physical
-                        activity.
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  {/* SCORE */}
-                  <div className="flex items-center gap-4 self-start rounded-[24px] bg-clay-canvas px-5 py-4">
-
-                    <div className="text-right">
-
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.13em] text-clay-muted">
-                        Intensity
-                      </div>
-
-                      <div className="mt-2 text-[2.1rem] font-semibold leading-none tracking-[-0.06em] text-clay-ink">
                         {intensity}
                       </div>
 
-                    </div>
+                      <div
+                        className="
+                          text-[10px]
+                          font-medium
+                          text-clay-muted
+                        "
+                      >
+                        /10
+                      </div>
 
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-clay-primary text-sm font-semibold text-white">
-                      /10
                     </div>
 
                   </div>
 
-                </div>
+                  {/* =================================================
+                      SLIDER
+                  ================================================= */}
 
-                {/* SLIDER */}
-                <div className="mt-10">
-
-                  <div className="relative">
+                  <div className="mt-6">
 
                     {/* TRACK */}
-                    <div className="h-[10px] overflow-hidden rounded-full bg-clay-surface-strong">
+
+                    <div className="relative">
 
                       <div
-                        className="h-full rounded-full bg-clay-primary transition-all duration-500"
-                        style={{
-                          width: `${intensity * 10}%`,
-                        }}
+                        className="
+                          h-[8px]
+
+                          overflow-hidden
+
+                          rounded-full
+
+                          bg-clay-surface-strong
+                        "
+                      >
+
+                        <motion.div
+                          initial={false}
+
+                          animate={{
+                            width: `${intensity * 10}%`,
+                          }}
+
+                          transition={{
+                            duration: 0.35,
+                          }}
+
+                          className="
+                            h-full
+
+                            rounded-full
+
+                            bg-[#111111]
+                          "
+                        />
+
+                      </div>
+
+                      {/* INPUT */}
+
+                      <input
+                        id={`intensity-${area}`}
+                        type="range"
+                        min="0"
+                        max="10"
+                        value={intensity}
+
+                        onChange={(e) =>
+                          handleIntensityChange(
+                            area,
+                            Number(
+                              e.target.value
+                            )
+                          )
+                        }
+
+                        aria-label={`Pain intensity for ${BODY_AREA_LABELS[area]}`}
+
+                        className="
+                          absolute inset-0
+
+                          h-[8px] w-full
+
+                          cursor-pointer
+
+                          appearance-none
+
+                          bg-transparent
+
+                          opacity-0
+                        "
                       />
 
                     </div>
 
-                    {/* INPUT */}
-                    <input
-                      id={`intensity-${area}`}
-                      type="range"
-                      min="0"
-                      max="10"
-                      value={intensity}
-                      onChange={(e) =>
-                        handleIntensityChange(
-                          area,
-                          parseInt(
-                            e.target.value
-                          )
-                        )
-                      }
-                      aria-label={`Pain intensity for ${BODY_AREA_LABELS[area]}`}
+                    {/* SCALE */}
+
+                    <div
                       className="
-                        absolute inset-0
-                        h-[10px] w-full
-                        cursor-pointer
-                        appearance-none
-                        bg-transparent
-                        opacity-0
+                        mt-4
+
+                        flex items-center
+                        justify-between
                       "
-                    />
+                    >
 
-                  </div>
-
-                  {/* SCALE */}
-                  <div className="mt-5 flex items-center justify-between">
-
-                    {[
-                      "None",
-                      "Mild",
-                      "Moderate",
-                      "High",
-                      "Severe",
-                    ].map((label, i) => (
-                      <div
-                        key={label}
-                        className="flex flex-col items-center gap-2"
-                      >
+                      {[
+                        "None",
+                        "Mild",
+                        "Moderate",
+                        "High",
+                        "Severe",
+                      ].map((label, i) => (
 
                         <div
-                          className={cn(
-                            "h-2.5 w-2.5 rounded-full transition-all duration-300",
-                            intensity >= i * 2
-                              ? "bg-clay-primary"
-                              : "bg-clay-hairline"
-                          )}
-                        />
-
-                        <span
-                          className={cn(
-                            "text-[10px] font-semibold uppercase tracking-[0.12em]",
-                            intensity >= i * 2
-                              ? "text-clay-ink"
-                              : "text-clay-muted-soft"
-                          )}
+                          key={label}
+                          className="
+                            flex flex-col
+                            items-center gap-1.5
+                          "
                         >
-                          {label}
-                        </span>
 
-                      </div>
-                    ))}
+                          <div
+                            className={cn(
+
+                              `
+                              h-2 w-2
+
+                              rounded-full
+
+                              transition-all duration-300
+                              `,
+
+                              intensity >=
+                                i * 2
+                                ? "bg-[#111111]"
+                                : "bg-clay-hairline"
+                            )}
+                          />
+
+                          <span
+                            className={cn(
+
+                              `
+                              text-[9px]
+
+                              font-semibold
+
+                              uppercase
+
+                              tracking-[0.12em]
+                              `,
+
+                              intensity >=
+                                i * 2
+                                ? "text-clay-ink"
+                                : "text-clay-muted-soft"
+                            )}
+                          >
+                            {label}
+                          </span>
+
+                        </div>
+                      ))}
+
+                    </div>
 
                   </div>
 
                 </div>
 
-                {/* FOOTNOTE */}
-                <div className="mt-8 flex items-center justify-between rounded-[22px] bg-clay-canvas px-5 py-4">
+              </Card>
 
-                  <p className="max-w-xl text-[13px] leading-[1.7] text-clay-muted">
-                    Pain intensity can fluctuate
-                    depending on posture, stress,
-                    movement quality, and recovery
-                    load throughout the day.
-                  </p>
-
-                  <ArrowRight
-                    size={18}
-                    className="text-clay-muted"
-                  />
-
-                </div>
-
-              </div>
-
-            </Card>
+            </motion.div>
           );
         })}
 
       </div>
-
-      {/* EMPTY STATE */}
-      {painAreas.length === 0 && (
-
-        <div className="relative overflow-hidden rounded-[32px] border border-dashed border-clay-hairline bg-clay-surface-soft px-8 py-14">
-
-          <div className="absolute inset-0 bg-gradient-to-br from-clay-brand-peach/10 via-transparent to-clay-brand-lavender/10" />
-
-          <div className="relative z-10 flex flex-col items-center text-center">
-
-            <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-clay-canvas shadow-sm">
-
-              <AlertTriangle
-                size={28}
-                className="text-clay-muted"
-              />
-
-            </div>
-
-            <h3 className="mt-7 text-[1.6rem] font-semibold tracking-[-0.04em] text-clay-ink">
-              No pain regions selected
-            </h3>
-
-            <p className="mt-4 max-w-md text-[15px] leading-[1.85] text-clay-body">
-              Return to the previous step and
-              select at least one affected body
-              area to continue with intensity
-              evaluation.
-            </p>
-
-          </div>
-
-        </div>
-      )}
 
     </div>
   );

@@ -1,126 +1,845 @@
 'use client';
 
-import { useNavigate } from "react-router-dom"
-import { useAssessment } from "@context/AssessmentContext"
-import { useFormContext } from "react-hook-form"
-import type { AssessmentFormValues } from "@utils/schemas"
+import { useNavigate } from "react-router-dom";
+import { useAssessment } from "@context/AssessmentContext";
+import { useFormContext } from "react-hook-form";
 
-import StepPainMap from "./StepPainMap"
-import StepPainIntensity from "./StepPainIntensity"
-import StepMobility from "./StepMobility"
-import StepImpact from "./StepImpact"
-import StepReview from "./StepReview"
+import type {
+  AssessmentFormValues,
+} from "@utils/schemas";
 
-import { Button } from "@components/ui/Button"
-import Stepper from "@components/ui/Stepper"
+import type {
+  BodyArea,
+} from "@/types";
+
+import StepPainIntensity from "./StepPainIntensity";
+import StepMobility from "./StepMobility";
+import StepImpact from "./StepImpact";
+import StepReview from "./StepReview";
+
+import HumanSilhouette from "@/components/ui/HumanSilhouette";
+
+import { Button } from "@components/ui/Button";
 
 import {
   motion,
-  AnimatePresence
-} from "framer-motion"
+  AnimatePresence,
+} from "framer-motion";
 
 import {
   Activity,
   CheckCircle2,
-} from "lucide-react"
+  Sparkles,
+} from "lucide-react";
+
+/* =========================================================
+   STEPS
+========================================================= */
 
 const STEPS = [
   {
     id: 0,
     title: "Where do you feel discomfort?",
-    desc: "Select the areas where you currently experience pain or tension.",
-    label: "Pain Areas"
+    desc: "Select the affected movement regions.",
+    label: "Pain Areas",
   },
+
   {
     id: 1,
     title: "How intense is the discomfort?",
-    desc: "Rate the severity of your pain on a structured clinical scale.",
-    label: "Pain Intensity"
+    desc: "Rate your current pain intensity.",
+    label: "Intensity",
   },
+
   {
     id: 2,
     title: "How is your mobility today?",
-    desc: "Identify movements that currently feel restricted or difficult.",
-    label: "Mobility"
+    desc: "Understand movement restrictions.",
+    label: "Mobility",
   },
+
   {
     id: 3,
     title: "How does this affect your day?",
-    desc: "Understand how recovery impacts daily activity, sleep, and work.",
-    label: "Lifestyle Impact"
+    desc: "Measure lifestyle and recovery impact.",
+    label: "Impact",
   },
+
   {
     id: 4,
     title: "Review your assessment",
-    desc: "Confirm your responses before generating movement insights.",
-    label: "Review"
-  }
-]
+    desc: "Confirm before generating insights.",
+    label: "Review",
+  },
+];
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+const AREA_LABELS: Record<string, string> = {
+  neck: "Neck",
+  shoulder: "Shoulders",
+  elbow: "Elbows",
+  wrist: "Wrists",
+  upperBack: "Upper Back",
+  lowerBack: "Lower Back",
+  hip: "Hips",
+  knee: "Knees",
+  ankle: "Ankles",
+};
+
+/* =========================================================
+   COMPONENT
+========================================================= */
 
 function AssessmentPage() {
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
 
   const {
     currentStep,
-    setCurrentStep
-  } = useAssessment()
+    setCurrentStep,
+    painAreas,
+    setPainAreas,
+  } = useAssessment();
 
   const { trigger } =
-    useFormContext<AssessmentFormValues>()
+    useFormContext<AssessmentFormValues>();
 
   const progress =
-    ((currentStep + 1) / STEPS.length) * 100
+    ((currentStep + 1) / STEPS.length) * 100;
+
+  /* =====================================================
+     TOGGLE AREA
+  ===================================================== */
+
+  const handleAreaToggle = (
+    area: BodyArea
+  ) => {
+
+    const current =
+      Array.isArray(painAreas)
+        ? painAreas
+        : [];
+
+    if (current.includes(area)) {
+
+      setPainAreas(
+        current.filter(
+          (a) => a !== area
+        )
+      );
+
+    } else {
+
+      setPainAreas([
+        ...current,
+        area,
+      ]);
+    }
+  };
+
+  /* =====================================================
+     NEXT
+  ===================================================== */
 
   const handleNext = async () => {
-    let isValid = false
 
-    if (currentStep === 0)
-      isValid = await trigger("painAreas")
-    else if (currentStep === 1)
-      isValid = await trigger("painIntensity")
-    else if (currentStep === 2)
-      isValid = await trigger("mobilityDifficulty")
-    else if (currentStep === 3)
-      isValid = await trigger("dailyImpact")
-    else isValid = true
+    let isValid = false;
+
+    if (currentStep === 0) {
+
+      isValid =
+        await trigger("painAreas");
+
+    } else if (
+      currentStep === 1
+    ) {
+
+      isValid =
+        await trigger(
+          "painIntensity"
+        );
+
+    } else if (
+      currentStep === 2
+    ) {
+
+      isValid =
+        await trigger(
+          "mobilityDifficulty"
+        );
+
+    } else if (
+      currentStep === 3
+    ) {
+
+      isValid =
+        await trigger(
+          "dailyImpact"
+        );
+
+    } else {
+
+      isValid = true;
+    }
 
     if (
       isValid &&
-      currentStep < STEPS.length - 1
+      currentStep <
+      STEPS.length - 1
     ) {
-      setCurrentStep(currentStep + 1)
+
+      setCurrentStep(
+        currentStep + 1
+      );
 
       window.scrollTo({
         top: 0,
-        behavior: "smooth"
-      })
+        behavior: "smooth",
+      });
     }
-  }
+  };
+
+  /* =====================================================
+     PREVIOUS
+  ===================================================== */
 
   const handlePrevious = () => {
+
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
+
+      setCurrentStep(
+        currentStep - 1
+      );
 
       window.scrollTo({
         top: 0,
-        behavior: "smooth"
-      })
+        behavior: "smooth",
+      });
     }
-  }
+  };
+
+  /* =====================================================
+     STEP CONTENT
+  ===================================================== */
 
   const renderStep = () => {
+
+    if (currentStep === 0) {
+
+      return (
+
+        <div
+          className="
+            grid gap-6
+            xl:grid-cols-[1fr_1fr]
+          "
+        >
+
+          {/* =================================================
+              LEFT PANEL
+          ================================================= */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 10,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            className="
+              relative overflow-hidden
+
+              rounded-[34px]
+
+              border border-clay-hairline
+
+              bg-white/[0.72]
+
+              p-6
+
+              backdrop-blur-2xl
+
+              shadow-[0_10px_40px_rgba(0,0,0,0.04)]
+            "
+          >
+
+            {/* AMBIENT */}
+
+            <div
+              className="
+                pointer-events-none
+                absolute right-[-100px] top-[-100px]
+
+                h-[240px] w-[240px]
+
+                rounded-full
+
+                bg-clay-brand-peach/8
+
+                blur-[110px]
+              "
+            />
+
+            {/* HEADER */}
+
+            <div
+              className="
+                relative z-10
+
+                flex items-start
+                justify-between
+                gap-5
+              "
+            >
+
+              <div>
+
+                <div
+                  className="
+                    inline-flex items-center gap-2
+
+                    rounded-full
+
+                    border border-clay-hairline
+
+                    bg-clay-surface-soft
+
+                    px-3 py-2
+                  "
+                >
+
+                  <div
+                    className="
+                      h-2 w-2
+                      rounded-full
+                      bg-clay-brand-coral
+                    "
+                  />
+
+                  <span
+                    className="
+                      text-[10px]
+                      font-semibold
+                      uppercase
+                      tracking-[0.16em]
+                      text-clay-muted
+                    "
+                  >
+                    Body Mapping
+                  </span>
+
+                </div>
+
+                <h2
+                  className="
+                    mt-5
+
+                    max-w-[320px]
+
+                    text-[2.3rem]
+
+                    leading-[0.95]
+
+                    tracking-[-0.06em]
+
+                    text-clay-ink
+
+                    clay-display
+                  "
+                >
+                  Select affected regions.
+                </h2>
+
+                <p
+                  className="
+                    mt-4
+
+                    max-w-[320px]
+
+                    text-[15px]
+
+                    leading-[1.8]
+
+                    text-clay-body
+                  "
+                >
+                  Tap movement regions where
+                  discomfort or stiffness exists.
+                </p>
+
+              </div>
+
+              <div
+                className="
+                  flex h-12 w-12
+                  shrink-0
+                  items-center justify-center
+
+                  rounded-2xl
+
+                  bg-[#111111]
+
+                  text-white
+                "
+              >
+                <Activity size={18} />
+              </div>
+
+            </div>
+
+            {/* SILHOUETTE */}
+
+            <div
+              className="
+                relative z-10
+
+                mt-8
+
+                flex items-center
+                justify-center
+              "
+            >
+
+              <HumanSilhouette
+                compact
+                selectedAreas={
+                  painAreas || []
+                }
+                onAreaToggle={
+                  handleAreaToggle
+                }
+                className="
+                  scale-[0.96]
+                "
+              />
+
+            </div>
+
+            {/* FOOTER */}
+
+            <div
+              className="
+                relative z-10
+
+                mt-6
+
+                flex items-center
+                justify-between
+
+                border-t border-clay-hairline
+
+                pt-5
+              "
+            >
+
+              <div>
+
+                <div
+                  className="
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.16em]
+                    text-clay-muted
+                  "
+                >
+                  Active Regions
+                </div>
+
+                <div
+                  className="
+                    mt-2
+
+                    text-[2.3rem]
+
+                    leading-none
+
+                    tracking-[-0.05em]
+
+                    text-clay-ink
+
+                    clay-display
+                  "
+                >
+                  {painAreas?.length || 0}
+                </div>
+
+              </div>
+
+              <div
+                className="
+                  rounded-2xl
+
+                  border border-clay-hairline
+
+                  bg-clay-surface-soft
+
+                  px-4 py-3
+                "
+              >
+
+                <div
+                  className="
+                    text-[11px]
+                    font-medium
+                    text-clay-body
+                  "
+                >
+                  Multi-select enabled
+                </div>
+
+              </div>
+
+            </div>
+
+          </motion.div>
+
+          {/* =================================================
+              RIGHT PANEL
+          ================================================= */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 10,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              delay: 0.04,
+            }}
+            className="
+              relative overflow-hidden
+
+              rounded-[34px]
+
+              border border-clay-hairline
+
+              bg-white/[0.72]
+
+              p-6
+
+              backdrop-blur-2xl
+
+              shadow-[0_10px_40px_rgba(0,0,0,0.04)]
+            "
+          >
+
+            <div
+              className="
+                pointer-events-none
+                absolute bottom-[-120px] right-[-100px]
+
+                h-[260px] w-[260px]
+
+                rounded-full
+
+                bg-clay-brand-lavender/8
+
+                blur-[120px]
+              "
+            />
+
+            <div
+              className="
+                relative z-10
+
+                flex items-start
+                justify-between
+                gap-5
+              "
+            >
+
+              <div>
+
+                <div
+                  className="
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.16em]
+                    text-clay-muted
+                  "
+                >
+                  Selected Regions
+                </div>
+
+                <h3
+                  className="
+                    mt-3
+
+                    text-[2.5rem]
+
+                    leading-[0.95]
+
+                    tracking-[-0.06em]
+
+                    text-clay-ink
+
+                    clay-display
+                  "
+                >
+                  {painAreas?.length || 0}
+                </h3>
+
+              </div>
+
+              <div
+                className="
+                  flex h-12 w-12
+                  items-center justify-center
+
+                  rounded-2xl
+
+                  bg-[#111111]
+
+                  text-white
+                "
+              >
+                <Sparkles size={18} />
+              </div>
+
+            </div>
+
+            <div
+              className="
+                relative z-10
+
+                mt-7
+
+                min-h-[430px]
+
+                rounded-[28px]
+
+                border border-clay-hairline
+
+                bg-[#F8F5EE]
+
+                p-5
+              "
+            >
+
+              {painAreas?.length > 0 ? (
+
+                <div
+                  className="
+                    flex h-full
+                    flex-col
+                    justify-between
+                  "
+                >
+
+                  <div
+                    className="
+                      flex flex-wrap gap-3
+                    "
+                  >
+
+                    {painAreas.map(
+                      (area) => (
+
+                        <motion.button
+                          key={area}
+
+                          whileHover={{
+                            y: -1,
+                          }}
+
+                          whileTap={{
+                            scale: 0.98,
+                          }}
+
+                          onClick={() =>
+                            handleAreaToggle(
+                              area
+                            )
+                          }
+
+                          className="
+                            inline-flex items-center gap-2.5
+
+                            rounded-full
+
+                            border border-clay-hairline
+
+                            bg-white
+
+                            px-4 py-3
+
+                            transition-all duration-300
+
+                            hover:border-black/10
+                            hover:shadow-sm
+                          "
+                        >
+
+                          <div
+                            className="
+                              h-2 w-2
+                              rounded-full
+                              bg-clay-brand-coral
+                            "
+                          />
+
+                          <span
+                            className="
+                              text-[13px]
+                              font-medium
+                              text-clay-ink
+                            "
+                          >
+                            {
+                              AREA_LABELS[
+                              area
+                              ]
+                            }
+                          </span>
+
+                        </motion.button>
+                      )
+                    )}
+
+                  </div>
+
+                  <div
+                    className="
+                      mt-8
+
+                      rounded-[24px]
+
+                      border border-clay-hairline
+
+                      bg-white/80
+
+                      p-5
+                    "
+                  >
+
+                    <div
+                      className="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-[0.16em]
+                        text-clay-muted
+                      "
+                    >
+                      Initial Insight
+                    </div>
+
+                    <p
+                      className="
+                        mt-4
+
+                        max-w-lg
+
+                        text-[14px]
+
+                        leading-[1.8]
+
+                        text-clay-body
+                      "
+                    >
+                      Selected movement regions
+                      suggest potential mobility
+                      stress patterns. Continue to
+                      generate recovery insights.
+                    </p>
+
+                  </div>
+
+                </div>
+
+              ) : (
+
+                <div
+                  className="
+                    flex h-full min-h-[320px]
+                    flex-col items-center
+                    justify-center
+                    text-center
+                  "
+                >
+
+                  <div
+                    className="
+                      flex h-16 w-16
+                      items-center justify-center
+
+                      rounded-full
+
+                      bg-white
+
+                      shadow-sm
+                    "
+                  >
+                    <Activity size={22} />
+                  </div>
+
+                  <h4
+                    className="
+                      mt-7
+
+                      text-[2rem]
+
+                      leading-[1]
+
+                      tracking-[-0.05em]
+
+                      text-clay-ink
+
+                      clay-display
+                    "
+                  >
+                    No regions selected
+                  </h4>
+
+                  <p
+                    className="
+                      mt-4
+
+                      max-w-md
+
+                      text-[15px]
+
+                      leading-[1.8]
+
+                      text-clay-body
+                    "
+                  >
+                    Select regions on the body map
+                    to build your movement profile.
+                  </p>
+
+                </div>
+
+              )}
+
+            </div>
+
+          </motion.div>
+
+        </div>
+      );
+    }
+
     switch (currentStep) {
-      case 0:
-        return <StepPainMap />
 
       case 1:
-        return <StepPainIntensity />
+        return <StepPainIntensity />;
 
       case 2:
-        return <StepMobility />
+        return <StepMobility />;
 
       case 3:
-        return <StepImpact />
+        return <StepImpact />;
 
       case 4:
         return (
@@ -129,111 +848,177 @@ function AssessmentPage() {
               navigate("/results")
             }
           />
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
+
+  /* =====================================================
+     UI
+  ===================================================== */
 
   return (
-    <main className="min-h-screen bg-clay-canvas text-clay-ink overflow-x-hidden">
 
-      {/* AMBIENT BACKGROUND */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+    <main
+      className="
+        min-h-screen
+        overflow-x-hidden
+        bg-clay-canvas
+        text-clay-ink
+      "
+    >
 
-        <div className="absolute left-1/2 top-[-240px] h-[720px] w-[720px] -translate-x-1/2 rounded-full bg-clay-brand-teal/5 blur-[120px]" />
+      {/* =================================================
+          BACKGROUND
+      ================================================= */}
 
-        <div className="absolute right-[-120px] top-[20%] h-[320px] w-[320px] rounded-full bg-clay-brand-lavender/10 blur-[120px]" />
+      <div
+        className="
+          pointer-events-none
+          fixed inset-0
+          overflow-hidden
+        "
+      >
+
+        <div
+          className="
+            absolute left-1/2 top-[-240px]
+
+            h-[720px] w-[720px]
+
+            -translate-x-1/2
+
+            rounded-full
+
+            bg-clay-brand-peach/10
+
+            blur-[140px]
+          "
+        />
 
       </div>
 
-      {/* TOP HEADER */}
+      {/* =================================================
+          TOP BAR
+      ================================================= */}
+
       <section
         className="
-          sticky top-0 z-50
+          sticky top-0 z-40
+
           border-b border-clay-hairline
-          bg-clay-canvas/90
+
+          bg-clay-canvas/88
+
           backdrop-blur-2xl
         "
       >
 
-        <div className="mx-auto max-w-[1280px] px-5 md:px-8">
+        <div
+          className="
+            mx-auto
+            w-full
+            max-w-[1280px]
 
-          {/* TOP ROW */}
-          <div className="flex items-center justify-between py-5">
+            px-6
+            py-5
+          "
+        >
 
-            {/* LEFT */}
-            <div className="flex items-center gap-4">
+          <div
+            className="
+              flex items-center
+              justify-between
+            "
+          >
+
+            <div
+              className="
+                flex items-center gap-4
+              "
+            >
 
               <div
                 className="
-                  flex h-12 w-12 items-center justify-center
+                  flex h-12 w-12
+                  items-center justify-center
+
                   rounded-2xl
-                  bg-clay-primary
+
+                  bg-[#111111]
+
                   text-white
-                  shadow-[0_10px_30px_rgba(0,0,0,0.10)]
                 "
               >
-                <Activity size={21} />
+                <Activity size={20} />
               </div>
 
               <div>
 
                 <div
                   className="
-                    text-[11px]
+                    text-[10px]
                     font-semibold
                     uppercase
-                    tracking-[0.14em]
+                    tracking-[0.18em]
                     text-clay-muted
                   "
                 >
-                  Clinical Assessment
+                  Movement Assessment
                 </div>
 
                 <div
                   className="
                     mt-1
-                    text-lg
-                    font-semibold
-                    tracking-[-0.03em]
+
+                    text-[22px]
+
+                    tracking-[-0.05em]
+
                     text-clay-ink
+
                     clay-display
                   "
                 >
-                  Movement Evaluation
+                  Clinical Evaluation
                 </div>
 
               </div>
 
             </div>
 
-            {/* RIGHT */}
             <div
               className="
                 hidden md:flex
-                items-center gap-3
-                rounded-2xl
+                items-center gap-2
+
+                rounded-full
+
                 border border-clay-hairline
+
                 bg-white/80
+
                 px-4 py-3
               "
             >
 
               <CheckCircle2
-                size={16}
-                className="text-clay-brand-teal"
+                size={14}
+                className="
+                  text-clay-brand-teal
+                "
               />
 
               <span
                 className="
-                  text-sm
+                  text-[13px]
                   font-medium
                   text-clay-body
                 "
               >
-                Progress automatically saved
+                Auto-saved
               </span>
 
             </div>
@@ -241,53 +1026,104 @@ function AssessmentPage() {
           </div>
 
           {/* PROGRESS */}
-          <div className="pb-5">
 
-            <div className="mb-3 flex items-center justify-between">
+          <div className="mt-5">
+
+            <div
+              className="
+                flex items-center
+                justify-between
+              "
+            >
 
               <div
                 className="
-                  text-sm
-                  font-semibold
-                  text-clay-ink
+                  flex items-center gap-4
                 "
               >
-                Step {currentStep + 1} of {STEPS.length}
+
+                <div
+                  className="
+                    rounded-full
+
+                    border border-clay-hairline
+
+                    bg-white
+
+                    px-3 py-1.5
+
+                    text-[12px]
+                    font-semibold
+
+                    text-clay-ink
+                  "
+                >
+                  {currentStep + 1} /{" "}
+                  {STEPS.length}
+                </div>
+
+                <div
+                  className="
+                    text-[14px]
+                    font-medium
+                    text-clay-body
+                  "
+                >
+                  {
+                    STEPS[
+                      currentStep
+                    ].label
+                  }
+                </div>
+
               </div>
 
               <div
                 className="
-                  text-sm
+                  text-[14px]
                   font-medium
-                  text-clay-muted
+                  text-clay-body
                 "
               >
-                {Math.round(progress)}% completed
+                {Math.round(progress)}%
               </div>
 
             </div>
 
-            {/* BAR */}
             <div
               className="
-                h-2 overflow-hidden
+                mt-4
+
+                h-[2px]
+
+                overflow-hidden
+
                 rounded-full
-                bg-clay-surface-strong
+
+                bg-clay-hairline
               "
             >
 
               <motion.div
                 initial={false}
+
                 animate={{
-                  width: `${progress}%`
+                  width: `${progress}%`,
                 }}
+
                 transition={{
                   duration: 0.45,
-                  ease: [0.22, 1, 0.36, 1]
+                  ease: [
+                    0.22,
+                    1,
+                    0.36,
+                    1,
+                  ],
                 }}
+
                 className="
-                  h-full rounded-full
-                  bg-clay-brand-teal
+                  h-full
+                  bg-[#111111]
                 "
               />
 
@@ -295,16 +1131,112 @@ function AssessmentPage() {
 
           </div>
 
-          {/* DESKTOP STEPPER */}
-          <div className="hidden lg:block pb-6">
+        </div>
 
-            <Stepper
-              steps={STEPS.map((s) => s.label)}
-              current={currentStep}
-              onSelect={(i) =>
-                setCurrentStep(i)
+      </section>
+
+      {/* =================================================
+          HERO
+      ================================================= */}
+
+      <section
+        className="
+          pt-14
+          px-6
+        "
+      >
+
+        <div
+          className="
+            mx-auto
+            w-full
+            max-w-[1280px]
+          "
+        >
+
+          <div
+            className="
+              max-w-[1000px]
+              text-center
+              mx-auto
+            "
+          >
+
+            <div
+              className="
+                inline-flex items-center
+
+                rounded-full
+
+                border border-clay-hairline
+
+                bg-white/80
+
+                px-4 py-2
+
+                text-[11px]
+                font-semibold
+
+                uppercase
+
+                tracking-[0.16em]
+
+                text-clay-muted
+              "
+            >
+              {
+                STEPS[
+                  currentStep
+                ].label
               }
-            />
+            </div>
+
+            <h1
+              className="
+                mx-auto
+                mt-7
+
+                max-w-[860px]
+
+                text-[54px]
+                leading-[0.92]
+
+                tracking-[-0.08em]
+
+                text-clay-ink
+
+                clay-display
+
+                md:text-[84px]
+              "
+            >
+              {
+                STEPS[
+                  currentStep
+                ].title
+              }
+            </h1>
+
+            <p
+              className="
+                mx-auto
+                mt-6
+
+                max-w-xl
+
+                text-[17px]
+
+                leading-[1.8]
+
+                text-clay-body
+              "
+            >
+              {
+                STEPS[
+                  currentStep
+                ].desc
+              }
+            </p>
 
           </div>
 
@@ -312,309 +1244,123 @@ function AssessmentPage() {
 
       </section>
 
-      {/* MAIN */}
+      {/* =================================================
+          CONTENT
+      ================================================= */}
+
       <section
         className="
-          relative z-10
-          px-5 md:px-8
-          pt-10 md:pt-14
-          pb-32 md:pb-20
+          pt-12
+          pb-24
+          px-6
         "
       >
 
-        <div className="mx-auto max-w-[1280px]">
+        <div
+          className="
+            mx-auto
+            w-full
+            max-w-[1280px]
+          "
+        >
 
           <AnimatePresence mode="wait">
 
             <motion.div
               key={currentStep}
+
               initial={{
                 opacity: 0,
-                y: 12
+                y: 12,
               }}
+
               animate={{
                 opacity: 1,
-                y: 0
+                y: 0,
               }}
+
               exit={{
                 opacity: 0,
-                y: -10
+                y: -10,
               }}
+
               transition={{
                 duration: 0.35,
-                ease: [0.22, 1, 0.36, 1]
+                ease: [
+                  0.22,
+                  1,
+                  0.36,
+                  1,
+                ],
               }}
             >
 
-              {/* STICKY CONTEXT HEADER */}
-              <div
-                className="
-                  sticky top-[132px]
-                  z-30
-                  bg-clay-canvas/92
-                  backdrop-blur-xl
-                  pb-8
-                "
-              >
-
-                <div className="mx-auto max-w-3xl text-center">
-
-                  <motion.div
-                    initial={{
-                      opacity: 0,
-                      y: 8
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0
-                    }}
-                    transition={{
-                      delay: 0.04
-                    }}
-                    className="mb-5"
-                  >
-
-                    <span
-                      className="
-                        inline-flex items-center
-                        rounded-full
-                        border border-clay-hairline
-                        bg-white/90
-                        px-4 py-2
-                        text-[11px]
-                        font-semibold
-                        uppercase
-                        tracking-[0.12em]
-                        text-clay-brand-teal
-                        shadow-sm
-                      "
-                    >
-                      {STEPS[currentStep].label}
-                    </span>
-
-                  </motion.div>
-
-                  <motion.h1
-                    initial={{
-                      opacity: 0,
-                      y: 10
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0
-                    }}
-                    transition={{
-                      delay: 0.08
-                    }}
-                    className="
-                      text-[2.5rem]
-                      md:text-[4.2rem]
-                      font-medium
-                      leading-[0.98]
-                      tracking-[-0.055em]
-                      text-clay-ink
-                      clay-display
-                    "
-                  >
-                    {STEPS[currentStep].title}
-                  </motion.h1>
-
-                  <motion.p
-                    initial={{
-                      opacity: 0,
-                      y: 10
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0
-                    }}
-                    transition={{
-                      delay: 0.12
-                    }}
-                    className="
-                      mx-auto mt-5
-                      max-w-2xl
-                      text-[16px] md:text-[18px]
-                      font-medium
-                      leading-[1.85]
-                      text-clay-body
-                    "
-                  >
-                    {STEPS[currentStep].desc}
-                  </motion.p>
-
-                </div>
-
-              </div>
-
-              {/* CONTENT */}
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  y: 14
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0
-                }}
-                transition={{
-                  delay: 0.16
-                }}
-                className="mt-4"
-              >
-
-                <div
-                  className="
-                    rounded-[36px]
-                    border border-clay-hairline
-                    bg-white/85
-                    backdrop-blur-xl
-                    p-5 md:p-10
-                    shadow-[0_10px_50px_rgba(0,0,0,0.04)]
-                  "
-                >
-
-                  {/* STEP CONTENT */}
-                  <div
-                    className="
-                      min-h-[68vh]
-                      lg:min-h-[72vh]
-                    "
-                  >
-                    {renderStep()}
-                  </div>
-
-                  {/* FOOTER */}
-                  <div
-                    className="
-                      mt-10
-                      border-t border-clay-hairline
-                      pt-8
-                    "
-                  >
-
-                    <div
-                      className="
-                        flex flex-col gap-6
-                        md:flex-row
-                        md:items-center
-                        md:justify-between
-                      "
-                    >
-
-                      {/* LEFT */}
-                      <div className="flex items-center gap-4">
-
-                        <Button
-                          variant="secondary"
-                          onClick={handlePrevious}
-                          disabled={currentStep === 0}
-                          className="
-                            h-12
-                            rounded-2xl
-                            border border-clay-hairline
-                            bg-white
-                            px-6
-                            text-[13px]
-                            font-semibold
-                            transition-all duration-300
-                            hover:bg-clay-surface-soft
-                          "
-                        >
-                          Back
-                        </Button>
-
-                        <div
-                          className="
-                            hidden md:block
-                            text-sm
-                            font-medium
-                            text-clay-muted
-                          "
-                        >
-                          Responses are securely stored during assessment
-                        </div>
-
-                      </div>
-
-                      {/* RIGHT */}
-                      <div className="flex items-center gap-4">
-
-                        {/* STEP INDICATOR */}
-                        <div
-                          className="
-                            hidden sm:flex
-                            items-center gap-2
-                            rounded-2xl
-                            bg-clay-surface-soft
-                            px-4 py-3
-                          "
-                        >
-
-                          <div
-                            className="
-                              h-2 w-2 rounded-full
-                              bg-clay-brand-teal
-                            "
-                          />
-
-                          <span
-                            className="
-                              text-sm
-                              font-medium
-                              text-clay-body
-                            "
-                          >
-                            {currentStep + 1} / {STEPS.length}
-                          </span>
-
-                        </div>
-
-                        {/* NEXT */}
-                        {currentStep <
-                          STEPS.length - 1 && (
-                            <Button
-                              onClick={handleNext}
-                              className="
-                                h-12
-                                rounded-2xl
-                                bg-clay-primary
-                                px-7
-                                text-[13px]
-                                font-semibold
-                                uppercase
-                                tracking-[0.08em]
-                                text-white
-                                shadow-[0_12px_30px_rgba(0,0,0,0.10)]
-                                transition-all duration-300
-                                hover:scale-[1.02]
-                                hover:bg-clay-brand-teal
-                              "
-                            >
-                              Continue
-                            </Button>
-                          )}
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </motion.div>
+              {renderStep()}
 
             </motion.div>
 
           </AnimatePresence>
+
+          {/* FOOTER */}
+
+          <div
+            className="
+              mt-12
+
+              flex items-center
+              justify-between
+            "
+          >
+
+            <Button
+              variant="secondary"
+              onClick={
+                handlePrevious
+              }
+              disabled={
+                currentStep === 0
+              }
+              className="
+                h-12
+                rounded-2xl
+                px-6
+              "
+            >
+              Back
+            </Button>
+
+            {currentStep <
+              STEPS.length - 1 && (
+
+                <Button
+                  onClick={
+                    handleNext
+                  }
+                  className="
+                    h-12
+
+                    rounded-2xl
+
+                    bg-[#111111]
+
+                    px-7
+
+                    text-white
+                  "
+                >
+                  Continue
+                </Button>
+
+              )}
+
+          </div>
 
         </div>
 
       </section>
 
     </main>
-  )
+  );
 }
 
-export default AssessmentPage
+export default AssessmentPage;

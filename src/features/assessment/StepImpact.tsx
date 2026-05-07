@@ -1,59 +1,84 @@
 'use client';
 
 import { DAILY_IMPACT_QUESTIONS } from "@utils/constants";
+
 import { Card } from "@components/ui/Card";
+
 import { cn } from "@/lib/utils";
+
 import { useFormContext } from "react-hook-form";
-import type { AssessmentFormValues } from "@utils/schemas";
+
+import type {
+  AssessmentFormValues,
+} from "@utils/schemas";
 
 import {
   Briefcase,
   Moon,
   Activity,
   Sparkles,
-  ArrowRight,
 } from "lucide-react";
 
+import { motion } from "framer-motion";
+
+/* =========================================================
+   CATEGORY CONFIG
+========================================================= */
+
 const categoryConfig = {
+
   work: {
     icon: Briefcase,
-    label: "Work Performance",
+    label: "Work",
     accent:
-      "bg-clay-brand-lavender/20 text-clay-ink",
+      "bg-clay-brand-lavender/14 text-clay-ink",
     glow:
-      "from-clay-brand-lavender/20 to-transparent",
+      "from-clay-brand-lavender/8 via-transparent to-transparent",
   },
 
   sleep: {
     icon: Moon,
-    label: "Sleep Recovery",
+    label: "Sleep",
     accent:
-      "bg-clay-brand-peach/20 text-clay-ink",
+      "bg-clay-brand-peach/14 text-clay-ink",
     glow:
-      "from-clay-brand-peach/20 to-transparent",
+      "from-clay-brand-peach/8 via-transparent to-transparent",
   },
 
   activity: {
     icon: Activity,
-    label: "Daily Movement",
+    label: "Movement",
     accent:
-      "bg-clay-brand-mint/30 text-clay-ink",
+      "bg-clay-brand-mint/16 text-clay-ink",
     glow:
-      "from-clay-brand-mint/20 to-transparent",
+      "from-clay-brand-mint/8 via-transparent to-transparent",
   },
 };
 
+/* =========================================================
+   COMPONENT
+========================================================= */
+
 function StepImpact() {
-  const { watch, setValue } =
+
+  const {
+    watch,
+    setValue,
+  } =
     useFormContext<AssessmentFormValues>();
 
   const dailyImpact =
     watch("dailyImpact") || [];
 
+  /* =====================================================
+     UPDATE
+  ===================================================== */
+
   const handleImpactChange = (
     questionId: string,
     impact: number
   ) => {
+
     const question =
       DAILY_IMPACT_QUESTIONS.find(
         (q) => q.id === questionId
@@ -61,187 +86,326 @@ function StepImpact() {
 
     if (!question) return;
 
-    const updated = [...dailyImpact];
+    const updated =
+      [...dailyImpact];
 
-    const index = updated.findIndex(
-      (q) => q.id === questionId
-    );
+    const index =
+      updated.findIndex(
+        (q) => q.id === questionId
+      );
 
     if (index >= 0) {
+
       updated[index] = {
         ...updated[index],
         impact,
       };
+
     } else {
+
       updated.push({
         id: questionId,
         category: question.category,
         impact,
-        description: question.description,
+        description:
+          question.description,
       });
     }
 
-    setValue("dailyImpact", updated, {
-      shouldValidate: true,
-    });
+    setValue(
+      "dailyImpact",
+      updated,
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      }
+    );
   };
 
-  const getSeverity = (impact: number) => {
-    if (impact <= 2)
-      return {
-        label: "Minimal",
-        tone:
-          "bg-clay-brand-mint/25 text-clay-ink",
-      };
-
-    if (impact <= 5)
-      return {
-        label: "Moderate",
-        tone:
-          "bg-clay-brand-peach/20 text-clay-ink",
-      };
-
-    if (impact <= 7)
-      return {
-        label: "Elevated",
-        tone:
-          "bg-clay-brand-ochre/25 text-clay-ink",
-      };
-
-    return {
-      label: "Significant",
-      tone:
-        "bg-clay-brand-pink/20 text-clay-ink",
-    };
-  };
+  /* =====================================================
+     METRICS
+  ===================================================== */
 
   const overallAverage =
     dailyImpact.length > 0
       ? Math.round(
         dailyImpact.reduce(
-          (acc, item) => acc + item.impact,
+          (acc, item) =>
+            acc + item.impact,
           0
-        ) / dailyImpact.length
+        ) /
+        dailyImpact.length
       )
       : 0;
 
+  const highImpactCount =
+    dailyImpact.filter(
+      (item) =>
+        item.impact >= 7
+    ).length;
+
+  const getSeverity = (
+    impact: number
+  ) => {
+
+    if (impact <= 2) {
+
+      return {
+        label: "Minimal",
+        tone:
+          "bg-clay-brand-mint/14 text-clay-ink",
+      };
+    }
+
+    if (impact <= 5) {
+
+      return {
+        label: "Moderate",
+        tone:
+          "bg-clay-brand-peach/14 text-clay-ink",
+      };
+    }
+
+    if (impact <= 7) {
+
+      return {
+        label: "Elevated",
+        tone:
+          "bg-clay-brand-ochre/14 text-clay-ink",
+      };
+    }
+
+    return {
+      label: "Severe",
+      tone:
+        "bg-clay-brand-pink/14 text-clay-ink",
+    };
+  };
+
+  /* =====================================================
+     UI
+  ===================================================== */
+
   return (
-    <div className="space-y-14">
 
-      {/* INTRO */}
-      <section className="max-w-3xl">
+    <div className="space-y-6">
 
-        <div className="inline-flex items-center gap-2 rounded-full bg-clay-surface-card px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-clay-muted">
-          <Sparkles size={14} />
-          Lifestyle Impact Analysis
-        </div>
+      {/* =================================================
+          HERO
+      ================================================= */}
 
-        <h2 className="mt-7 clay-display text-[2.2rem] leading-[1.02] tracking-[-0.05em] text-clay-ink md:text-[3rem]">
-          Understand how recovery affects
-          your daily life.
-        </h2>
+      <section
+        className="
+          relative overflow-hidden
 
-        <p className="mt-6 max-w-2xl text-[1rem] leading-[1.9] text-clay-body md:text-[1.05rem]">
-          Evaluate how discomfort influences
-          focus, recovery quality, movement,
-          and overall day-to-day performance.
-          The assessment helps surface patterns
-          beyond pain alone.
-        </p>
+          rounded-[32px]
 
-      </section>
+          border border-clay-hairline
 
-      {/* OVERVIEW */}
-      <section className="relative overflow-hidden rounded-[32px] bg-clay-surface-card px-7 py-7 md:px-10 md:py-9">
+          bg-white/[0.72]
 
-        <div className="absolute inset-0 bg-gradient-to-br from-clay-brand-lavender/10 via-transparent to-clay-brand-peach/10 pointer-events-none" />
+          px-6 py-6
 
-        <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+          backdrop-blur-2xl
+        "
+      >
+
+        <div
+          className="
+            absolute inset-0
+
+            bg-gradient-to-br
+
+            from-clay-brand-lavender/5
+            via-transparent
+            to-clay-brand-peach/5
+          "
+        />
+
+        <div
+          className="
+            relative z-10
+
+            flex flex-col gap-8
+
+            lg:flex-row
+            lg:items-end
+            lg:justify-between
+          "
+        >
 
           {/* LEFT */}
-          <div className="max-w-xl">
 
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-clay-muted">
-              Overall Daily Impact
-            </p>
+          <div className="max-w-2xl">
 
-            <div className="mt-4 flex items-end gap-3">
+            <div
+              className="
+                inline-flex items-center gap-2
 
-              <div className="clay-display text-[4.5rem] leading-none tracking-[-0.07em] text-clay-ink">
-                {overallAverage}
-              </div>
+                rounded-full
 
-              <div className="pb-3 text-sm text-clay-muted">
-                /10 impact score
-              </div>
+                border border-clay-hairline
+
+                bg-clay-surface-soft
+
+                px-4 py-2
+              "
+            >
+
+              <Sparkles size={12} />
+
+              <span
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.16em]
+                  text-clay-muted
+                "
+              >
+                Lifestyle Impact
+              </span>
 
             </div>
 
-            <p className="mt-5 text-[15px] leading-[1.9] text-clay-body">
-              Your current lifestyle impact
-              reflects how symptoms influence
-              work performance, sleep recovery,
-              and physical activity throughout
-              the day.
+            <h2
+              className="
+                mt-5
+
+                text-[2.2rem]
+
+                leading-[0.95]
+
+                tracking-[-0.06em]
+
+                text-clay-ink
+
+                clay-display
+
+                md:text-[3.2rem]
+              "
+            >
+              Understand daily recovery impact.
+            </h2>
+
+            <p
+              className="
+                mt-4
+
+                max-w-xl
+
+                text-[15px]
+
+                leading-[1.8]
+
+                text-clay-body
+              "
+            >
+              Measure how symptoms affect focus,
+              sleep quality, and everyday movement.
             </p>
 
           </div>
 
           {/* RIGHT */}
-          <div className="grid grid-cols-3 gap-4">
 
-            {[
-              {
-                label: "Focus",
-                value:
-                  dailyImpact.find(
-                    (q) => q.category === "work"
-                  )?.impact || 0,
-                bg:
-                  "bg-clay-brand-lavender/20",
-              },
+          <div
+            className="
+              flex items-center gap-4
+            "
+          >
 
-              {
-                label: "Sleep",
-                value:
-                  dailyImpact.find(
-                    (q) =>
-                      q.category === "sleep"
-                  )?.impact || 0,
-                bg:
-                  "bg-clay-brand-peach/20",
-              },
+            {/* AVG */}
 
-              {
-                label: "Movement",
-                value:
-                  dailyImpact.find(
-                    (q) =>
-                      q.category ===
-                      "activity"
-                  )?.impact || 0,
-                bg:
-                  "bg-clay-brand-mint/25",
-              },
-            ].map((item) => (
+            <div
+              className="
+                rounded-[24px]
+
+                border border-clay-hairline
+
+                bg-white/70
+
+                px-5 py-4
+              "
+            >
+
               <div
-                key={item.label}
-                className={cn(
-                  "rounded-[24px] px-5 py-5 text-center",
-                  item.bg
-                )}
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-clay-muted
+                "
               >
-
-                <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-clay-muted">
-                  {item.label}
-                </div>
-
-                <div className="mt-3 text-[2rem] font-semibold tracking-[-0.05em] text-clay-ink">
-                  {item.value}
-                </div>
-
+                Average
               </div>
-            ))}
+
+              <div
+                className="
+                  mt-2
+
+                  text-[2.8rem]
+
+                  leading-none
+
+                  tracking-[-0.06em]
+
+                  text-clay-ink
+
+                  clay-display
+                "
+              >
+                {overallAverage}
+              </div>
+
+            </div>
+
+            {/* HIGH */}
+
+            <div
+              className="
+                rounded-[24px]
+
+                border border-clay-hairline
+
+                bg-white/70
+
+                px-5 py-4
+              "
+            >
+
+              <div
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-clay-muted
+                "
+              >
+                High Impact
+              </div>
+
+              <div
+                className="
+                  mt-2
+
+                  text-[2.8rem]
+
+                  leading-none
+
+                  tracking-[-0.06em]
+
+                  text-clay-ink
+
+                  clay-display
+                "
+              >
+                {highImpactCount}
+              </div>
+
+            </div>
 
           </div>
 
@@ -249,14 +413,25 @@ function StepImpact() {
 
       </section>
 
-      {/* QUESTIONS */}
-      <div className="space-y-8">
+      {/* =================================================
+          IMPACT CARDS
+      ================================================= */}
+
+      <div
+        className="
+          grid gap-5
+
+          xl:grid-cols-2
+        "
+      >
 
         {DAILY_IMPACT_QUESTIONS.map(
           (question) => {
+
             const answer =
               dailyImpact.find(
-                (q) => q.id === question.id
+                (q) =>
+                  q.id === question.id
               );
 
             const impact =
@@ -270,206 +445,374 @@ function StepImpact() {
               question.category as keyof typeof categoryConfig
               ];
 
-            const Icon = config.icon;
+            const Icon =
+              config.icon;
 
             return (
-              <Card
+
+              <motion.div
                 key={question.id}
-                variant="cream"
-                hover={false}
-                className="relative overflow-hidden rounded-[32px] border border-clay-hairline/60 bg-clay-surface-card px-6 py-7 md:px-8 md:py-8"
+
+                initial={{
+                  opacity: 0,
+                  y: 8,
+                }}
+
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
               >
 
-                {/* Glow */}
-                <div
-                  className={cn(
-                    "absolute inset-0 bg-gradient-to-br opacity-70 pointer-events-none",
-                    config.glow
-                  )}
-                />
+                <Card
+                  variant="cream"
+                  hover={false}
+                  className="
+                    relative overflow-hidden
 
-                <div className="relative z-10">
+                    rounded-[28px]
 
-                  {/* TOP */}
-                  <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
+                    border border-clay-hairline/60
 
-                    {/* LEFT */}
-                    <div className="flex gap-5">
+                    bg-white/[0.78]
+
+                    px-5 py-5
+
+                    backdrop-blur-xl
+
+                    transition-all duration-300
+
+                    hover:border-black/5
+                    hover:shadow-[0_10px_30px_rgba(0,0,0,0.03)]
+                  "
+                >
+
+                  {/* GLOW */}
+
+                  <div
+                    className={cn(
+
+                      `
+                      absolute inset-0
+
+                      bg-gradient-to-br
+
+                      opacity-70
+                      `,
+
+                      config.glow
+                    )}
+                  />
+
+                  <div className="relative z-10">
+
+                    {/* =====================================
+                        HEADER
+                    ===================================== */}
+
+                    <div
+                      className="
+                        flex items-start
+                        justify-between
+                        gap-4
+                      "
+                    >
+
+                      {/* LEFT */}
+
+                      <div className="flex gap-4">
+
+                        <div
+                          className={cn(
+
+                            `
+                            flex h-11 w-11
+                            shrink-0
+                            items-center justify-center
+
+                            rounded-[16px]
+                            `,
+
+                            config.accent
+                          )}
+                        >
+                          <Icon size={18} />
+                        </div>
+
+                        <div>
+
+                          <div
+                            className="
+                              flex flex-wrap
+                              items-center gap-2
+                            "
+                          >
+
+                            <span
+                              className="
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-[0.14em]
+                                text-clay-muted
+                              "
+                            >
+                              {config.label}
+                            </span>
+
+                            <span
+                              className={cn(
+
+                                `
+                                rounded-full
+
+                                px-2.5 py-1
+
+                                text-[9px]
+                                font-semibold
+
+                                uppercase
+
+                                tracking-[0.12em]
+                                `,
+
+                                severity.tone
+                              )}
+                            >
+                              {severity.label}
+                            </span>
+
+                          </div>
+
+                          <h3
+                            className="
+                              mt-2
+
+                              max-w-[320px]
+
+                              text-[1.15rem]
+
+                              leading-[1.35]
+
+                              tracking-[-0.03em]
+
+                              text-clay-ink
+                            "
+                          >
+                            {
+                              question.description
+                            }
+                          </h3>
+
+                        </div>
+
+                      </div>
+
+                      {/* SCORE */}
 
                       <div
-                        className={cn(
-                          "flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px]",
-                          config.accent
-                        )}
+                        className="
+                          flex items-center gap-1.5
+
+                          rounded-[16px]
+
+                          border border-clay-hairline
+
+                          bg-clay-canvas
+
+                          px-3 py-2
+                        "
                       >
-                        <Icon size={24} />
-                      </div>
 
-                      <div className="max-w-2xl">
+                        <div
+                          className="
+                            text-[1.35rem]
 
-                        <div className="flex flex-wrap items-center gap-3">
+                            leading-none
 
-                          <span className="text-[11px] font-semibold uppercase tracking-[0.13em] text-clay-muted">
-                            {config.label}
-                          </span>
+                            tracking-[-0.05em]
 
-                          <span
-                            className={cn(
-                              "rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]",
-                              severity.tone
-                            )}
-                          >
-                            {severity.label}
-                          </span>
+                            text-clay-ink
 
-                        </div>
-
-                        <h3 className="mt-4 text-[1.35rem] font-semibold leading-[1.3] tracking-[-0.03em] text-clay-ink md:text-[1.5rem]">
-                          {
-                            question.description
-                          }
-                        </h3>
-
-                        <p className="mt-4 max-w-xl text-[15px] leading-[1.85] text-clay-body">
-                          Adjust the scale based
-                          on how strongly this area
-                          currently affects your
-                          everyday routine and
-                          overall comfort.
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                    {/* SCORE */}
-                    <div className="flex items-center gap-4 self-start rounded-[24px] bg-clay-canvas px-5 py-4">
-
-                      <div className="text-right">
-
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.13em] text-clay-muted">
-                          Current Score
-                        </div>
-
-                        <div className="mt-2 text-[2.1rem] font-semibold leading-none tracking-[-0.06em] text-clay-ink">
+                            clay-display
+                          "
+                        >
                           {impact}
                         </div>
 
-                      </div>
+                        <div
+                          className="
+                            text-[10px]
+                            font-medium
+                            text-clay-muted
+                          "
+                        >
+                          /10
+                        </div>
 
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-clay-primary text-sm font-semibold text-white">
-                        /10
                       </div>
 
                     </div>
 
-                  </div>
+                    {/* =====================================
+                        SLIDER
+                    ===================================== */}
 
-                  {/* SLIDER */}
-                  <div className="mt-10">
+                    <div className="mt-6">
 
-                    <div className="relative">
+                      {/* TRACK */}
 
-                      {/* Track */}
-                      <div className="h-[10px] overflow-hidden rounded-full bg-clay-surface-strong">
+                      <div className="relative">
 
                         <div
-                          className="h-full rounded-full bg-clay-primary transition-all duration-500"
-                          style={{
-                            width: `${impact * 10}%`,
-                          }}
+                          className="
+                            h-[8px]
+
+                            overflow-hidden
+
+                            rounded-full
+
+                            bg-clay-surface-strong
+                          "
+                        >
+
+                          <motion.div
+                            initial={false}
+
+                            animate={{
+                              width: `${impact * 10}%`,
+                            }}
+
+                            transition={{
+                              duration: 0.35,
+                            }}
+
+                            className="
+                              h-full
+
+                              rounded-full
+
+                              bg-[#111111]
+                            "
+                          />
+
+                        </div>
+
+                        {/* INPUT */}
+
+                        <input
+                          type="range"
+                          min="0"
+                          max="10"
+                          value={impact}
+
+                          onChange={(e) =>
+                            handleImpactChange(
+                              question.id,
+                              Number(
+                                e.target.value
+                              )
+                            )
+                          }
+
+                          aria-label={`Daily impact for ${question.description}`}
+
+                          className="
+                            absolute inset-0
+
+                            h-[8px] w-full
+
+                            cursor-pointer
+
+                            appearance-none
+
+                            bg-transparent
+
+                            opacity-0
+                          "
                         />
 
                       </div>
 
-                      {/* Input */}
-                      <input
-                        type="range"
-                        min="0"
-                        max="10"
-                        value={impact}
-                        onChange={(e) =>
-                          handleImpactChange(
-                            question.id,
-                            parseInt(
-                              e.target.value
-                            )
-                          )
-                        }
+                      {/* SCALE */}
+
+                      <div
                         className="
-                          absolute inset-0
-                          h-[10px] w-full
-                          cursor-pointer
-                          appearance-none
-                          bg-transparent
-                          opacity-0
+                          mt-4
+
+                          flex items-center
+                          justify-between
                         "
-                      />
+                      >
 
-                    </div>
-
-                    {/* SCALE */}
-                    <div className="mt-5 flex items-center justify-between">
-
-                      {[
-                        "No Impact",
-                        "Mild",
-                        "Moderate",
-                        "Strong",
-                        "Severe",
-                      ].map((label, i) => (
-                        <div
-                          key={label}
-                          className="flex flex-col items-center gap-2"
-                        >
+                        {[
+                          "None",
+                          "Mild",
+                          "Moderate",
+                          "High",
+                          "Severe",
+                        ].map((label, i) => (
 
                           <div
-                            className={cn(
-                              "h-2.5 w-2.5 rounded-full transition-all duration-300",
-                              impact >= i * 2
-                                ? "bg-clay-primary"
-                                : "bg-clay-hairline"
-                            )}
-                          />
-
-                          <span
-                            className={cn(
-                              "text-[10px] font-semibold uppercase tracking-[0.12em]",
-                              impact >= i * 2
-                                ? "text-clay-ink"
-                                : "text-clay-muted-soft"
-                            )}
+                            key={label}
+                            className="
+                              flex flex-col
+                              items-center gap-1.5
+                            "
                           >
-                            {label}
-                          </span>
 
-                        </div>
-                      ))}
+                            <div
+                              className={cn(
+
+                                `
+                                h-2 w-2
+
+                                rounded-full
+
+                                transition-all duration-300
+                                `,
+
+                                impact >=
+                                  i * 2
+                                  ? "bg-[#111111]"
+                                  : "bg-clay-hairline"
+                              )}
+                            />
+
+                            <span
+                              className={cn(
+
+                                `
+                                text-[9px]
+
+                                font-semibold
+
+                                uppercase
+
+                                tracking-[0.12em]
+                                `,
+
+                                impact >=
+                                  i * 2
+                                  ? "text-clay-ink"
+                                  : "text-clay-muted-soft"
+                              )}
+                            >
+                              {label}
+                            </span>
+
+                          </div>
+                        ))}
+
+                      </div>
 
                     </div>
 
                   </div>
 
-                  {/* FOOTNOTE */}
-                  <div className="mt-8 flex items-center justify-between rounded-[22px] bg-clay-canvas px-5 py-4">
+                </Card>
 
-                    <p className="max-w-xl text-[13px] leading-[1.7] text-clay-muted">
-                      Small daily limitations can
-                      compound over time. Monitoring
-                      consistency helps improve
-                      long-term recovery outcomes.
-                    </p>
-
-                    <ArrowRight
-                      size={18}
-                      className="text-clay-muted"
-                    />
-
-                  </div>
-
-                </div>
-
-              </Card>
+              </motion.div>
             );
           }
         )}

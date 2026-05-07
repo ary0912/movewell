@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
+
 import { motion } from "framer-motion"
 
 import {
@@ -10,9 +11,13 @@ import {
   ShieldCheck,
   TrendingUp,
   Sparkles,
+  HeartPulse,
+  MoveRight,
+  BrainCircuit,
 } from "lucide-react"
 
 import { useAssessment } from "@context/AssessmentContext"
+
 import { fetchHealthData } from "@services/assessmentService"
 
 import { Card } from "@components/ui/Card"
@@ -23,43 +28,68 @@ import {
   calculateImprovement,
 } from "@utils/scoring"
 
-import { cn } from "@/lib/utils"
-
 import type { HealthData } from "@/types"
 
 function ResultsPage() {
+
   const navigate = useNavigate()
 
   const { result } = useAssessment()
 
-  const [healthData, setHealthData] =
+  const [
+    healthData,
+    setHealthData,
+  ] =
     useState<HealthData | null>(null)
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] =
+    useState(true)
+
+  /* =====================================================
+     FETCH
+  ===================================================== */
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const data = await fetchHealthData()
 
-        setHealthData(data as HealthData)
+    const load = async () => {
+
+      try {
+
+        const data =
+          await fetchHealthData()
+
+        setHealthData(
+          data as HealthData
+        )
+
       } catch (error: unknown) {
+
         console.error(error)
+
       } finally {
+
         setLoading(false)
       }
     }
 
     void load()
+
   }, [])
 
-  const interpretation = useMemo(() => {
-    if (!result) return null
+  /* =====================================================
+     COMPUTED
+  ===================================================== */
 
-    return getScoreInterpretation(
-      result.overallScore
-    )
-  }, [result])
+  const interpretation =
+    useMemo(() => {
+
+      if (!result) return null
+
+      return getScoreInterpretation(
+        result.overallScore
+      )
+
+    }, [result])
 
   const previousScore =
     healthData?.history?.[
@@ -74,53 +104,127 @@ function ResultsPage() {
       )
       : null
 
-  const dominantInsight = useMemo(() => {
-    if (!result) return ""
+  const dominantInsight =
+    useMemo(() => {
 
-    if (
-      result.painScore >
-      result.mobilityScore &&
-      result.painScore >
-      result.impactScore
-    ) {
-      return "Pain signals are currently the dominant limiting factor. Prioritize inflammation reduction, recovery pacing, and controlled mobility restoration."
-    }
+      if (!result) return ""
 
-    if (
-      result.mobilityScore >
-      result.painScore &&
-      result.mobilityScore >
-      result.impactScore
-    ) {
-      return "Mobility restrictions are the primary limitation. Focus on progressive range-of-motion recovery and structural movement control."
-    }
+      if (
+        result.painScore >
+        result.mobilityScore &&
+        result.painScore >
+        result.impactScore
+      ) {
 
-    return "Your recovery profile appears balanced. Continue maintaining consistency through mobility, recovery pacing, and daily movement optimization."
-  }, [result])
+        return "Pain-related stress is currently the dominant recovery limitation. Controlled mobility restoration and recovery pacing are recommended."
+      }
+
+      if (
+        result.mobilityScore >
+        result.painScore &&
+        result.mobilityScore >
+        result.impactScore
+      ) {
+
+        return "Mobility restriction appears to be limiting recovery quality. Progressive range-of-motion and movement control work should be prioritized."
+      }
+
+      return "Your movement profile appears relatively balanced. Continue maintaining mobility consistency and sustainable recovery habits."
+
+    }, [result])
+
+  /* =====================================================
+     LOADING
+  ===================================================== */
 
   if (loading) {
+
     return (
-      <main className="min-h-screen bg-clay-canvas flex items-center justify-center px-6">
 
-        <div className="flex flex-col items-center gap-6">
+      <main className="min-h-screen bg-clay-canvas">
 
-          <div className="relative flex items-center justify-center">
+        <div
+          className="
+            mx-auto
 
-            <div className="absolute h-20 w-20 rounded-full bg-clay-brand-teal/10 blur-2xl" />
+            w-full
+            max-w-[1400px]
 
-            <div className="relative h-12 w-12 rounded-full border-[3px] border-clay-brand-teal border-t-transparent animate-spin" />
+            px-6
+            md:px-8
+            xl:px-10
+          "
+        >
 
-          </div>
+          <div
+            className="
+              flex min-h-screen
+              items-center
+              justify-center
+            "
+          >
 
-          <div className="space-y-2 text-center">
+            <div className="flex flex-col items-center gap-6">
 
-            <p className="text-sm font-semibold tracking-[-0.02em] text-clay-ink">
-              Synthesizing recovery profile
-            </p>
+              <div className="relative">
 
-            <p className="text-sm text-clay-muted">
-              Analyzing structured movement intelligence...
-            </p>
+                <div
+                  className="
+                    absolute inset-0
+
+                    rounded-full
+
+                    bg-clay-brand-teal/10
+
+                    blur-2xl
+                  "
+                />
+
+                <div
+                  className="
+                    relative
+
+                    h-12 w-12
+
+                    animate-spin
+
+                    rounded-full
+
+                    border-[3px]
+
+                    border-clay-brand-teal
+
+                    border-t-transparent
+                  "
+                />
+
+              </div>
+
+              <div className="text-center">
+
+                <p
+                  className="
+                    text-sm
+                    font-semibold
+                    text-clay-ink
+                  "
+                >
+                  Generating movement intelligence
+                </p>
+
+                <p
+                  className="
+                    mt-2
+                    text-sm
+                    text-clay-muted
+                  "
+                >
+                  Synthesizing structured recovery analysis...
+                </p>
+
+              </div>
+
+            </div>
 
           </div>
 
@@ -131,419 +235,413 @@ function ResultsPage() {
   }
 
   if (!result || !interpretation) {
-    return (
-      <main className="min-h-screen bg-clay-canvas flex items-center justify-center px-6">
 
-        <Card
-          variant="cream"
-          className="max-w-md rounded-[28px] p-8 text-center"
+    return (
+
+      <main className="min-h-screen bg-clay-canvas">
+
+        <div
+          className="
+            mx-auto
+
+            w-full
+            max-w-[1400px]
+
+            px-6
+            md:px-8
+            xl:px-10
+          "
         >
 
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-clay-brand-teal text-white">
-            <Activity size={22} />
+          <div
+            className="
+              flex min-h-screen
+              items-center
+              justify-center
+            "
+          >
+
+            <Card
+              variant="cream"
+              className="
+                w-full
+                max-w-[520px]
+
+                rounded-[32px]
+
+                border border-clay-hairline
+
+                px-8 py-10
+
+                text-center
+              "
+            >
+
+              <div
+                className="
+                  mx-auto
+
+                  flex h-14 w-14
+                  items-center justify-center
+
+                  rounded-2xl
+
+                  bg-[#111111]
+
+                  text-white
+                "
+              >
+
+                <Activity size={20} />
+
+              </div>
+
+              <h2
+                className="
+                  mt-6
+
+                  text-[2rem]
+
+                  tracking-[-0.05em]
+
+                  text-clay-ink
+                "
+              >
+                No results available
+              </h2>
+
+              <p
+                className="
+                  mt-4
+
+                  text-[15px]
+
+                  leading-[1.85]
+
+                  text-clay-body
+                "
+              >
+                Complete your assessment to generate
+                your movement recovery profile.
+              </p>
+
+              <Button
+                size="lg"
+                className="
+                  mt-8
+                  w-full
+                "
+                onClick={() =>
+                  navigate("/assessment")
+                }
+              >
+                Start Assessment
+              </Button>
+
+            </Card>
+
           </div>
 
-          <h2 className="text-[2rem] font-semibold tracking-[-0.05em] text-clay-ink">
-            No recovery profile found.
-          </h2>
-
-          <p className="mt-4 text-[15px] leading-[1.8] text-clay-body">
-            Complete your assessment to generate your
-            personalized movement intelligence report.
-          </p>
-
-          <Button
-            size="lg"
-            className="mt-8 w-full"
-            onClick={() => navigate("/assessment")}
-          >
-            Start Assessment
-          </Button>
-
-        </Card>
+        </div>
 
       </main>
     )
   }
 
+  /* =====================================================
+     UI
+  ===================================================== */
+
   return (
-    <main className="min-h-screen overflow-hidden bg-clay-canvas">
 
-      {/* HERO */}
-      <section className="relative">
+    <main
+      className="
+        min-h-screen
+        overflow-hidden
+        bg-clay-canvas
+      "
+    >
 
-        {/* ambient glow */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* =================================================
+          BACKGROUND
+      ================================================= */}
 
-          <div className="absolute left-1/2 top-[-280px] h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-clay-brand-teal/5 blur-[140px]" />
+      <div
+        className="
+          pointer-events-none
+          fixed inset-0
+          overflow-hidden
+        "
+      >
 
-        </div>
+        <div
+          className="
+            absolute left-1/2 top-[-260px]
 
-        <div className="relative mx-auto max-w-[1140px] px-6 pt-24 pb-14 md:px-8 md:pt-28">
+            h-[680px] w-[680px]
 
-          {/* TOP LABEL */}
+            -translate-x-1/2
+
+            rounded-full
+
+            bg-clay-brand-teal/5
+
+            blur-[140px]
+          "
+        />
+
+      </div>
+
+      {/* =================================================
+          MASTER CONTAINER
+          EXACTLY SAME AS NAVBAR
+      ================================================= */}
+
+      <div
+        className="
+          relative z-10
+
+          mx-auto
+
+          w-full
+          max-w-[1400px]
+
+          px-6
+          md:px-8
+          xl:px-10
+        "
+      >
+
+        {/* =================================================
+            HERO
+        ================================================= */}
+
+        <section
+          className="
+            pt-20
+            pb-10
+          "
+        >
+
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="mb-8"
+            initial={{
+              opacity: 0,
+              y: 12,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
           >
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-clay-hairline bg-white/80 px-4 py-2 backdrop-blur-xl">
+            <div
+              className="
+                inline-flex items-center gap-2
+
+                rounded-full
+
+                border border-clay-hairline
+
+                bg-white/80
+
+                px-4 py-2
+
+                backdrop-blur-xl
+              "
+            >
 
               <Sparkles
                 size={12}
-                className="text-clay-brand-teal"
+                className="
+                  text-clay-brand-teal
+                "
               />
 
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-clay-ink">
-                Recovery Intelligence Summary
+              <span
+                className="
+                  text-[10px]
+                  font-semibold
+
+                  uppercase
+
+                  tracking-[0.18em]
+
+                  text-clay-ink
+                "
+              >
+                Recovery Intelligence
               </span>
 
             </div>
 
           </motion.div>
 
-          {/* TITLE */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.55,
-              delay: 0.06,
-            }}
-            className="max-w-[720px]"
+          <div
+            className="
+              mt-8
+
+              grid gap-6
+
+              xl:grid-cols-[1.15fr_0.85fr]
+            "
           >
 
-            <h1
-              className="
-                text-[3.2rem]
-                md:text-[4.5rem]
-                leading-[0.98]
-                tracking-[-0.07em]
-                font-semibold
-                text-clay-ink
-              "
-            >
-              Your movement
-              <br />
-              recovery profile.
-            </h1>
+            {/* LEFT */}
 
-            <p
-              className="
-                mt-7
-                max-w-2xl
-                text-[15px]
-                leading-[1.9]
-                text-clay-body
-              "
-            >
-              A synthesized overview of your pain
-              patterns, mobility limitations, and
-              recovery readiness generated through
-              structured movement analysis.
-            </p>
-
-          </motion.div>
-
-          {/* SCORE CARD */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.6,
-              delay: 0.14,
-            }}
-            className="mt-10"
-          >
-
-            <Card
-              variant="teal"
-              hover={false}
-              className="
-                relative overflow-hidden
-                rounded-[36px]
-                p-8 md:p-10
-              "
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 16,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
             >
 
-              {/* ambient shape */}
-              <div className="absolute right-[-60px] top-[-60px] h-[220px] w-[220px] rounded-full bg-white/[0.04]" />
-
-              <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:items-center">
-
-                {/* LEFT */}
-                <div>
-
-                  <div className="inline-flex rounded-full bg-white/8 px-4 py-2">
-
-                    <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/70">
-                      Clinical Recovery Intelligence
-                    </span>
-
-                  </div>
-
-                  <div className="mt-8 flex items-end gap-2">
-
-                    <span
-                      className="
-                        text-[5rem]
-                        md:text-[6rem]
-                        leading-none
-                        tracking-[-0.08em]
-                        font-semibold
-                        text-white
-                      "
-                    >
-                      {result.overallScore}
-                    </span>
-
-                    <span className="mb-3 text-[2rem] text-white/35">
-                      /100
-                    </span>
-
-                  </div>
-
-                  <div className="mt-5">
-
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
-                      Recovery Classification
-                    </div>
-
-                    <div className="mt-3 text-[2.2rem] leading-none tracking-[-0.05em] text-white font-semibold">
-                      {interpretation.label}
-                    </div>
-
-                  </div>
-
-                </div>
-
-                {/* RIGHT */}
-                <div className="space-y-4">
-
-                  <div className="rounded-[24px] border border-white/8 bg-white/[0.06] p-6 backdrop-blur-xl">
-
-                    <div className="flex items-start justify-between gap-4">
-
-                      <div>
-
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/55">
-                          Recovery Trend
-                        </div>
-
-                        <div className="mt-4 text-[2.4rem] leading-none tracking-[-0.05em] font-semibold text-white">
-                          {improvement !== null
-                            ? `${improvement >= 0 ? "+" : "-"}${Math.abs(improvement)}%`
-                            : "+73%"}
-                        </div>
-
-                      </div>
-
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
-
-                        <TrendingUp
-                          size={18}
-                          className="text-white"
-                        />
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <div className="rounded-[24px] border border-white/8 bg-white/[0.06] p-6 backdrop-blur-xl">
-
-                    <div className="flex items-start gap-4">
-
-                      <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
-
-                        <ShieldCheck
-                          size={16}
-                          className="text-white"
-                        />
-
-                      </div>
-
-                      <div>
-
-                        <div className="text-[15px] font-semibold text-white">
-                          Movement Stability
-                        </div>
-
-                        <p className="mt-2 text-[14px] leading-[1.8] text-white/65">
-                          Profile synthesized successfully
-                          using structured movement
-                          assessment data.
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </Card>
-
-          </motion.div>
-
-          {/* METRICS */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.55,
-              delay: 0.2,
-            }}
-            className="mt-6 grid gap-4 md:grid-cols-3"
-          >
-
-            {[
-              {
-                title: "Pain Signal",
-                value: result.painScore,
-                variant: "lavender" as const,
-                index: "01",
-                desc: "Structured movement evaluation generated from your assessment profile.",
-              },
-              {
-                title: "Mobility",
-                value: result.mobilityScore,
-                variant: "peach" as const,
-                index: "02",
-                desc: "Functional movement restrictions synthesized from your mobility profile.",
-              },
-              {
-                title: "Lifestyle Impact",
-                value: result.impactScore,
-                variant: "ochre" as const,
-                index: "03",
-                desc: "Daily performance and recovery influence generated from your assessment.",
-              },
-            ].map((item) => (
-              <Card
-                key={item.title}
-                variant={item.variant}
+              <h1
                 className="
-                  rounded-[28px]
-                  p-6
-                  transition-all duration-500
-                  hover:-translate-y-1
-                  hover:scale-[1.01]
+                  max-w-[760px]
+
+                  text-[3.4rem]
+                  md:text-[5.4rem]
+
+                  leading-[0.92]
+
+                  tracking-[-0.08em]
+
+                  text-clay-ink
                 "
               >
+                Your movement
+                recovery profile.
+              </h1>
 
-                <div className="flex items-start justify-between">
+              <p
+                className="
+                  mt-6
 
-                  <div>
+                  max-w-2xl
 
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-65">
-                      {item.title}
-                    </div>
+                  text-[15px]
 
-                    <div className="mt-4 text-[3rem] leading-none tracking-[-0.06em] font-semibold">
-                      {item.value}
-                    </div>
+                  leading-[1.9]
 
-                  </div>
-
-                  <div className="text-[3.4rem] leading-none tracking-[-0.08em] font-semibold opacity-18">
-                    {item.index}
-                  </div>
-
-                </div>
-
-                <p className="mt-5 max-w-[240px] text-[14px] leading-[1.85] opacity-80">
-                  {item.desc}
-                </p>
-
-              </Card>
-            ))}
-
-          </motion.div>
-
-          {/* INSIGHT */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.55,
-              delay: 0.24,
-            }}
-            className="mt-6"
-          >
-
-            <div className="relative overflow-hidden rounded-[28px] bg-clay-brand-ochre px-7 py-6">
-
-              <div className="absolute right-[-30px] top-1/2 h-[140px] w-[140px] -translate-y-1/2 rotate-45 bg-white/[0.05]" />
-
-              <p className="relative z-10 max-w-3xl text-[14px] leading-[1.9] text-clay-ink/80">
-                {dominantInsight}
+                  text-clay-body
+                "
+              >
+                A structured overview of pain,
+                mobility, and recovery patterns
+                generated through movement analysis.
               </p>
 
-            </div>
+            </motion.div>
 
-          </motion.div>
+            {/* RIGHT QUICK STATS */}
 
-          {/* PROTOCOLS */}
-          <motion.section
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.55,
-              delay: 0.3,
-            }}
-            className="mt-14"
-          >
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 16,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              className="
+                grid gap-4
+                sm:grid-cols-3
+                xl:grid-cols-1
+              "
+            >
 
-            <div className="mb-8">
+              {[
+                {
+                  icon: HeartPulse,
+                  label: "Pain",
+                  value: result.painScore,
+                },
+                {
+                  icon: MoveRight,
+                  label: "Mobility",
+                  value: result.mobilityScore,
+                },
+                {
+                  icon: BrainCircuit,
+                  label: "Lifestyle",
+                  value: result.impactScore,
+                },
+              ].map((item) => {
 
-              <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-clay-muted">
-                Recommended Actions
-              </div>
+                const Icon = item.icon
 
-              <h2 className="mt-4 text-[2.5rem] leading-none tracking-[-0.06em] font-semibold text-clay-ink">
-                Recovery protocols.
-              </h2>
+                return (
 
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-
-              {result.recommendations.map(
-                (recommendation, index) => (
                   <Card
-                    key={recommendation}
+                    key={item.label}
                     variant="cream"
+                    hover={false}
                     className="
-                      rounded-[24px]
+                      rounded-[28px]
+
                       border border-clay-hairline
-                      p-5
-                      transition-all duration-300
-                      hover:border-clay-brand-teal/30
+
+                      px-5 py-5
                     "
                   >
 
-                    <div className="flex items-start gap-4">
-
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-clay-brand-teal text-white text-[12px] font-semibold">
-                        0{index + 1}
-                      </div>
+                    <div className="flex items-center justify-between">
 
                       <div>
 
-                        <h3 className="text-[15px] font-semibold text-clay-ink">
-                          Protocol {index + 1}
-                        </h3>
+                        <div
+                          className="
+                            text-[10px]
+                            font-semibold
 
-                        <p className="mt-3 text-[14px] leading-[1.85] text-clay-body">
-                          {recommendation}
-                        </p>
+                            uppercase
+
+                            tracking-[0.16em]
+
+                            text-clay-muted
+                          "
+                        >
+                          {item.label}
+                        </div>
+
+                        <div
+                          className="
+                            mt-3
+
+                            text-[2.4rem]
+
+                            leading-none
+
+                            tracking-[-0.06em]
+
+                            text-clay-ink
+                          "
+                        >
+                          {item.value}
+                        </div>
+
+                      </div>
+
+                      <div
+                        className="
+                          flex h-12 w-12
+                          items-center justify-center
+
+                          rounded-2xl
+
+                          bg-clay-surface-soft
+                        "
+                      >
+
+                        <Icon
+                          size={18}
+                          className="text-clay-ink"
+                        />
 
                       </div>
 
@@ -551,101 +649,302 @@ function ResultsPage() {
 
                   </Card>
                 )
-              )}
+              })}
 
-            </div>
+            </motion.div>
 
-          </motion.section>
+          </div>
 
-          {/* CTA */}
-          <motion.section
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.55,
-              delay: 0.34,
-            }}
-            className="mt-14"
+        </section>
+
+        {/* =================================================
+            MAIN SCORE
+        ================================================= */}
+
+        <section>
+
+          <Card
+            variant="teal"
+            hover={false}
+            className="
+              relative overflow-hidden
+
+              rounded-[40px]
+
+              px-8 py-9
+
+              md:px-10 md:py-10
+            "
           >
 
             <div
               className="
-                relative overflow-hidden
-                rounded-[36px]
-                bg-clay-brand-teal
-                px-8 py-10
-                md:px-10 md:py-12
+                absolute right-[-80px] top-[-80px]
+
+                h-[260px] w-[260px]
+
+                rounded-full
+
+                bg-white/[0.04]
+              "
+            />
+
+            <div
+              className="
+                relative z-10
+
+                grid gap-8
+
+                xl:grid-cols-[1fr_340px]
+                xl:items-end
               "
             >
 
-              <div className="absolute right-[-100px] top-[-100px] h-[340px] w-[340px] rounded-full bg-white/[0.04]" />
+              {/* LEFT */}
 
-              <div className="relative z-10 lg:grid lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
 
-                <div className="max-w-[620px]">
+                <div
+                  className="
+                    inline-flex
 
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
-                    Next Phase
-                  </div>
+                    rounded-full
 
-                  <h2
+                    bg-white/10
+
+                    px-4 py-2
+                  "
+                >
+
+                  <span
                     className="
-                      mt-5
-                      text-[3rem]
-                      md:text-[4rem]
-                      leading-[0.96]
-                      tracking-[-0.07em]
+                      text-[9px]
                       font-semibold
-                      text-white
+
+                      uppercase
+
+                      tracking-[0.2em]
+
+                      text-white/70
                     "
                   >
-                    Continue monitoring
-                    your movement
-                    recovery journey.
-                  </h2>
-
-                  <p className="mt-6 max-w-xl text-[15px] leading-[1.9] text-white/75">
-                    Access longitudinal recovery
-                    analytics, movement intelligence,
-                    and deeper clinical insights through
-                    your dashboard experience.
-                  </p>
+                    Overall Recovery Score
+                  </span>
 
                 </div>
 
-                <div className="mt-10 flex flex-col gap-4 sm:flex-row lg:mt-0 lg:justify-end">
+                <div
+                  className="
+                    mt-8
 
-                  <Button
-                    variant="onColor"
-                    size="lg"
-                    className="min-w-[190px]"
-                    onClick={() =>
-                      navigate("/dashboard")
-                    }
-                  >
-                    Open Dashboard
-                    <ArrowRight
-                      size={16}
-                      className="ml-2"
-                    />
-                  </Button>
+                    flex items-end gap-3
+                  "
+                >
 
-                  <button
-                    onClick={() =>
-                      navigate("/assessment")
-                    }
-                    className={cn(
-                      "h-14 px-6",
-                      "rounded-2xl",
-                      "text-[12px]",
-                      "font-semibold uppercase tracking-[0.12em]",
-                      "text-white/70",
-                      "transition-colors duration-300",
-                      "hover:text-white"
-                    )}
+                  <div
+                    className="
+                      text-[5rem]
+                      md:text-[6rem]
+
+                      leading-none
+
+                      tracking-[-0.08em]
+
+                      text-white
+                    "
                   >
-                    Retake Assessment
-                  </button>
+                    {result.overallScore}
+                  </div>
+
+                  <div
+                    className="
+                      mb-3
+
+                      text-[2rem]
+
+                      text-white/35
+                    "
+                  >
+                    /100
+                  </div>
+
+                </div>
+
+                <div className="mt-7">
+
+                  <div
+                    className="
+                      text-[10px]
+                      font-semibold
+
+                      uppercase
+
+                      tracking-[0.18em]
+
+                      text-white/55
+                    "
+                  >
+                    Classification
+                  </div>
+
+                  <div
+                    className="
+                      mt-3
+
+                      text-[2rem]
+
+                      tracking-[-0.05em]
+
+                      text-white
+                    "
+                  >
+                    {interpretation.label}
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* RIGHT */}
+
+              <div className="space-y-4">
+
+                <div
+                  className="
+                    rounded-[24px]
+
+                    border border-white/10
+
+                    bg-white/[0.06]
+
+                    p-5
+                  "
+                >
+
+                  <div className="flex items-start justify-between">
+
+                    <div>
+
+                      <div
+                        className="
+                          text-[10px]
+                          font-semibold
+
+                          uppercase
+
+                          tracking-[0.16em]
+
+                          text-white/55
+                        "
+                      >
+                        Recovery Trend
+                      </div>
+
+                      <div
+                        className="
+                          mt-4
+
+                          text-[2.2rem]
+
+                          leading-none
+
+                          tracking-[-0.05em]
+
+                          text-white
+                        "
+                      >
+                        {improvement !== null
+                          ? `${improvement >= 0 ? "+" : "-"}${Math.abs(improvement)}%`
+                          : "+73%"}
+                      </div>
+
+                    </div>
+
+                    <div
+                      className="
+                        flex h-12 w-12
+                        items-center justify-center
+
+                        rounded-2xl
+
+                        bg-white/10
+                      "
+                    >
+
+                      <TrendingUp
+                        size={18}
+                        className="text-white"
+                      />
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div
+                  className="
+                    rounded-[24px]
+
+                    border border-white/10
+
+                    bg-white/[0.06]
+
+                    p-5
+                  "
+                >
+
+                  <div className="flex items-start gap-4">
+
+                    <div
+                      className="
+                        flex h-11 w-11
+                        items-center justify-center
+
+                        rounded-2xl
+
+                        bg-white/10
+                      "
+                    >
+
+                      <ShieldCheck
+                        size={16}
+                        className="text-white"
+                      />
+
+                    </div>
+
+                    <div>
+
+                      <div
+                        className="
+                          text-[15px]
+                          font-semibold
+
+                          text-white
+                        "
+                      >
+                        Assessment Complete
+                      </div>
+
+                      <p
+                        className="
+                          mt-2
+
+                          text-[14px]
+
+                          leading-[1.8]
+
+                          text-white/70
+                        "
+                      >
+                        Your movement profile has
+                        been successfully analyzed.
+                      </p>
+
+                    </div>
+
+                  </div>
 
                 </div>
 
@@ -653,11 +952,251 @@ function ResultsPage() {
 
             </div>
 
-          </motion.section>
+          </Card>
 
-        </div>
+        </section>
 
-      </section>
+        {/* =================================================
+            INSIGHT
+        ================================================= */}
+
+        <section className="mt-5">
+
+          <Card
+            variant="cream"
+            hover={false}
+            className="
+              rounded-[30px]
+
+              border border-clay-hairline
+
+              px-7 py-7
+            "
+          >
+
+            <div
+              className="
+                text-[10px]
+                font-semibold
+
+                uppercase
+
+                tracking-[0.16em]
+
+                text-clay-muted
+              "
+            >
+              Key Insight
+            </div>
+
+            <p
+              className="
+                mt-5
+
+                max-w-4xl
+
+                text-[15px]
+
+                leading-[1.9]
+
+                text-clay-body
+              "
+            >
+              {dominantInsight}
+            </p>
+
+          </Card>
+
+        </section>
+
+        {/* =================================================
+            RECOMMENDATIONS
+        ================================================= */}
+
+        <section className="mt-12 pb-24">
+
+          <div className="mb-7">
+
+            <div
+              className="
+                text-[10px]
+                font-semibold
+
+                uppercase
+
+                tracking-[0.18em]
+
+                text-clay-muted
+              "
+            >
+              Recovery Protocols
+            </div>
+
+            <h2
+              className="
+                mt-4
+
+                text-[2.5rem]
+
+                leading-none
+
+                tracking-[-0.06em]
+
+                text-clay-ink
+              "
+            >
+              Recommended next steps.
+            </h2>
+
+          </div>
+
+          <div
+            className="
+              grid gap-5
+
+              lg:grid-cols-2
+            "
+          >
+
+            {result.recommendations.map(
+              (
+                recommendation,
+                index
+              ) => (
+
+                <Card
+                  key={recommendation}
+                  variant="cream"
+                  hover={false}
+                  className="
+                    rounded-[28px]
+
+                    border border-clay-hairline
+
+                    px-6 py-6
+
+                    transition-all duration-300
+
+                    hover:border-black/6
+                    hover:shadow-[0_12px_32px_rgba(0,0,0,0.04)]
+                  "
+                >
+
+                  <div className="flex items-start gap-4">
+
+                    <div
+                      className="
+                        flex h-11 w-11
+                        shrink-0
+                        items-center justify-center
+
+                        rounded-2xl
+
+                        bg-[#111111]
+
+                        text-[12px]
+                        font-semibold
+
+                        text-white
+                      "
+                    >
+                      0{index + 1}
+                    </div>
+
+                    <div>
+
+                      <h3
+                        className="
+                          text-[15px]
+                          font-semibold
+
+                          text-clay-ink
+                        "
+                      >
+                        Protocol {index + 1}
+                      </h3>
+
+                      <p
+                        className="
+                          mt-3
+
+                          text-[14px]
+
+                          leading-[1.85]
+
+                          text-clay-body
+                        "
+                      >
+                        {recommendation}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </Card>
+              )
+            )}
+
+          </div>
+
+          {/* CTA */}
+
+          <div
+            className="
+              mt-12
+
+              flex flex-col gap-4
+
+              sm:flex-row
+            "
+          >
+
+            <Button
+              size="lg"
+              className="
+                h-14
+
+                rounded-2xl
+
+                px-7
+              "
+              onClick={() =>
+                navigate("/dashboard")
+              }
+            >
+
+              Open Dashboard
+
+              <ArrowRight
+                size={16}
+                className="ml-2"
+              />
+
+            </Button>
+
+            <Button
+              variant="secondary"
+              size="lg"
+              className="
+                h-14
+
+                rounded-2xl
+
+                px-7
+              "
+              onClick={() =>
+                navigate("/assessment")
+              }
+            >
+              Retake Assessment
+            </Button>
+
+          </div>
+
+        </section>
+
+      </div>
 
     </main>
   )

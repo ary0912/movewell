@@ -1,10 +1,7 @@
-'use client';
+'use client'
 
-import { useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
-
-import { Button } from "@components/ui/Button"
-import { Card } from "@components/ui/Card"
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 import {
   Activity,
@@ -12,67 +9,200 @@ import {
   BrainCircuit,
   ScanLine,
   ShieldCheck,
-} from "lucide-react"
+} from 'lucide-react'
+
+import { Button } from '@components/ui/Button'
+import { Card } from '@components/ui/Card'
 
 const capabilityItems = [
   {
-    icon: <BrainCircuit size={22} />,
-    title: "Pain Analysis",
-    desc: "Track localized discomfort patterns across anatomical movement zones.",
-    color: "bg-clay-brand-pink text-white",
+    icon: <BrainCircuit size={22} aria-hidden="true" />,
+    title: 'Pain Tracking',
+    desc:
+      'Track discomfort patterns, recovery symptoms, and movement limitations over time.',
+    color: 'bg-clay-brand-pink text-white',
+    emphasis: true,
   },
   {
-    icon: <Activity size={22} />,
-    title: "Mobility Tracking",
-    desc: "Visualize range-of-motion restrictions and movement asymmetry over time.",
-    color: "bg-clay-brand-teal text-white",
+    icon: <Activity size={22} aria-hidden="true" />,
+    title: 'Mobility Insights',
+    desc:
+      'Understand asymmetry, restricted motion, and recovery progression through structured assessments.',
+    color: 'bg-clay-brand-teal text-white',
   },
   {
-    icon: <ShieldCheck size={22} />,
-    title: "Recovery History",
-    desc: "Monitor rehabilitation progress using longitudinal movement analytics.",
-    color: "bg-clay-brand-peach text-clay-ink",
+    icon: <ShieldCheck size={22} aria-hidden="true" />,
+    title: 'Recovery History',
+    desc:
+      'Monitor rehabilitation consistency with longitudinal movement analytics and progress tracking.',
+    color: 'bg-clay-brand-peach text-clay-ink',
   },
 ]
 
 const workflowSteps = [
   {
-    step: "01",
-    title: "Capture Baseline",
-    desc: "Record discomfort zones, mobility limitations, and recovery conditions.",
-    color: "bg-clay-brand-lavender"
+    step: '01',
+    title: 'Record Symptoms',
+    desc:
+      'Capture pain areas, movement restrictions, and current recovery conditions in minutes.',
+    color: 'bg-clay-brand-lavender',
   },
   {
-    step: "02",
-    title: "Analyze Movement",
-    desc: "Generate intelligent movement insights from structured assessment data.",
-    color: "bg-clay-brand-ochre"
+    step: '02',
+    title: 'Understand Movement',
+    desc:
+      'Identify asymmetry, instability, and mobility limitations through guided assessments.',
+    color: 'bg-clay-brand-ochre',
   },
   {
-    step: "03",
-    title: "Track Recovery",
-    desc: "Understand recovery progression through ongoing movement evaluation.",
-    color: "bg-clay-surface-card"
+    step: '03',
+    title: 'Track Progress',
+    desc:
+      'Compare recovery trends over time and understand how mobility evolves week by week.',
+    color: 'bg-clay-surface-card',
   },
 ]
 
+const metrics = [
+  {
+    value: '15+',
+    label: 'Movement zones analysed',
+  },
+  {
+    value: '3 min',
+    label: 'Average assessment time',
+  },
+  {
+    value: '24/7',
+    label: 'Recovery progress access',
+  },
+]
+
+function HeroAnalyticsCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.7 }}
+    >
+      <div
+        className="
+          rounded-[28px]
+          border border-clay-hairline
+          bg-clay-surface-soft
+          p-6 md:p-8
+        "
+      >
+        <div
+          className="
+            relative overflow-hidden
+            rounded-[28px]
+            bg-clay-brand-lavender
+            p-6 md:p-8
+          "
+        >
+          <div className="absolute right-[-100px] top-[-100px] h-[260px] w-[260px] rounded-full bg-white/20 blur-3xl" />
+
+          <div className="relative z-10">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[12px] font-semibold uppercase tracking-[1.4px] text-black/50">
+                  Weekly Mobility Recovery
+                </p>
+
+                <div className="mt-4 flex items-end gap-3">
+                  <h3 className="text-[72px] leading-none tracking-[-4px] font-medium">
+                    84
+                  </h3>
+
+                  <div className="mb-2 rounded-full bg-black/10 px-3 py-1 text-[12px] font-medium">
+                    Stable Progress
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex h-14 w-14 items-center justify-center rounded-[18px] bg-white/20">
+                <Activity size={24} aria-hidden="true" />
+              </div>
+            </div>
+
+            <div
+              className="
+                mt-10
+                rounded-[22px]
+                border border-white/40
+                bg-white/70
+                p-6
+                backdrop-blur-xl
+              "
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-clay-ink">
+                    Motion Symmetry
+                  </p>
+
+                  <p className="mt-1 text-sm text-clay-muted">
+                    Compared to previous assessments
+                  </p>
+                </div>
+
+                <ScanLine size={18} aria-hidden="true" />
+              </div>
+
+              <div
+                className="mt-8 flex h-[140px] items-end gap-3"
+                aria-label="Mobility progress chart"
+                role="img"
+              >
+                {[48, 58, 52, 72, 66, 92, 84].map((height, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ height: 0 }}
+                    whileInView={{ height }}
+                    viewport={{ once: true }}
+                    transition={{
+                      delay: i * 0.05,
+                      duration: 0.45,
+                    }}
+                    className="
+                      flex-1
+                      rounded-t-[14px]
+                      bg-clay-brand-teal
+                    "
+                  />
+                ))}
+              </div>
+
+              <div className="mt-6 flex items-center justify-between border-t border-black/5 pt-5 text-sm">
+                <span className="text-clay-muted">
+                  Recovery consistency improving
+                </span>
+
+                <span className="font-medium text-clay-ink">
+                  +12% this month
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 function LandingPage() {
-
-  const navigate = useNavigate()
-
   return (
     <main className="min-h-screen overflow-hidden bg-clay-canvas text-clay-ink">
 
       {/* HERO */}
-      <section className="relative mx-auto max-w-[1280px] px-6 pt-28 pb-[120px] md:px-10 md:pt-36">
+      <section className="relative mx-auto max-w-[1280px] px-6 pb-[120px] pt-28 md:px-10 md:pt-36">
 
         {/* Ambient */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
           <div className="absolute left-1/2 top-[-260px] h-[720px] w-[720px] -translate-x-1/2 rounded-full bg-clay-brand-peach/20 blur-[140px]" />
 
           <div className="absolute right-0 top-32 h-[260px] w-[260px] rounded-full bg-clay-brand-lavender/20 blur-[120px]" />
-
         </div>
 
         <div className="relative z-10 grid items-center gap-20 lg:grid-cols-[1.05fr_0.95fr]">
@@ -81,11 +211,10 @@ function LandingPage() {
           <div className="max-w-2xl">
 
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45 }}
             >
-
               <div
                 className="
                   inline-flex items-center gap-2
@@ -95,7 +224,6 @@ function LandingPage() {
                   px-4 py-2
                 "
               >
-
                 <div className="h-2 w-2 rounded-full bg-clay-brand-coral" />
 
                 <span
@@ -103,38 +231,37 @@ function LandingPage() {
                     text-[12px]
                     font-semibold
                     uppercase
-                    tracking-[1.5px]
+                    tracking-[1.4px]
                     text-clay-muted
                   "
                 >
-                  Movement Intelligence
+                  Recovery Intelligence Platform
                 </span>
-
               </div>
-
             </motion.div>
 
             <motion.h1
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.08 }}
               className="
                 mt-8
-                max-w-[720px]
+                max-w-[760px]
                 text-[58px]
-                leading-[0.96]
-                tracking-[-2.5px]
-                md:text-[78px]
                 font-medium
+                leading-[0.95]
+                tracking-[-2.5px]
                 clay-display
+                md:text-[78px]
               "
             >
-              Move better. <br />
-              Recover with clarity.
+              Track pain, mobility,
+              and recovery
+              with clarity.
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.16 }}
               className="
@@ -145,196 +272,77 @@ function LandingPage() {
                 text-clay-body
               "
             >
-              A calm, data-driven recovery platform designed
-              to help clinicians, athletes, and individuals
-              understand movement limitations through
-              structured mobility intelligence.
+              Designed for clinicians, athletes, and rehabilitation
+              teams to understand movement limitations, monitor
+              recovery progression, and identify mobility issues before
+              they become long-term setbacks.
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.24 }}
-              className="mt-10 flex flex-col gap-4 sm:flex-row"
+              className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
             >
 
-              <Button
-                size="lg"
-                onClick={() => navigate("/assessment")}
-                className="
-                  h-12
-                  rounded-[12px]
-                  bg-clay-primary
-                  px-7
-                  text-[14px]
-                  font-semibold
-                  text-white
-                "
-              >
-                Start Assessment
-              </Button>
+              <Link to="/assessment">
+                <Button
+                  size="lg"
+                  className="
+                    h-12
+                    rounded-[14px]
+                    bg-clay-primary
+                    px-7
+                    text-[14px]
+                    font-semibold
+                    text-white
+                  "
+                >
+                  Start Free Assessment
+                </Button>
+              </Link>
 
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={() => navigate("/dashboard")}
+              <Link
+                to="/dashboard"
                 className="
-                  h-12
-                  rounded-[12px]
-                  border border-clay-hairline
-                  bg-clay-canvas
-                  px-7
+                  inline-flex items-center
                   text-[14px]
-                  font-semibold
+                  font-medium
+                  text-clay-muted
+                  transition-colors
+                  hover:text-clay-ink
                 "
               >
-                View Dashboard
-              </Button>
+                View recovery dashboard
+                <ArrowRight className="ml-2" size={16} aria-hidden="true" />
+              </Link>
 
             </motion.div>
 
-            {/* Metrics */}
+            {/* METRICS */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}
               className="mt-16 flex flex-wrap gap-12"
             >
-
-              {[
-                { value: "15+", label: "Movement Zones" },
-                { value: "84%", label: "Mobility Precision" },
-                { value: "24/7", label: "Recovery Tracking" },
-              ].map((item, i) => (
-
-                <div key={i}>
-
-                  <div className="text-[36px] font-medium tracking-[-1px]">
+              {metrics.map((item) => (
+                <div key={item.label}>
+                  <div className="text-[34px] font-medium tracking-[-1px]">
                     {item.value}
                   </div>
 
                   <div className="mt-1 text-[14px] text-clay-muted">
                     {item.label}
                   </div>
-
                 </div>
-
               ))}
-
             </motion.div>
 
           </div>
 
           {/* RIGHT */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-          >
-
-            <div
-              className="
-                rounded-[24px]
-                border border-clay-hairline
-                bg-clay-surface-soft
-                p-6 md:p-8
-              "
-            >
-
-              <div
-                className="
-                  relative overflow-hidden
-                  rounded-[24px]
-                  bg-clay-brand-lavender
-                  p-6 md:p-8
-                "
-              >
-
-                <div className="absolute right-[-80px] top-[-80px] h-[220px] w-[220px] rounded-full bg-white/20 blur-3xl" />
-
-                <div className="relative z-10">
-
-                  <div className="flex items-center justify-between">
-
-                    <div>
-
-                      <p className="text-[12px] uppercase tracking-[1.5px] text-black/50">
-                        Mobility Score
-                      </p>
-
-                      <h3 className="mt-3 text-[72px] leading-none tracking-[-4px] font-medium">
-                        84
-                      </h3>
-
-                    </div>
-
-                    <div className="flex h-14 w-14 items-center justify-center rounded-[16px] bg-white/20">
-                      <Activity size={24} />
-                    </div>
-
-                  </div>
-
-                  <div
-                    className="
-                      mt-10
-                      rounded-[20px]
-                      bg-white/70
-                      backdrop-blur-xl
-                      p-6
-                    "
-                  >
-
-                    <div className="mb-8 flex items-center justify-between">
-
-                      <div>
-
-                        <p className="text-sm font-medium">
-                          Motion Symmetry
-                        </p>
-
-                        <p className="mt-1 text-sm text-clay-muted">
-                          Weekly assessment
-                        </p>
-
-                      </div>
-
-                      <ScanLine size={18} />
-
-                    </div>
-
-                    <div className="flex h-[140px] items-end gap-3">
-
-                      {[45, 68, 54, 88, 66, 96, 82].map((height, i) => (
-
-                        <motion.div
-                          key={i}
-                          initial={{ height: 0 }}
-                          whileInView={{ height }}
-                          viewport={{ once: true }}
-                          transition={{
-                            delay: i * 0.06,
-                            duration: 0.45,
-                          }}
-                          className="
-                            flex-1
-                            rounded-t-[12px]
-                            bg-clay-brand-teal
-                          "
-                        />
-
-                      ))}
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </motion.div>
+          <HeroAnalyticsCard />
 
         </div>
 
@@ -352,7 +360,7 @@ function LandingPage() {
                 text-[12px]
                 font-semibold
                 uppercase
-                tracking-[1.5px]
+                tracking-[1.4px]
                 text-clay-muted
               "
             >
@@ -363,40 +371,41 @@ function LandingPage() {
               className="
                 mt-6
                 text-[48px]
+                font-medium
                 leading-[1.02]
                 tracking-[-2px]
-                font-medium
                 clay-display
               "
             >
-              Built for modern movement recovery.
+              Built for modern rehabilitation workflows.
             </h2>
 
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.9fr_0.9fr]">
 
-            {capabilityItems.map((item, i) => (
+            {capabilityItems.map((item) => (
 
               <Card
-                key={i}
+                key={item.title}
                 className={`
                   ${item.color}
-                  rounded-[24px]
+                  ${item.emphasis ? 'min-h-[360px]' : 'min-h-[320px]'}
+                  rounded-[28px]
                   border-0
                   p-8
                 `}
               >
 
-                <div className="flex h-14 w-14 items-center justify-center rounded-[16px] bg-white/20">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[18px] bg-white/20">
                   {item.icon}
                 </div>
 
-                <h3 className="mt-8 text-[28px] leading-[1.1] tracking-[-1px] font-medium">
+                <h3 className="mt-8 text-[30px] font-medium leading-[1.05] tracking-[-1px]">
                   {item.title}
                 </h3>
 
-                <p className="mt-5 text-[16px] leading-[1.7] opacity-90">
+                <p className="mt-5 max-w-sm text-[16px] leading-[1.7] opacity-90">
                   {item.desc}
                 </p>
 
@@ -422,53 +431,54 @@ function LandingPage() {
                 text-[12px]
                 font-semibold
                 uppercase
-                tracking-[1.5px]
+                tracking-[1.4px]
                 text-clay-muted
               "
             >
-              Workflow
+              Recovery Workflow
             </span>
 
             <h2
               className="
                 mt-6
                 text-[48px]
+                font-medium
                 leading-[1.02]
                 tracking-[-2px]
-                font-medium
                 clay-display
               "
             >
-              From assessment to recovery insights.
+              Understand recovery progression step by step.
             </h2>
 
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
 
-            {workflowSteps.map((item, i) => (
+            {workflowSteps.map((item) => (
 
               <div
-                key={i}
+                key={item.step}
                 className={`
                   ${item.color}
                   relative
-                  rounded-[24px]
+                  overflow-hidden
+                  rounded-[28px]
                   p-8
                 `}
               >
 
-                <div className="absolute right-6 top-5 text-[72px] leading-none tracking-[-4px] text-black/10 font-medium">
+                <div className="absolute right-6 top-5 text-[72px] font-medium leading-none tracking-[-4px] text-black/10">
                   {item.step}
                 </div>
 
                 <div className="relative z-10">
 
-                  <h3 className="text-[28px] leading-[1.1] tracking-[-1px] font-medium">
+                  <h3 className="text-[30px] font-medium leading-[1.08] tracking-[-1px]">
                     {item.title}
                   </h3>
 
-                  <p className="mt-5 max-w-sm text-[16px] leading-[1.7] text-black/70">
+                  <p className="mt-5 max-w-sm text-[16px] leading-[1.75] text-black/70">
                     {item.desc}
                   </p>
 
@@ -492,7 +502,7 @@ function LandingPage() {
           <div
             className="
               relative overflow-hidden
-              rounded-[24px]
+              rounded-[32px]
               bg-clay-surface-soft
               px-8 py-20
               md:px-16
@@ -506,37 +516,47 @@ function LandingPage() {
               <h2
                 className="
                   text-[52px]
+                  font-medium
                   leading-[1]
                   tracking-[-2px]
-                  font-medium
                   clay-display
                 "
               >
-                Start understanding how your body moves.
+                Identify movement limitations before they slow recovery.
               </h2>
 
               <p className="mx-auto mt-8 max-w-2xl text-[18px] leading-[1.8] text-clay-body">
-                Designed for clinicians, athletes, rehabilitation
-                specialists, and modern recovery systems.
+                A calmer and more structured way to understand pain,
+                mobility, and rehabilitation progression.
               </p>
 
-              <Button
-                size="lg"
-                onClick={() => navigate("/assessment")}
-                className="
-                  mt-10
-                  h-12
-                  rounded-[12px]
-                  bg-clay-primary
-                  px-8
-                  text-[14px]
-                  font-semibold
-                  text-white
-                "
-              >
-                Begin Assessment
-                <ArrowRight className="ml-3" size={18} />
-              </Button>
+              <Link to="/assessment">
+
+                <Button
+                  size="lg"
+                  className="
+    mt-10
+    h-12
+    rounded-[14px]
+    bg-clay-primary
+    px-8
+    text-[14px]
+    font-semibold
+    text-white
+  "
+                >
+                  <div className="flex items-center justify-center gap-1.5">
+                    <span>Begin Assessment</span>
+
+                    <ArrowRight
+                      size={18}
+                      aria-hidden="true"
+                      className="shrink-0"
+                    />
+                  </div>
+                </Button>
+
+              </Link>
 
             </div>
 
@@ -553,7 +573,7 @@ function LandingPage() {
 
           <div className="flex items-center gap-4">
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-clay-primary text-xs font-semibold text-white">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-clay-primary text-xs font-semibold text-white">
               MW
             </div>
 
@@ -564,28 +584,40 @@ function LandingPage() {
               </div>
 
               <div className="mt-1 text-[14px] text-clay-muted">
-                Movement Intelligence Platform
+                Recovery Intelligence Platform
               </div>
 
             </div>
 
           </div>
 
-          <div className="flex gap-8 text-[14px] text-clay-muted">
+          <nav
+            className="flex gap-8 text-[14px] text-clay-muted"
+            aria-label="Footer navigation"
+          >
 
-            <a href="#" className="transition-colors hover:text-clay-ink">
+            <Link
+              to="/framework"
+              className="transition-colors hover:text-clay-ink"
+            >
               Framework
-            </a>
+            </Link>
 
-            <a href="#" className="transition-colors hover:text-clay-ink">
+            <Link
+              to="/evidence"
+              className="transition-colors hover:text-clay-ink"
+            >
               Evidence
-            </a>
+            </Link>
 
-            <a href="#" className="transition-colors hover:text-clay-ink">
+            <Link
+              to="/privacy"
+              className="transition-colors hover:text-clay-ink"
+            >
               Privacy
-            </a>
+            </Link>
 
-          </div>
+          </nav>
 
           <div className="text-[14px] text-clay-muted-soft">
             © 2026 MoveWell Systems

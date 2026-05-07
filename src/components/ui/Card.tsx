@@ -1,9 +1,9 @@
 'use client'
 
-import * as React from "react"
-import { motion } from "framer-motion"
+import * as React from 'react'
+import { motion } from 'framer-motion'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 const MotionDiv = motion.div
 
@@ -12,95 +12,121 @@ const MotionDiv = motion.div
 ========================================================= */
 
 type CardVariant =
-  | "default"
-  | "glass"
-  | "cream"
-  | "pink"
-  | "teal"
-  | "lavender"
-  | "peach"
-  | "ochre"
-  | "dark"
+  | 'default'
+  | 'glass'
+  | 'cream'
+  | 'pink'
+  | 'teal'
+  | 'lavender'
+  | 'peach'
+  | 'ochre'
+  | 'dark'
 
 const variantStyles: Record<CardVariant, string> = {
+
   /* =====================================================
      DEFAULT
   ===================================================== */
+
   default: `
-    bg-white/92
     border border-clay-hairline
+
+    bg-white/92
     text-clay-ink
+
     backdrop-blur-xl
-    shadow-[0_8px_40px_rgba(0,0,0,0.04)]
+
+    shadow-[0_8px_40px_rgba(0,0,0,0.035)]
   `,
 
   /* =====================================================
      GLASS
   ===================================================== */
+
   glass: `
     border border-white/40
+
     bg-white/70
     text-clay-ink
+
     backdrop-blur-2xl
-    shadow-[0_8px_40px_rgba(0,0,0,0.05)]
+
+    shadow-[0_8px_40px_rgba(0,0,0,0.045)]
   `,
 
   /* =====================================================
      CREAM
   ===================================================== */
+
   cream: `
     border border-clay-hairline/50
+
     bg-clay-surface-card
     text-clay-ink
-    shadow-[0_4px_20px_rgba(0,0,0,0.025)]
+
+    shadow-[0_4px_20px_rgba(0,0,0,0.02)]
   `,
 
   /* =====================================================
      FEATURE SURFACES
   ===================================================== */
+
   pink: `
-    border-none
+    border border-transparent
+
     bg-clay-brand-pink
     text-white
-    shadow-[0_20px_50px_rgba(0,0,0,0.10)]
+
+    shadow-[0_18px_50px_rgba(0,0,0,0.08)]
   `,
 
   teal: `
-    border-none
+    border border-transparent
+
     bg-clay-brand-teal
     text-white
-    shadow-[0_20px_50px_rgba(0,0,0,0.10)]
+
+    shadow-[0_18px_50px_rgba(0,0,0,0.08)]
   `,
 
   lavender: `
-    border-none
+    border border-transparent
+
     bg-clay-brand-lavender
     text-clay-ink
-    shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+
+    shadow-[0_18px_50px_rgba(0,0,0,0.06)]
   `,
 
   peach: `
-    border-none
+    border border-transparent
+
     bg-clay-brand-peach
     text-clay-ink
-    shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+
+    shadow-[0_18px_50px_rgba(0,0,0,0.06)]
   `,
 
   ochre: `
-    border-none
+    border border-transparent
+
     bg-clay-brand-ochre
     text-clay-ink
-    shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+
+    shadow-[0_18px_50px_rgba(0,0,0,0.06)]
   `,
 
   /* =====================================================
      DARK
   ===================================================== */
+
   dark: `
     border border-white/5
+
     bg-clay-surface-dark-elevated
     text-white
-    shadow-[0_20px_60px_rgba(0,0,0,0.22)]
+
+    shadow-[0_20px_60px_rgba(0,0,0,0.18)]
   `,
 }
 
@@ -111,21 +137,37 @@ const variantStyles: Record<CardVariant, string> = {
 export interface CardProps
   extends Omit<
     React.HTMLAttributes<HTMLDivElement>,
-    | "onAnimationStart"
-    | "onAnimationEnd"
-    | "onDrag"
-    | "onDragStart"
-    | "onDragEnd"
-    | "onDragEnter"
-    | "onDragLeave"
-    | "onDragOver"
-    | "onDrop"
+    | 'onAnimationStart'
+    | 'onAnimationEnd'
+    | 'onDrag'
+    | 'onDragStart'
+    | 'onDragEnd'
+    | 'onDragEnter'
+    | 'onDragLeave'
+    | 'onDragOver'
+    | 'onDrop'
   > {
+
   variant?: CardVariant
+
   hover?: boolean
+
   interactive?: boolean
+
   glow?: boolean
 }
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const FEATURE_VARIANTS: CardVariant[] = [
+  'pink',
+  'teal',
+  'lavender',
+  'peach',
+  'ochre',
+]
 
 /* =========================================================
    COMPONENT
@@ -138,26 +180,24 @@ const Card = React.forwardRef<
   (
     {
       className,
-      variant = "default",
+      variant = 'default',
+
       hover = true,
       interactive = false,
       glow = true,
+
       children,
+
       ...props
     },
     ref
   ) => {
 
-    const isFeatureCard = [
-      "pink",
-      "teal",
-      "lavender",
-      "peach",
-      "ochre",
-    ].includes(variant)
+    const isFeatureCard =
+      FEATURE_VARIANTS.includes(variant)
 
     const isDark =
-      variant === "dark"
+      variant === 'dark'
 
     return (
       <MotionDiv
@@ -166,55 +206,77 @@ const Card = React.forwardRef<
           hover
             ? {
               y: isFeatureCard ? -3 : -2,
-              scale: 1.002,
             }
             : undefined
         }
         transition={{
-          duration: 0.22,
+          duration: 0.2,
           ease: [0.22, 1, 0.36, 1],
         }}
         className={cn(
 
-          /* BASE */
+          /* =================================================
+             BASE
+          ================================================= */
+
           `
           group
           relative
+
           w-full
+
           overflow-hidden
+
           transition-all duration-300
+
           will-change-transform
           `,
 
-          /* RADIUS */
-          isFeatureCard
-            ? "rounded-[30px]"
-            : "rounded-[26px]",
+          /* =================================================
+             RADIUS
+          ================================================= */
 
-          /* PADDING */
           isFeatureCard
-            ? "p-8 md:p-10"
-            : "p-6 md:p-8",
+            ? 'rounded-[30px]'
+            : 'rounded-[26px]',
 
-          /* INTERACTIVE */
+          /* =================================================
+             PADDING
+          ================================================= */
+
+          isFeatureCard
+            ? 'p-8 md:p-10'
+            : 'p-6 md:p-8',
+
+          /* =================================================
+             INTERACTIVE
+          ================================================= */
+
           interactive &&
           `
-            cursor-pointer
-            `,
+          cursor-pointer
+          `,
 
-          /* HOVER */
+          /* =================================================
+             HOVER STATES
+          ================================================= */
+
           hover &&
           !isFeatureCard &&
           `
-            hover:border-clay-muted/20
-            hover:shadow-[0_18px_60px_rgba(0,0,0,0.07)]
-            `,
+          hover:border-clay-muted/15
+          hover:shadow-[0_20px_60px_rgba(0,0,0,0.055)]
+          `,
 
           hover &&
           isFeatureCard &&
           `
-            hover:brightness-[1.02]
-            `,
+          hover:brightness-[1.015]
+          `,
+
+          /* =================================================
+             VARIANT
+          ================================================= */
 
           variantStyles[variant],
 
@@ -227,49 +289,62 @@ const Card = React.forwardRef<
             AMBIENT GLOW
         ================================================= */}
 
-        {glow &&
-          !isDark && (
-            <div
-              className="
-                pointer-events-none
-                absolute inset-0
-                opacity-70
-                transition-opacity duration-500
-                group-hover:opacity-100
-                bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.72),transparent_34%)]
-              "
-            />
-          )}
+        {glow && !isDark && (
+          <div
+            className="
+              pointer-events-none
+              absolute inset-0
+
+              opacity-60
+
+              transition-opacity duration-500
+
+              group-hover:opacity-90
+
+              bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.65),transparent_34%)]
+            "
+          />
+        )}
 
         {/* =================================================
-            FEATURE CARD LIGHT
+            FEATURE LIGHT
         ================================================= */}
 
         {isFeatureCard && (
           <div
             className="
               pointer-events-none
+
               absolute right-[-80px] top-[-80px]
+
               h-[220px] w-[220px]
+
               rounded-full
+
               bg-white/10
+
               blur-3xl
+
               transition-transform duration-700
-              group-hover:scale-110
+
+              group-hover:scale-105
             "
           />
         )}
 
         {/* =================================================
-            BORDER SHINE
+            SUBTLE BORDER SHINE
         ================================================= */}
 
         <div
           className="
             pointer-events-none
+
             absolute inset-0
+
             rounded-[inherit]
-            ring-1 ring-inset ring-white/[0.03]
+
+            ring-1 ring-inset ring-white/[0.025]
           "
         />
 
@@ -286,6 +361,6 @@ const Card = React.forwardRef<
   }
 )
 
-Card.displayName = "Card"
+Card.displayName = 'Card'
 
 export { Card }

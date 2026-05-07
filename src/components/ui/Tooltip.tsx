@@ -1,37 +1,153 @@
-import React from 'react'
+'use client'
+
+import * as React from 'react'
+
+import {
+  motion,
+  AnimatePresence,
+} from 'framer-motion'
+
 import { cn } from '@/lib/utils'
+
+/* =========================================================
+   TYPES
+========================================================= */
 
 interface TooltipProps {
   children: React.ReactNode
+
   content: string
-  id?: string
+
   className?: string
 }
 
-export default function Tooltip({ children, content, id, className }: TooltipProps) {
-  const tooltipId = id ?? `tooltip-${Math.random().toString(36).slice(2, 9)}`
+/* =========================================================
+   COMPONENT
+========================================================= */
+
+export default function Tooltip({
+  children,
+  content,
+  className,
+}: TooltipProps) {
+
+  const [visible, setVisible] =
+    React.useState(false)
+
+  const tooltipId =
+    React.useId()
 
   return (
-    <span className={cn('relative inline-block group', className)}>
-      <span aria-describedby={tooltipId} tabIndex={0} className="inline-flex items-center">
+    <span
+      className={cn(
+
+        `
+        relative
+        inline-flex
+        `,
+
+        className
+      )}
+      onMouseEnter={() =>
+        setVisible(true)
+      }
+      onMouseLeave={() =>
+        setVisible(false)
+      }
+      onFocus={() =>
+        setVisible(true)
+      }
+      onBlur={() =>
+        setVisible(false)
+      }
+    >
+
+      {/* =============================================
+          TRIGGER
+      ============================================= */}
+
+      <span
+        aria-describedby={
+          visible
+            ? tooltipId
+            : undefined
+        }
+        tabIndex={0}
+        className="
+          inline-flex
+          items-center
+        "
+      >
         {children}
       </span>
 
-      <span 
-        role="tooltip" 
-        id={tooltipId} 
-        className="
-          pointer-events-none absolute z-50 
-          opacity-0 group-hover:opacity-100 group-focus:opacity-100 
-          bottom-full left-1/2 -translate-x-1/2 mb-3 
-          w-max max-w-xs rounded-sm 
-          bg-clay-ink text-white text-[10px] font-bold uppercase tracking-widest 
-          px-3 py-1.5 shadow-2xl transition-all duration-300
-        "
-      >
-        {content}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-clay-ink" />
-      </span>
+      {/* =============================================
+          TOOLTIP
+      ============================================= */}
+
+      <AnimatePresence>
+
+        {visible && (
+          <motion.span
+            role="tooltip"
+            id={tooltipId}
+            initial={{
+              opacity: 0,
+              y: 4,
+              scale: 0.98,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+              y: 2,
+              scale: 0.98,
+            }}
+            transition={{
+              duration: 0.16,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="
+              pointer-events-none
+
+              absolute bottom-[calc(100%+10px)]
+              left-1/2 z-50
+
+              w-max max-w-[220px]
+
+              -translate-x-1/2
+
+              rounded-xl
+
+              border border-white/[0.06]
+
+              bg-[#1C1C1C]/96
+
+              px-3 py-2
+
+              text-[12px]
+              font-medium
+
+              leading-[1.45]
+
+              tracking-[-0.01em]
+
+              text-white/90
+
+              shadow-[0_8px_30px_rgba(0,0,0,0.18)]
+
+              backdrop-blur-xl
+            "
+          >
+            {content}
+          </motion.span>
+        )}
+
+      </AnimatePresence>
+
     </span>
   )
 }

@@ -1,11 +1,11 @@
 'use client'
 
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-import { motion } from "framer-motion"
+import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { motion } from 'framer-motion'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 const MotionButton = motion.button
 
@@ -15,15 +15,16 @@ const MotionButton = motion.button
 
 const buttonVariants = cva(
   `
-  relative inline-flex shrink-0 items-center justify-center gap-2
+  relative inline-flex shrink-0 items-center justify-center
   whitespace-nowrap
+
   overflow-hidden
   select-none
 
-  font-semibold
-  tracking-[-0.01em]
+  font-medium
+  tracking-[-0.015em]
 
-  transition-all duration-300 ease-out
+  transition-all duration-200 ease-out
 
   focus-visible:outline-none
   focus-visible:ring-2
@@ -31,6 +32,8 @@ const buttonVariants = cva(
 
   disabled:pointer-events-none
   disabled:opacity-50
+
+  active:scale-[0.985]
   `,
   {
     variants: {
@@ -38,7 +41,9 @@ const buttonVariants = cva(
         primary: `
           bg-clay-primary
           text-white
-          shadow-[0_10px_30px_rgba(0,0,0,0.10)]
+
+          shadow-[0_10px_30px_rgba(0,0,0,0.08)]
+
           hover:bg-clay-primary/92
         `,
 
@@ -46,6 +51,7 @@ const buttonVariants = cva(
           border border-clay-hairline
           bg-white
           text-clay-ink
+
           hover:bg-clay-surface-soft
         `,
 
@@ -53,32 +59,39 @@ const buttonVariants = cva(
           border border-clay-hairline
           bg-transparent
           text-clay-ink
+
           hover:bg-clay-surface-soft
         `,
 
         ghost: `
           bg-transparent
           text-clay-ink
+
           hover:bg-clay-surface-soft
         `,
 
         onColor: `
           bg-white
           text-clay-ink
+
           hover:bg-clay-surface-soft
         `,
 
         teal: `
           bg-clay-brand-teal
           text-white
-          shadow-[0_12px_30px_rgba(26,58,58,0.18)]
+
+          shadow-[0_12px_30px_rgba(26,58,58,0.14)]
+
           hover:bg-[#244848]
         `,
 
         rich: `
           border border-clay-hairline
           bg-white/90
+
           backdrop-blur-xl
+
           shadow-[0_6px_24px_rgba(0,0,0,0.04)]
 
           hover:bg-white
@@ -91,6 +104,7 @@ const buttonVariants = cva(
           h-9
           rounded-xl
           px-4
+
           text-[13px]
         `,
 
@@ -98,6 +112,7 @@ const buttonVariants = cva(
           h-11
           rounded-2xl
           px-6
+
           text-[14px]
         `,
 
@@ -105,13 +120,15 @@ const buttonVariants = cva(
           h-[52px]
           rounded-2xl
           px-8
-          text-[15px]
+
+          text-[14px]
         `,
 
         xl: `
           h-[60px]
           rounded-[20px]
           px-10
+
           text-[15px]
         `,
 
@@ -123,8 +140,8 @@ const buttonVariants = cva(
     },
 
     defaultVariants: {
-      variant: "primary",
-      size: "default",
+      variant: 'primary',
+      size: 'default',
     },
   }
 )
@@ -136,15 +153,15 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends Omit<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
-    | "onAnimationStart"
-    | "onAnimationEnd"
-    | "onDrag"
-    | "onDragStart"
-    | "onDragEnd"
-    | "onDragEnter"
-    | "onDragLeave"
-    | "onDragOver"
-    | "onDrop"
+    | 'onAnimationStart'
+    | 'onAnimationEnd'
+    | 'onDrag'
+    | 'onDragStart'
+    | 'onDragEnd'
+    | 'onDragEnter'
+    | 'onDragLeave'
+    | 'onDragOver'
+    | 'onDrop'
   >,
   VariantProps<typeof buttonVariants> {
   asChild?: boolean
@@ -154,10 +171,37 @@ export interface ButtonProps
 }
 
 /* =========================================================
+   LOADING SPINNER
+========================================================= */
+
+function LoadingSpinner({
+  className,
+}: {
+  className?: string
+}) {
+  return (
+    <div
+      className={cn(
+        `
+        h-4 w-4
+        animate-spin
+        rounded-full
+        border-2
+        `,
+        className
+      )}
+    />
+  )
+}
+
+/* =========================================================
    COMPONENT
 ========================================================= */
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  ButtonProps
+>(
   (
     {
       className,
@@ -181,6 +225,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
 
     /* =========================================
+       SPINNER COLOR
+    ========================================= */
+
+    const spinnerColor =
+      variant === 'secondary' ||
+        variant === 'outline' ||
+        variant === 'ghost' ||
+        variant === 'onColor' ||
+        variant === 'rich'
+        ? 'border-clay-ink border-t-transparent'
+        : 'border-white border-t-transparent'
+
+    /* =========================================
        AS CHILD
     ========================================= */
 
@@ -192,6 +249,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               variant,
               size,
             }),
+
+            `
+            group
+            `,
+
             className
           )}
         >
@@ -201,37 +263,24 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     /* =========================================
-       SPINNER COLOR
-    ========================================= */
-
-    const spinnerColor =
-      variant === "secondary" ||
-        variant === "outline" ||
-        variant === "ghost" ||
-        variant === "onColor" ||
-        variant === "rich"
-        ? "border-clay-ink border-t-transparent"
-        : "border-white border-t-transparent"
-
-    /* =========================================
        RICH BUTTON
     ========================================= */
 
-    if (variant === "rich") {
+    if (variant === 'rich') {
       return (
         <MotionButton
           ref={ref}
-          type={type ?? "button"}
+          type={type ?? 'button'}
           aria-busy={isLoading}
           disabled={disabled || isLoading}
           whileHover={{
             y: -1,
           }}
           whileTap={{
-            scale: 0.99,
+            scale: 0.985,
           }}
           transition={{
-            duration: 0.22,
+            duration: 0.2,
             ease: [0.22, 1, 0.36, 1],
           }}
           className={cn(
@@ -239,27 +288,36 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               variant,
               size,
             }),
+
             `
             group
             w-full
+
             items-start
             justify-between
+
             p-5
+
             text-left
             `,
+
             className
           )}
           {...props}
         >
 
-          {/* GLOW */}
+          {/* HOVER GLOW */}
           <div
             className="
               pointer-events-none
               absolute inset-0
+
               opacity-0
+
               transition-opacity duration-500
+
               group-hover:opacity-100
+
               bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.7),transparent_35%)]
             "
           />
@@ -274,7 +332,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                   className="
                     flex h-12 w-12 shrink-0 items-center justify-center
                     rounded-2xl
+
                     bg-clay-surface-soft
+
                     text-clay-brand-teal
                   "
                 >
@@ -289,6 +349,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                     text-[15px]
                     font-semibold
                     tracking-[-0.02em]
+
                     text-clay-ink
                   "
                 >
@@ -300,6 +361,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                     className="
                       text-sm
                       leading-relaxed
+
                       text-clay-body
                     "
                   >
@@ -314,10 +376,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <div
               className="
                 mt-1
+
                 text-clay-muted
+
                 transition-transform duration-300
+
                 group-hover:translate-x-0.5
               "
+              aria-hidden="true"
             >
               →
             </div>
@@ -335,7 +401,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <MotionButton
         ref={ref}
-        type={type ?? "button"}
+        type={type ?? 'button'}
         aria-busy={isLoading}
         disabled={disabled || isLoading}
         whileHover={{
@@ -345,7 +411,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           scale: 0.985,
         }}
         transition={{
-          duration: 0.2,
+          duration: 0.18,
           ease: [0.22, 1, 0.36, 1],
         }}
         className={cn(
@@ -353,34 +419,49 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             variant,
             size,
           }),
-          "group",
+
+          `
+          group
+          `,
+
           className
         )}
         {...props}
       >
 
-        {/* HOVER LIGHT */}
+        {/* HOVER OVERLAY */}
         <div
           className="
             pointer-events-none
             absolute inset-0
+
             opacity-0
+
             transition-opacity duration-300
+
             group-hover:opacity-100
-            bg-white/[0.06]
+
+            bg-white/[0.05]
           "
         />
 
         {/* CONTENT */}
-        <div className="relative z-10 flex items-center gap-2">
+        <div
+          className="
+            relative z-10
+
+            flex flex-row items-center justify-center
+
+            gap-1.5
+
+            whitespace-nowrap
+          "
+        >
 
           {isLoading ? (
             <>
-              <div
-                className={cn(
-                  "h-4 w-4 rounded-full border-2 animate-spin",
-                  spinnerColor
-                )}
+              <LoadingSpinner
+                className={spinnerColor}
               />
 
               <span className="sr-only">
@@ -390,12 +471,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           ) : (
             <>
               {icon && (
-                <span className="flex items-center justify-center">
+                <span
+                  className="
+                    flex shrink-0 items-center justify-center
+                  "
+                  aria-hidden="true"
+                >
                   {icon}
                 </span>
               )}
 
-              <span>{children}</span>
+              <span className="leading-none">
+                {children}
+              </span>
             </>
           )}
 
@@ -406,6 +494,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 )
 
-Button.displayName = "Button"
+Button.displayName = 'Button'
 
 export { Button }

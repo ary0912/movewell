@@ -1,17 +1,38 @@
 'use client';
 
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useState,
+} from "react";
 
-import { useAssessment } from "@context/AssessmentContext";
-import { submitAssessment } from "@services/assessmentService";
+import {
+  useAssessment,
+} from "@context/AssessmentContext";
 
-import { BODY_AREA_LABELS } from "@utils/constants";
+import {
+  submitAssessment,
+} from "@services/assessmentService";
 
-import { useFormContext } from "react-hook-form";
-import type { AssessmentFormValues } from "@utils/schemas";
+import {
+  BODY_AREA_LABELS,
+} from "@utils/constants";
 
-import { Button } from "@components/ui/Button";
-import { Card } from "@components/ui/Card";
+import {
+  useFormContext,
+} from "react-hook-form";
+
+import type {
+  AssessmentFormValues,
+} from "@utils/schemas";
+
+import {
+  Button,
+} from "@components/ui/Button";
+
+import {
+  Card,
+} from "@components/ui/Card";
+
 import Badge from "@components/ui/Badge";
 
 import {
@@ -23,28 +44,48 @@ import {
   TriangleAlert,
 } from "lucide-react";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import {
+  motion,
+  AnimatePresence,
+} from "framer-motion";
+
+import {
+  cn,
+} from "@/lib/utils";
+
+/* =========================================================
+   TYPES
+========================================================= */
 
 interface StepReviewProps {
   onComplete: () => void;
 }
 
+/* =========================================================
+   GRADIENTS
+========================================================= */
+
 const sectionGradients = [
-  "from-clay-brand-lavender/10 to-transparent",
-  "from-clay-brand-peach/10 to-transparent",
-  "from-clay-brand-ochre/10 to-transparent",
-  "from-clay-brand-mint/10 to-transparent",
+  "from-clay-brand-lavender/6 via-transparent to-transparent",
+  "from-clay-brand-peach/6 via-transparent to-transparent",
+  "from-clay-brand-mint/6 via-transparent to-transparent",
 ];
+
+/* =========================================================
+   COMPONENT
+========================================================= */
 
 function StepReview({
   onComplete,
 }: StepReviewProps) {
 
-  const { getValues } =
+  const {
+    getValues,
+  } =
     useFormContext<AssessmentFormValues>();
 
-  const formValues = getValues();
+  const formValues =
+    getValues();
 
   const {
     isLoading,
@@ -52,116 +93,146 @@ function StepReview({
     setResult,
     error,
     setError,
-  } = useAssessment();
+  } =
+    useAssessment();
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  const [
+    submitted,
+    setSubmitted,
+  ] = useState(false);
 
-  const averagePain = useMemo(() => {
+  /* =====================================================
+     AVERAGE PAIN
+  ===================================================== */
 
-    if (
-      !formValues.painAreas ||
-      formValues.painAreas.length === 0
-    ) {
-      return 0;
-    }
+  const averagePain =
+    useMemo(() => {
 
-    const total =
-      formValues.painAreas.reduce(
-        (acc, area) =>
-          acc +
-          (
-            formValues.painIntensity[
-            area
-            ] || 0
-          ),
-        0
+      if (
+        !formValues.painAreas ||
+        formValues.painAreas.length === 0
+      ) {
+        return 0;
+      }
+
+      const total =
+        formValues.painAreas.reduce(
+          (acc, area) =>
+            acc +
+            (
+              formValues
+                .painIntensity[
+              area
+              ] || 0
+            ),
+          0
+        );
+
+      return Math.round(
+        total /
+        formValues.painAreas.length
       );
 
-    return Math.round(
-      total / formValues.painAreas.length
-    );
+    }, [formValues]);
 
-  }, [formValues]);
+  /* =====================================================
+     SUBMIT
+  ===================================================== */
 
-  const handleSubmit = async () => {
+  const handleSubmit =
+    async () => {
 
-    try {
+      try {
 
-      setIsLoading(true);
+        setIsLoading(true);
 
-      setError(null);
+        setError(null);
 
-      const payload = {
-        ...formValues,
+        const payload = {
+          ...formValues,
 
-        painAreas:
-          formValues.painAreas as never,
+          painAreas:
+            formValues.painAreas as never,
 
-        mobilityDifficulty:
-          formValues.mobilityDifficulty.map(
-            (item) => ({
-              ...item,
-              area: item.area as never,
-            })
-          ),
+          mobilityDifficulty:
+            formValues.mobilityDifficulty.map(
+              (item) => ({
+                ...item,
+                area:
+                  item.area as never,
+              })
+            ),
 
-        timestamp:
-          new Date().toISOString(),
-      };
+          timestamp:
+            new Date().toISOString(),
+        };
 
-      const result =
-        await submitAssessment(payload);
+        const result =
+          await submitAssessment(
+            payload
+          );
 
-      setResult(result);
+        setResult(result);
 
-      setSubmitted(true);
+        setSubmitted(true);
 
-      window.setTimeout(() => {
-        onComplete();
-      }, 1600);
+        window.setTimeout(() => {
+          onComplete();
+        }, 1500);
 
-    } catch (err) {
+      } catch (err) {
 
-      setError(
-        "Unable to complete the synthesis. Please verify your connection and try again."
-      );
+        setError(
+          "Unable to generate your assessment. Please try again."
+        );
 
-      console.error(err);
+        console.error(err);
 
-    } finally {
+      } finally {
 
-      setIsLoading(false);
+        setIsLoading(false);
 
-    }
-  };
+      }
+    };
 
-  /* =========================
+  /* =====================================================
      SUCCESS STATE
-  ========================= */
+  ===================================================== */
 
   if (submitted) {
 
     return (
 
-      <div className="flex min-h-[70vh] items-center justify-center py-16">
+      <div
+        className="
+          flex min-h-[65vh]
+          items-center justify-center
+          py-10
+        "
+      >
 
         <motion.div
           initial={{
             opacity: 0,
             scale: 0.96,
-            y: 12,
+            y: 10,
           }}
+
           animate={{
             opacity: 1,
             scale: 1,
             y: 0,
           }}
+
           transition={{
-            duration: 0.55,
+            duration: 0.45,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="w-full max-w-2xl"
+
+          className="
+            w-full
+            max-w-xl
+          "
         >
 
           <Card
@@ -169,70 +240,114 @@ function StepReview({
             hover={false}
             className="
               relative overflow-hidden
-              rounded-[40px]
-              px-8 py-14
-              md:px-12 md:py-16
+
+              rounded-[36px]
+
+              px-8 py-12
+
               text-center
             "
           >
 
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_35%)]" />
+            <div
+              className="
+                absolute inset-0
 
-            <div className="relative z-10 flex flex-col items-center">
+                bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_35%)]
+              "
+            />
 
-              <motion.div
-                initial={{
-                  scale: 0.7,
-                  opacity: 0,
-                }}
-                animate={{
-                  scale: 1,
-                  opacity: 1,
-                }}
-                transition={{
-                  delay: 0.15,
-                  type: "spring",
-                  stiffness: 180,
-                }}
+            <div
+              className="
+                relative z-10
+                flex flex-col items-center
+              "
+            >
+
+              <div
                 className="
-                  flex h-24 w-24 items-center justify-center
-                  rounded-[30px]
+                  flex h-20 w-20
+                  items-center justify-center
+
+                  rounded-[26px]
+
                   bg-white/12
+
                   backdrop-blur-xl
                 "
               >
 
                 <CheckCircle2
-                  size={50}
+                  size={42}
                   className="text-white"
                 />
 
-              </motion.div>
+              </div>
 
-              <div className="mt-10">
+              <div
+                className="
+                  mt-8
 
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/80">
+                  inline-flex items-center gap-2
 
-                  <Sparkles size={14} />
+                  rounded-full
 
-                  Analysis Completed
+                  bg-white/10
 
-                </div>
+                  px-4 py-2
 
-                <h2 className="mt-7 clay-display text-[2.8rem] leading-[0.98] tracking-[-0.06em] text-white md:text-[4rem]">
-                  Your movement
-                  <br />
-                  blueprint is ready.
-                </h2>
+                  text-[10px]
+                  font-semibold
 
-                <p className="mx-auto mt-6 max-w-md text-[15px] leading-[1.9] text-white/75 md:text-[16px]">
-                  We’ve generated your
-                  personalized mobility and
-                  recovery analysis based on
-                  your assessment inputs.
-                </p>
+                  uppercase
+
+                  tracking-[0.14em]
+
+                  text-white/80
+                "
+              >
+
+                <Sparkles size={12} />
+
+                Analysis Ready
 
               </div>
+
+              <h2
+                className="
+                  mt-6
+
+                  text-[2.4rem]
+
+                  leading-[0.96]
+
+                  tracking-[-0.06em]
+
+                  text-white
+
+                  clay-display
+                "
+              >
+                Your recovery
+                insights are ready.
+              </h2>
+
+              <p
+                className="
+                  mt-4
+
+                  max-w-sm
+
+                  text-[14px]
+
+                  leading-[1.8]
+
+                  text-white/75
+                "
+              >
+                Generating your personalized
+                mobility and recovery analysis.
+              </p>
 
             </div>
 
@@ -244,188 +359,571 @@ function StepReview({
     );
   }
 
+  /* =====================================================
+     UI
+  ===================================================== */
+
   return (
-    <div className="space-y-10">
 
-      {/* HERO */}
-      <section className="max-w-3xl">
+    <div className="space-y-6">
 
-        <div className="inline-flex items-center gap-2 rounded-full bg-clay-surface-card px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-clay-muted">
+      {/* =================================================
+          HERO
+      ================================================= */}
 
-          <Sparkles size={14} />
+      <section
+        className="
+          relative overflow-hidden
 
-          Assessment Review
+          rounded-[32px]
 
-        </div>
+          border border-clay-hairline
 
-        <h2 className="mt-7 clay-display text-[2.2rem] leading-[1.02] tracking-[-0.05em] text-clay-ink md:text-[3.2rem]">
-          Review your movement baseline.
-        </h2>
+          bg-white/[0.72]
 
-        <p className="mt-6 max-w-2xl text-[1rem] leading-[1.9] text-clay-body">
-          Before generating your recovery
-          insights, verify that your selected
-          movement regions and discomfort
-          intensity accurately reflect your
-          current physical condition.
-        </p>
+          px-6 py-6
 
-      </section>
+          backdrop-blur-2xl
+        "
+      >
 
-      {/* MAIN GRID */}
-      <section className="grid gap-8 xl:grid-cols-12">
+        <div
+          className="
+            absolute inset-0
 
-        <div className="space-y-8 xl:col-span-8">
+            bg-gradient-to-br
 
-          {/* SUMMARY STATS */}
-          <div className="grid gap-5 sm:grid-cols-3">
+            from-clay-brand-lavender/5
+            via-transparent
+            to-clay-brand-mint/5
+          "
+        />
 
-            {[
-              {
-                label: "Focus Regions",
-                value:
-                  formValues.painAreas.length,
-                icon: Activity,
-              },
-              {
-                label: "Avg Intensity",
-                value: `${averagePain}/10`,
-                icon: Sparkles,
-              },
-              {
-                label: "Assessment",
-                value: "Ready",
-                icon: CheckCircle2,
-              },
-            ].map((item, index) => {
+        <div
+          className="
+            relative z-10
 
-              const Icon = item.icon;
+            flex flex-col gap-7
 
-              return (
+            lg:flex-row
+            lg:items-end
+            lg:justify-between
+          "
+        >
 
-                <Card
-                  key={item.label}
-                  variant="cream"
-                  hover={false}
-                  className="
-                    relative overflow-hidden
-                    rounded-[28px]
-                    border border-clay-hairline/60
-                    px-6 py-6
-                  "
-                >
+          {/* LEFT */}
 
-                  <div
-                    className={cn(
-                      "absolute inset-0 bg-gradient-to-br",
-                      sectionGradients[index]
-                    )}
-                  />
+          <div className="max-w-2xl">
 
-                  <div className="relative z-10">
+            <div
+              className="
+                inline-flex items-center gap-2
 
-                    <div className="flex items-center justify-between">
+                rounded-full
 
-                      <div className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-clay-canvas shadow-sm">
+                border border-clay-hairline
 
-                        <Icon
-                          size={22}
-                          className="text-clay-ink"
-                        />
+                bg-clay-surface-soft
 
-                      </div>
+                px-4 py-2
+              "
+            >
 
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-clay-muted">
-                        Overview
-                      </div>
+              <Sparkles size={12} />
 
-                    </div>
+              <span
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.16em]
+                  text-clay-muted
+                "
+              >
+                Assessment Review
+              </span>
 
-                    <div className="mt-8 text-[2rem] font-semibold leading-none tracking-[-0.06em] text-clay-ink">
-                      {item.value}
-                    </div>
+            </div>
 
-                    <p className="mt-3 text-[13px] font-medium text-clay-body">
-                      {item.label}
-                    </p>
+            <h2
+              className="
+                mt-5
 
-                  </div>
+                text-[2.2rem]
 
-                </Card>
-              );
-            })}
+                leading-[0.95]
+
+                tracking-[-0.06em]
+
+                text-clay-ink
+
+                clay-display
+
+                md:text-[3.1rem]
+              "
+            >
+              Review your movement baseline.
+            </h2>
+
+            <p
+              className="
+                mt-4
+
+                max-w-xl
+
+                text-[15px]
+
+                leading-[1.8]
+
+                text-clay-body
+              "
+            >
+              Verify your selected movement
+              regions and intensity before
+              generating your final insights.
+            </p>
 
           </div>
 
-          {/* PAIN REGIONS */}
+          {/* RIGHT */}
+
+          <div
+            className="
+              flex items-center gap-4
+            "
+          >
+
+            <div
+              className="
+                rounded-[24px]
+
+                border border-clay-hairline
+
+                bg-white/70
+
+                px-5 py-4
+              "
+            >
+
+              <div
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-clay-muted
+                "
+              >
+                Regions
+              </div>
+
+              <div
+                className="
+                  mt-2
+
+                  text-[2.5rem]
+
+                  leading-none
+
+                  tracking-[-0.06em]
+
+                  text-clay-ink
+
+                  clay-display
+                "
+              >
+                {
+                  formValues
+                    .painAreas.length
+                }
+              </div>
+
+            </div>
+
+            <div
+              className="
+                rounded-[24px]
+
+                border border-clay-hairline
+
+                bg-white/70
+
+                px-5 py-4
+              "
+            >
+
+              <div
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-clay-muted
+                "
+              >
+                Average
+              </div>
+
+              <div
+                className="
+                  mt-2
+
+                  text-[2.5rem]
+
+                  leading-none
+
+                  tracking-[-0.06em]
+
+                  text-clay-ink
+
+                  clay-display
+                "
+              >
+                {averagePain}
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* =================================================
+          MAIN GRID
+      ================================================= */}
+
+      <section
+        className="
+          grid gap-5
+
+          xl:grid-cols-[1fr_360px]
+        "
+      >
+
+        {/* =============================================
+            LEFT
+        ============================================= */}
+
+        <div className="space-y-5">
+
+          {/* STATS */}
+
+          <div
+            className="
+              grid gap-4
+
+              sm:grid-cols-3
+            "
+          >
+
+            {[
+              {
+                label:
+                  "Focus Regions",
+                value:
+                  formValues
+                    .painAreas.length,
+                icon: Activity,
+              },
+
+              {
+                label:
+                  "Average Pain",
+                value:
+                  `${averagePain}/10`,
+                icon: Sparkles,
+              },
+
+              {
+                label:
+                  "Assessment",
+                value: "Ready",
+                icon:
+                  CheckCircle2,
+              },
+            ].map(
+              (
+                item,
+                index
+              ) => {
+
+                const Icon =
+                  item.icon;
+
+                return (
+
+                  <Card
+                    key={item.label}
+                    variant="cream"
+                    hover={false}
+                    className="
+                      relative overflow-hidden
+
+                      rounded-[26px]
+
+                      border border-clay-hairline/60
+
+                      px-5 py-5
+                    "
+                  >
+
+                    <div
+                      className={cn(
+
+                        `
+                        absolute inset-0
+
+                        bg-gradient-to-br
+                        `,
+
+                        sectionGradients[
+                        index
+                        ]
+                      )}
+                    />
+
+                    <div className="relative z-10">
+
+                      <div
+                        className="
+                          flex items-center
+                          justify-between
+                        "
+                      >
+
+                        <div
+                          className="
+                            flex h-10 w-10
+                            items-center justify-center
+
+                            rounded-[14px]
+
+                            bg-clay-canvas
+                          "
+                        >
+
+                          <Icon
+                            size={18}
+                            className="
+                              text-clay-ink
+                            "
+                          />
+
+                        </div>
+
+                        <div
+                          className="
+                            text-[10px]
+                            font-semibold
+                            uppercase
+                            tracking-[0.12em]
+                            text-clay-muted
+                          "
+                        >
+                          Overview
+                        </div>
+
+                      </div>
+
+                      <div
+                        className="
+                          mt-6
+
+                          text-[1.9rem]
+
+                          leading-none
+
+                          tracking-[-0.05em]
+
+                          text-clay-ink
+
+                          clay-display
+                        "
+                      >
+                        {item.value}
+                      </div>
+
+                      <p
+                        className="
+                          mt-2
+
+                          text-[12px]
+
+                          font-medium
+
+                          text-clay-body
+                        "
+                      >
+                        {item.label}
+                      </p>
+
+                    </div>
+
+                  </Card>
+                );
+              }
+            )}
+
+          </div>
+
+          {/* REGIONS */}
+
           <Card
             variant="default"
             hover={false}
             className="
               relative overflow-hidden
-              rounded-[34px]
+
+              rounded-[30px]
+
               border border-clay-hairline/60
-              px-6 py-7
-              md:px-8 md:py-8
+
+              px-6 py-6
             "
           >
 
-            <div className="absolute inset-0 bg-gradient-to-br from-clay-brand-lavender/5 via-transparent to-transparent" />
+            <div
+              className="
+                absolute inset-0
+
+                bg-gradient-to-br
+
+                from-clay-brand-lavender/5
+                via-transparent
+                to-transparent
+              "
+            />
 
             <div className="relative z-10">
 
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div
+                className="
+                  flex flex-col gap-4
+
+                  md:flex-row
+                  md:items-center
+                  md:justify-between
+                "
+              >
 
                 <div>
 
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-clay-muted">
-                    Selected Movement Regions
+                  <div
+                    className="
+                      text-[10px]
+                      font-semibold
+                      uppercase
+                      tracking-[0.14em]
+                      text-clay-muted
+                    "
+                  >
+                    Selected Regions
                   </div>
 
-                  <h3 className="mt-3 text-[1.7rem] font-semibold tracking-[-0.04em] text-clay-ink">
-                    Anatomical focus nodes
+                  <h3
+                    className="
+                      mt-3
+
+                      text-[1.5rem]
+
+                      tracking-[-0.04em]
+
+                      text-clay-ink
+                    "
+                  >
+                    Movement focus areas
                   </h3>
 
                 </div>
 
-                <div className="rounded-full bg-clay-surface-soft px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-clay-body">
-                  {formValues.painAreas.length} regions selected
+                <div
+                  className="
+                    rounded-full
+
+                    bg-clay-surface-soft
+
+                    px-4 py-2
+
+                    text-[10px]
+                    font-semibold
+
+                    uppercase
+
+                    tracking-[0.12em]
+
+                    text-clay-body
+                  "
+                >
+                  {
+                    formValues
+                      .painAreas.length
+                  } selected
                 </div>
 
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div
+                className="
+                  mt-7
 
-                {formValues.painAreas.map(
-                  (area, index) => (
+                  flex flex-wrap gap-3
+                "
+              >
 
-                    <Badge
-                      key={area}
-                      variant="ochre"
-                      size="lg"
-                      className="
-                        flex items-center gap-3
-                        rounded-full
-                        px-5 py-3
-                        text-[12px]
-                        font-semibold
-                        shadow-none
-                      "
-                    >
+                {formValues
+                  .painAreas.map(
+                    (
+                      area,
+                      index
+                    ) => (
 
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                        0{index + 1}
-                      </span>
+                      <Badge
+                        key={area}
+                        variant="ochre"
+                        size="lg"
 
-                      {
-                        BODY_AREA_LABELS[
-                        area
-                        ]
-                      }
+                        className="
+                          flex items-center gap-2
 
-                    </Badge>
-                  )
-                )}
+                          rounded-full
+
+                          px-4 py-2.5
+
+                          text-[11px]
+                          font-semibold
+
+                          shadow-none
+                        "
+                      >
+
+                        <span
+                          className="
+                            flex h-5 w-5
+                            items-center justify-center
+
+                            rounded-full
+
+                            bg-white/20
+
+                            text-[9px]
+                          "
+                        >
+                          0{
+                            index + 1
+                          }
+                        </span>
+
+                        {
+                          BODY_AREA_LABELS[
+                          area
+                          ]
+                        }
+
+                      </Badge>
+                    )
+                  )}
 
               </div>
 
@@ -435,44 +933,103 @@ function StepReview({
 
         </div>
 
-        {/* RIGHT */}
-        <div className="space-y-6 xl:col-span-4">
+        {/* =============================================
+            RIGHT
+        ============================================= */}
+
+        <div className="space-y-5">
+
+          {/* GENERATE */}
 
           <Card
             variant="teal"
             hover={false}
             className="
               relative overflow-hidden
-              rounded-[34px]
-              px-7 py-8
+
+              rounded-[30px]
+
+              px-6 py-7
             "
           >
 
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.10),transparent_35%)]" />
+            <div
+              className="
+                absolute inset-0
+
+                bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.10),transparent_35%)]
+              "
+            />
 
             <div className="relative z-10">
 
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.13em] text-white/75">
+              <div
+                className="
+                  inline-flex items-center gap-2
 
-                <ShieldCheck size={14} />
+                  rounded-full
 
-                Ready For Synthesis
+                  bg-white/10
+
+                  px-4 py-2
+
+                  text-[10px]
+                  font-semibold
+
+                  uppercase
+
+                  tracking-[0.13em]
+
+                  text-white/75
+                "
+              >
+
+                <ShieldCheck
+                  size={12}
+                />
+
+                Ready
 
               </div>
 
-              <h3 className="mt-7 text-[2rem] font-semibold leading-[1.02] tracking-[-0.05em] text-white">
+              <h3
+                className="
+                  mt-6
+
+                  text-[1.8rem]
+
+                  leading-[1.02]
+
+                  tracking-[-0.05em]
+
+                  text-white
+                "
+              >
                 Generate your
-                movement insights.
+                recovery insights.
               </h3>
 
-              <p className="mt-5 text-[14px] leading-[1.85] text-white/75">
-                We’ll synthesize your
-                movement baseline into a
-                personalized recovery and
-                mobility analysis report.
+              <p
+                className="
+                  mt-4
+
+                  text-[14px]
+
+                  leading-[1.8]
+
+                  text-white/75
+                "
+              >
+                Create your personalized
+                movement and mobility
+                analysis report.
               </p>
 
-              <div className="mt-10">
+              {/* ACTIONS */}
+
+              <div className="mt-8 space-y-3">
+
+                {/* PRIMARY CTA */}
 
                 <Button
                   size="lg"
@@ -480,23 +1037,74 @@ function StepReview({
                   onClick={handleSubmit}
                   isLoading={isLoading}
                   className="
+                    group
+
                     h-14 w-full
+
                     rounded-[20px]
-                    text-[13px]
-                    font-semibold
-                    uppercase tracking-[0.08em]
+
+                    bg-white
+                    text-black
+
+                    transition-all duration-300
+
+                    hover:scale-[1.01]
+                    hover:bg-white/95
+
+                    active:scale-[0.99]
                   "
                 >
 
-                  {isLoading
-                    ? "Synthesizing..."
-                    : "Generate Analysis"}
+                  <span
+                    className="
+                      flex items-center gap-2
 
-                  {!isLoading && (
-                    <ArrowRight size={16} />
-                  )}
+                      text-[12px]
+                      font-semibold
+
+                      uppercase
+
+                      tracking-[0.08em]
+                    "
+                  >
+
+                    {isLoading
+                      ? "Generating Analysis..."
+                      : "Generate Analysis"}
+
+                    {!isLoading && (
+
+                      <ArrowRight
+                        size={15}
+                        className="
+                          transition-transform duration-300
+
+                          group-hover:translate-x-0.5
+                        "
+                      />
+
+                    )}
+
+                  </span>
 
                 </Button>
+
+                {/* SECONDARY TEXT */}
+
+                <div
+                  className="
+                    text-center
+
+                    text-[12px]
+
+                    font-medium
+
+                    text-white/65
+                  "
+                >
+                  You can still go back and edit your
+                  responses before generating insights.
+                </div>
 
               </div>
 
@@ -505,6 +1113,7 @@ function StepReview({
           </Card>
 
           {/* ERROR */}
+
           <AnimatePresence>
 
             {error && (
@@ -514,10 +1123,12 @@ function StepReview({
                   opacity: 0,
                   y: 10,
                 }}
+
                 animate={{
                   opacity: 1,
                   y: 0,
                 }}
+
                 exit={{
                   opacity: 0,
                   y: -10,
@@ -527,31 +1138,66 @@ function StepReview({
                 <Card
                   hover={false}
                   className="
-                    rounded-[28px]
+                    rounded-[24px]
+
                     border border-clay-brand-pink/20
+
                     bg-clay-brand-pink/5
-                    px-6 py-5
+
+                    px-5 py-5
                   "
                 >
 
-                  <div className="flex items-start gap-4">
+                  <div
+                    className="
+                      flex items-start gap-4
+                    "
+                  >
 
-                    <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-clay-brand-pink/10">
+                    <div
+                      className="
+                        flex h-10 w-10
+                        items-center justify-center
+
+                        rounded-[14px]
+
+                        bg-clay-brand-pink/10
+                      "
+                    >
 
                       <TriangleAlert
-                        size={20}
-                        className="text-clay-brand-pink"
+                        size={18}
+                        className="
+                          text-clay-brand-pink
+                        "
                       />
 
                     </div>
 
                     <div>
 
-                      <h4 className="text-[15px] font-semibold text-clay-brand-pink">
-                        Synthesis Error
+                      <h4
+                        className="
+                          text-[14px]
+                          font-semibold
+
+                          text-clay-brand-pink
+                        "
+                      >
+                        Analysis Error
                       </h4>
 
-                      <p className="mt-2 text-[13px] leading-[1.8] text-clay-body">
+                      <p
+                        className="
+                          mt-2
+
+                          text-[13px]
+
+                          leading-[1.75]
+
+                          text-clay-body
+                        "
+                      >
                         {error}
                       </p>
 

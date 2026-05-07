@@ -1,5 +1,7 @@
 'use client'
 
+/* eslint-disable react-refresh/only-export-components */
+
 import {
   createContext,
   useContext,
@@ -25,6 +27,7 @@ import {
 
 import type {
   AssessmentResult,
+  BodyArea,
 } from '../types'
 
 /* =========================================================
@@ -38,27 +41,54 @@ type SaveStatus =
   | 'error'
 
 interface AssessmentContextType {
+
+  /* STEP */
+
   currentStep: number
-  setCurrentStep: (step: number) => void
+
+  setCurrentStep: (
+    step: number
+  ) => void
+
+  /* FORM */
+
+  formData: AssessmentFormValues
+
+  painAreas: BodyArea[]
+
+  setPainAreas: (
+    areas: BodyArea[]
+  ) => void
+
+  /* RESULT */
 
   result: AssessmentResult | null
+
   setResult: (
     result: AssessmentResult | null
   ) => void
 
+  /* UI */
+
   isLoading: boolean
+
   setIsLoading: (
     loading: boolean
   ) => void
 
   error: string | null
+
   setError: (
     error: string | null
   ) => void
 
+  /* SAVE */
+
   lastSavedAt: string | null
 
   saveStatus: SaveStatus
+
+  /* ACTIONS */
 
   resetAssessment: () => void
 }
@@ -73,11 +103,15 @@ const AssessmentContext =
   >(undefined)
 
 /* =========================================================
-   CONSTANTS
+   STORAGE
 ========================================================= */
 
 const STORAGE_KEY =
   'movewell-assessment-draft'
+
+/* =========================================================
+   INITIAL VALUES
+========================================================= */
 
 const initialValues: AssessmentFormValues =
 {
@@ -135,6 +169,15 @@ export function AssessmentProvider({
   ] = useState<SaveStatus>('idle')
 
   /* =====================================================
+     BODY AREA STATE
+  ===================================================== */
+
+  const [
+    painAreas,
+    setPainAreas,
+  ] = useState<BodyArea[]>([])
+
+  /* =====================================================
      FORM
   ===================================================== */
 
@@ -150,23 +193,97 @@ export function AssessmentProvider({
   const {
     reset,
     control,
+    setValue,
   } = methods
 
   /* =====================================================
-     WATCH FORM DATA
-     (better than watch() for compiler safety)
+     WATCH FORM
   ===================================================== */
 
-  const formData = useWatch({
-    control,
-  })
+  const watchedForm =
+    useWatch({
+      control,
+    })
 
   /* =====================================================
-     LOAD SAVED DRAFT
+     SAFE FORM DATA
+  ===================================================== */
+
+  const formData: AssessmentFormValues =
+  {
+    painAreas:
+      (watchedForm?.painAreas ||
+        []) as BodyArea[],
+
+    painIntensity:
+      Object.fromEntries(
+        Object.entries(
+          watchedForm?.painIntensity ||
+          {}
+        ).filter(
+          (
+            [, value]
+          ) =>
+            typeof value ===
+            'number'
+        )
+      ) as Record<string, number>,
+
+    mobilityDifficulty:
+      (
+        watchedForm?.mobilityDifficulty ||
+        []
+      ).map((item) => ({
+        id: item?.id || '',
+        question:
+          item?.question || '',
+        difficulty:
+          item?.difficulty || 0,
+        area: item?.area || '',
+      })),
+
+    dailyImpact:
+      (
+        watchedForm?.dailyImpact ||
+        []
+      ).map((item) => ({
+        id: item?.id || '',
+        category:
+          item?.category || 'work',
+        impact:
+          item?.impact || 0,
+        description:
+          item?.description || '',
+      })),
+
+    notes:
+      watchedForm?.notes || '',
+  }
+
+  /* =====================================================
+     SYNC RHF + CONTEXT
   ===================================================== */
 
   useEffect(() => {
+
+    setValue(
+      'painAreas',
+      painAreas
+    )
+
+  }, [
+    painAreas,
+    setValue,
+  ])
+
+  /* =====================================================
+     LOAD SAVED DATA
+  ===================================================== */
+
+  useEffect(() => {
+
     try {
+
       const raw =
         localStorage.getItem(
           STORAGE_KEY
@@ -174,41 +291,74 @@ export function AssessmentProvider({
 
       if (!raw) return
 
-      const parsed = JSON.parse(raw)
+      const parsed =
+        JSON.parse(raw)
+
+      /* FORM */
 
       if (parsed?.data) {
+
         reset(parsed.data)
+
+        if (
+          Array.isArray(
+            parsed.data.painAreas
+          )
+        ) {
+
+          setPainAreas(
+            parsed.data
+              .painAreas as BodyArea[]
+          )
+        }
       }
 
-      if (parsed?.savedAt) {
-        setLastSavedAt(
-          parsed.savedAt
-        )
-      }
+      /* STEP */
 
       if (
         typeof parsed?.step ===
         'number'
       ) {
+
         setCurrentStep(
           parsed.step
         )
       }
+
+      /* SAVE */
+
+      if (parsed?.savedAt) {
+
+        requestAnimationFrame(() => {
+
+          setLastSavedAt(
+            parsed.savedAt
+          )
+
+        })
+      }
+
     } catch (err) {
+
       console.error(
-        'Failed to restore draft:',
+        'Failed to restore assessment draft:',
         err
       )
     }
-  }, [reset])
+
+  }, [
+    reset,
+  ])
 
   /* =====================================================
      AUTOSAVE
   ===================================================== */
 
   useEffect(() => {
+
     const timeout =
       window.setTimeout(() => {
+
         try {
 
           setSaveStatus(
@@ -216,9 +366,15 @@ export function AssessmentProvider({
           )
 
           const payload = {
-            data: formData,
+
+            data: {
+              ...formData,
+              painAreas,
+            },
+
             savedAt:
               new Date().toISOString(),
+
             step: currentStep,
           }
 
@@ -236,9 +392,11 @@ export function AssessmentProvider({
           )
 
           window.setTimeout(() => {
+
             setSaveStatus(
               'idle'
             )
+
           }, 1800)
 
         } catch (err) {
@@ -252,6 +410,7 @@ export function AssessmentProvider({
             'error'
           )
         }
+
       }, 800)
 
     return () =>
@@ -259,6 +418,7 @@ export function AssessmentProvider({
 
   }, [
     formData,
+    painAreas,
     currentStep,
   ])
 
@@ -270,6 +430,8 @@ export function AssessmentProvider({
     useCallback(() => {
 
       reset(initialValues)
+
+      setPainAreas([])
 
       setCurrentStep(0)
 
@@ -288,14 +450,20 @@ export function AssessmentProvider({
     }, [reset])
 
   /* =====================================================
-     MEMOIZED CONTEXT
+     CONTEXT VALUE
   ===================================================== */
 
   const value =
     useMemo<AssessmentContextType>(
       () => ({
+
         currentStep,
         setCurrentStep,
+
+        formData,
+
+        painAreas,
+        setPainAreas,
 
         result,
         setResult,
@@ -311,9 +479,12 @@ export function AssessmentProvider({
         saveStatus,
 
         resetAssessment,
+
       }),
       [
         currentStep,
+        formData,
+        painAreas,
         result,
         isLoading,
         error,
@@ -328,12 +499,15 @@ export function AssessmentProvider({
   ===================================================== */
 
   return (
+
     <AssessmentContext.Provider
       value={value}
     >
+
       <FormProvider {...methods}>
         {children}
       </FormProvider>
+
     </AssessmentContext.Provider>
   )
 }
@@ -351,6 +525,7 @@ export function useAssessment():
     )
 
   if (!context) {
+
     throw new Error(
       'useAssessment must be used within AssessmentProvider'
     )

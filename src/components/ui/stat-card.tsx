@@ -1,90 +1,298 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import { motion, useSpring, useTransform, animate } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Card } from "./Card";
+import * as React from 'react'
 
-interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  title: string;
-  value: number;
-  change: number;
-  changeDescription: string;
-  icon: React.ReactNode;
+import {
+  animate,
+  motion,
+  useSpring,
+  useTransform,
+} from 'framer-motion'
+
+import { Card } from './Card'
+
+import { cn } from '@/lib/utils'
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+interface StatCardProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+
+  title: string
+
+  value: number
+
+  change: number
+
+  changeDescription: string
+
+  icon: React.ReactNode
+
+  suffix?: string
 }
 
-const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
-  ({ title, value, change, changeDescription, icon, className, ...props }, ref) => {
-    
-    const isPositive = change >= 0;
+/* =========================================================
+   COMPONENT
+========================================================= */
 
-    const motionValue = useSpring(0, {
-      damping: 80,
-      stiffness: 100,
-    });
+const StatCard = React.forwardRef<
+  HTMLDivElement,
+  StatCardProps
+>(
+  (
+    {
+      title,
 
-    const displayValue = useTransform(motionValue, (latest) =>
-      Math.round(latest)
-    );
+      value,
+
+      change,
+
+      changeDescription,
+
+      icon,
+
+      suffix = '%',
+
+      className,
+
+      ...props
+    },
+    ref
+  ) => {
+
+    /* =====================================================
+       TREND
+    ===================================================== */
+
+    const isPositive =
+      change >= 0
+
+    /* =====================================================
+       MOTION VALUE
+    ===================================================== */
+
+    const motionValue =
+      useSpring(0, {
+        damping: 60,
+        stiffness: 100,
+      })
+
+    const displayValue =
+      useTransform(
+        motionValue,
+        (latest) =>
+          Math.round(latest)
+      )
 
     React.useEffect(() => {
-      const controls = animate(motionValue, value, {
-        duration: 1.5,
-        ease: "easeOut",
-      });
-      return controls.stop;
-    }, [value, motionValue]);
+
+      const controls =
+        animate(
+          motionValue,
+          value,
+          {
+            duration: 0.9,
+            ease: [0.22, 1, 0.36, 1],
+          }
+        )
+
+      return controls.stop
+
+    }, [value, motionValue])
 
     return (
       <Card
         ref={ref}
         variant="cream"
+        hover
         className={cn(
-          "relative p-8 group transition-all duration-500",
+
+          `
+          relative
+
+          p-6
+          `,
+
           className
         )}
         {...props}
       >
-        {/* Decorative corner accent */}
-        <div className="absolute top-0 right-0 w-16 h-16 bg-clay-surface-strong opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-3xl" />
 
-        <div className="relative z-10 space-y-6">
-          {/* HEADER */}
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-clay-muted">
+        <div
+          className="
+            flex h-full flex-col
+            justify-between
+          "
+        >
+
+          {/* =============================================
+              TOP
+          ============================================= */}
+
+          <div
+            className="
+              flex items-start
+              justify-between
+              gap-4
+            "
+          >
+
+            {/* LEFT */}
+            <div>
+
+              <p
+                className="
+                  text-[12px]
+                  font-medium
+
+                  tracking-[-0.01em]
+
+                  text-clay-muted
+                "
+              >
                 {title}
               </p>
-              <div className="flex items-baseline gap-1">
-                <motion.h3 className="text-5xl font-bold clay-display text-clay-ink leading-none">
+
+              <div
+                className="
+                  mt-4
+
+                  flex items-end gap-1
+                "
+              >
+
+                <motion.h3
+                  className="
+                    text-[38px]
+                    font-semibold
+
+                    leading-none
+                    tracking-[-0.05em]
+
+                    text-clay-ink
+
+                    tabular-nums
+                  "
+                >
                   {displayValue}
                 </motion.h3>
-                <span className="text-xl font-bold text-clay-muted">%</span>
+
+                {suffix && (
+                  <span
+                    className="
+                      mb-1
+
+                      text-[14px]
+                      font-medium
+
+                      text-clay-muted
+                    "
+                  >
+                    {suffix}
+                  </span>
+                )}
+
               </div>
+
             </div>
-            <div className="w-12 h-12 rounded-xl bg-clay-surface-strong flex items-center justify-center text-xl shadow-sm group-hover:bg-clay-primary group-hover:text-white transition-colors duration-500">
+
+            {/* RIGHT */}
+            <div
+              className="
+                flex h-11 w-11
+                items-center justify-center
+
+                rounded-2xl
+
+                bg-clay-surface-soft
+
+                text-clay-body
+              "
+            >
               {icon}
             </div>
+
           </div>
 
-          {/* CHANGE */}
-          <div className="flex items-center gap-3 pt-4 border-t border-clay-hairline">
-            <div className={cn(
-              "px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter",
-              isPositive ? "bg-clay-brand-teal/10 text-clay-brand-teal" : "bg-clay-brand-pink/10 text-clay-brand-pink"
-            )}>
-              {isPositive ? "↗" : "↘"} {Math.abs(change)}%
+          {/* =============================================
+              BOTTOM
+          ============================================= */}
+
+          <div
+            className="
+              mt-6
+
+              flex items-center gap-3
+
+              border-t border-clay-hairline
+
+              pt-4
+            "
+          >
+
+            {/* TREND */}
+            <div
+              className={cn(
+
+                `
+                flex items-center gap-1
+
+                rounded-full
+
+                px-2.5 py-1
+
+                text-[11px]
+                font-medium
+                `,
+
+                isPositive
+                  ? `
+                    bg-emerald-500/10
+                    text-emerald-600
+                    `
+                  : `
+                    bg-amber-500/10
+                    text-amber-600
+                    `
+              )}
+            >
+
+              <span aria-hidden="true">
+                {isPositive
+                  ? '↑'
+                  : '↓'}
+              </span>
+
+              <span>
+                {Math.abs(change)}%
+              </span>
+
             </div>
-            <p className="text-[11px] font-medium text-clay-muted uppercase tracking-wider">
-              Vs {changeDescription}
+
+            {/* CONTEXT */}
+            <p
+              className="
+                text-[12px]
+
+                text-clay-body
+              "
+            >
+              Compared to{' '}
+              {changeDescription}
             </p>
+
           </div>
+
         </div>
+
       </Card>
-    );
+    )
   }
-);
+)
 
-StatCard.displayName = "StatCard";
+StatCard.displayName =
+  'StatCard'
 
-export { StatCard };
+export { StatCard }
