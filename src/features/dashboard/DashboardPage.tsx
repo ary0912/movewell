@@ -51,7 +51,6 @@ import {
   Target,
   Flame,
   Zap,
-  Brain,
   ShieldCheck,
   MoonStar,
   TimerReset,
