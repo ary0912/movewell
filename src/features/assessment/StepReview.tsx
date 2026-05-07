@@ -18,7 +18,6 @@ import {
   Activity,
   ArrowRight,
   CheckCircle2,
-  LockKeyhole,
   ShieldCheck,
   Sparkles,
   TriangleAlert,
@@ -41,6 +40,7 @@ const sectionGradients = [
 function StepReview({
   onComplete,
 }: StepReviewProps) {
+
   const { getValues } =
     useFormContext<AssessmentFormValues>();
 
@@ -58,69 +58,92 @@ function StepReview({
     useState(false);
 
   const averagePain = useMemo(() => {
+
     if (
       !formValues.painAreas ||
       formValues.painAreas.length === 0
-    )
+    ) {
       return 0;
+    }
 
     const total =
       formValues.painAreas.reduce(
         (acc, area) =>
           acc +
-          (formValues.painIntensity[
+          (
+            formValues.painIntensity[
             area
-          ] || 0),
+            ] || 0
+          ),
         0
       );
 
     return Math.round(
       total / formValues.painAreas.length
     );
+
   }, [formValues]);
 
   const handleSubmit = async () => {
-    try {
-      setIsLoading(true)
 
-      setError(null)
+    try {
+
+      setIsLoading(true);
+
+      setError(null);
 
       const payload = {
         ...formValues,
-        timestamp: new Date().toISOString(),
-      }
+
+        painAreas:
+          formValues.painAreas as never,
+
+        mobilityDifficulty:
+          formValues.mobilityDifficulty.map(
+            (item) => ({
+              ...item,
+              area: item.area as never,
+            })
+          ),
+
+        timestamp:
+          new Date().toISOString(),
+      };
 
       const result =
-        await submitAssessment(payload)
+        await submitAssessment(payload);
 
-      setResult(result)
+      setResult(result);
 
-      setSubmitted(true)
+      setSubmitted(true);
 
       window.setTimeout(() => {
-        onComplete()
-      }, 1600)
+        onComplete();
+      }, 1600);
 
     } catch (err) {
 
       setError(
-        'Unable to complete the synthesis. Please verify your connection and try again.'
-      )
+        "Unable to complete the synthesis. Please verify your connection and try again."
+      );
 
-      console.error(err)
+      console.error(err);
 
     } finally {
 
-      setIsLoading(false)
+      setIsLoading(false);
 
     }
-  }
+  };
 
   /* =========================
      SUCCESS STATE
   ========================= */
+
   if (submitted) {
+
     return (
+
       <div className="flex min-h-[70vh] items-center justify-center py-16">
 
         <motion.div
@@ -153,7 +176,6 @@ function StepReview({
             "
           >
 
-            {/* Ambient */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_35%)]" />
 
             <div className="relative z-10 flex flex-col items-center">
@@ -253,7 +275,6 @@ function StepReview({
       {/* MAIN GRID */}
       <section className="grid gap-8 xl:grid-cols-12">
 
-        {/* LEFT */}
         <div className="space-y-8 xl:col-span-8">
 
           {/* SUMMARY STATS */}
@@ -277,9 +298,11 @@ function StepReview({
                 icon: CheckCircle2,
               },
             ].map((item, index) => {
+
               const Icon = item.icon;
 
               return (
+
                 <Card
                   key={item.label}
                   variant="cream"
@@ -366,8 +389,7 @@ function StepReview({
                 </div>
 
                 <div className="rounded-full bg-clay-surface-soft px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-clay-body">
-                  {formValues.painAreas.length}{" "}
-                  regions selected
+                  {formValues.painAreas.length} regions selected
                 </div>
 
               </div>
@@ -376,6 +398,7 @@ function StepReview({
 
                 {formValues.painAreas.map(
                   (area, index) => (
+
                     <Badge
                       key={area}
                       variant="ochre"
@@ -410,112 +433,11 @@ function StepReview({
 
           </Card>
 
-          {/* INTENSITY */}
-          <Card
-            variant="cream"
-            hover={false}
-            className="
-              rounded-[34px]
-              border border-clay-hairline/60
-              px-6 py-7
-              md:px-8 md:py-8
-            "
-          >
-
-            <div>
-
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-clay-muted">
-                Pain Intensity Analysis
-              </div>
-
-              <h3 className="mt-3 text-[1.7rem] font-semibold tracking-[-0.04em] text-clay-ink">
-                Signal overview
-              </h3>
-
-            </div>
-
-            <div className="mt-10 space-y-7">
-
-              {formValues.painAreas.map(
-                (area, index) => {
-                  const value =
-                    formValues
-                      .painIntensity[
-                    area
-                    ] || 0;
-
-                  return (
-                    <div
-                      key={area}
-                      className="space-y-3"
-                    >
-
-                      <div className="flex items-center justify-between gap-5">
-
-                        <div className="flex items-center gap-4">
-
-                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-clay-canvas text-[11px] font-semibold shadow-sm">
-                            0{index + 1}
-                          </div>
-
-                          <span className="text-[15px] font-semibold text-clay-ink">
-                            {
-                              BODY_AREA_LABELS[
-                              area
-                              ]
-                            }
-                          </span>
-
-                        </div>
-
-                        <span className="text-[15px] font-semibold text-clay-primary">
-                          {value}/10
-                        </span>
-
-                      </div>
-
-                      <div className="relative h-[10px] overflow-hidden rounded-full bg-clay-surface-strong">
-
-                        <motion.div
-                          initial={{
-                            width: 0,
-                          }}
-                          animate={{
-                            width: `${value * 10}%`,
-                          }}
-                          transition={{
-                            duration: 0.8,
-                            ease: [
-                              0.22,
-                              1,
-                              0.36,
-                              1,
-                            ],
-                          }}
-                          className="
-                            absolute inset-y-0 left-0
-                            rounded-full
-                            bg-clay-primary
-                          "
-                        />
-
-                      </div>
-
-                    </div>
-                  );
-                }
-              )}
-
-            </div>
-
-          </Card>
-
         </div>
 
         {/* RIGHT */}
         <div className="space-y-6 xl:col-span-4">
 
-          {/* GENERATE CARD */}
           <Card
             variant="teal"
             hover={false}
@@ -582,156 +504,71 @@ function StepReview({
 
           </Card>
 
-          {/* SECURITY */}
-          <Card
-            variant="cream"
-            hover={false}
-            className="
-              rounded-[30px]
-              border border-clay-hairline/60
-              px-6 py-6
-            "
-          >
+          {/* ERROR */}
+          <AnimatePresence>
 
-            <div className="flex items-start gap-4">
+            {error && (
 
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-clay-canvas shadow-sm">
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: 10,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -10,
+                }}
+              >
 
-                <LockKeyhole
-                  size={22}
-                  className="text-clay-ink"
-                />
+                <Card
+                  hover={false}
+                  className="
+                    rounded-[28px]
+                    border border-clay-brand-pink/20
+                    bg-clay-brand-pink/5
+                    px-6 py-5
+                  "
+                >
 
-              </div>
+                  <div className="flex items-start gap-4">
 
-              <div>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-clay-brand-pink/10">
 
-                <h4 className="text-[15px] font-semibold text-clay-ink">
-                  Protected assessment
-                </h4>
+                      <TriangleAlert
+                        size={20}
+                        className="text-clay-brand-pink"
+                      />
 
-                <p className="mt-2 text-[13px] leading-[1.8] text-clay-body">
-                  Your assessment data is
-                  securely processed and
-                  encrypted during analysis.
-                </p>
+                    </div>
 
-              </div>
+                    <div>
 
-            </div>
+                      <h4 className="text-[15px] font-semibold text-clay-brand-pink">
+                        Synthesis Error
+                      </h4>
 
-          </Card>
+                      <p className="mt-2 text-[13px] leading-[1.8] text-clay-body">
+                        {error}
+                      </p>
 
-          {/* PROCESS */}
-          <Card
-            variant="default"
-            hover={false}
-            className="
-              rounded-[30px]
-              border border-clay-hairline/60
-              px-6 py-6
-            "
-          >
-
-            <div>
-
-              <div className="text-[11px] font-semibold uppercase tracking-[0.13em] text-clay-muted">
-                Included In Analysis
-              </div>
-
-              <div className="mt-6 space-y-5">
-
-                {[
-                  "Pain intensity interpretation",
-                  "Mobility restriction evaluation",
-                  "Recovery protocol recommendations",
-                  "Movement health baseline scoring",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-3"
-                  >
-
-                    <div className="mt-[6px] h-2 w-2 rounded-full bg-clay-primary" />
-
-                    <p className="text-[13px] leading-[1.7] text-clay-body">
-                      {item}
-                    </p>
+                    </div>
 
                   </div>
-                ))}
 
-              </div>
+                </Card>
 
-            </div>
+              </motion.div>
+            )}
 
-          </Card>
+          </AnimatePresence>
 
         </div>
 
       </section>
-
-      {/* ERROR */}
-      <AnimatePresence>
-
-        {error && (
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 10,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: -10,
-            }}
-          >
-
-            <Card
-              hover={false}
-              className="
-                rounded-[28px]
-                border border-clay-brand-pink/20
-                bg-clay-brand-pink/5
-                px-6 py-5
-              "
-            >
-
-              <div className="flex items-start gap-4">
-
-                <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-clay-brand-pink/10">
-
-                  <TriangleAlert
-                    size={20}
-                    className="text-clay-brand-pink"
-                  />
-
-                </div>
-
-                <div>
-
-                  <h4 className="text-[15px] font-semibold text-clay-brand-pink">
-                    Synthesis Error
-                  </h4>
-
-                  <p className="mt-2 text-[13px] leading-[1.8] text-clay-body">
-                    {error}
-                  </p>
-
-                </div>
-
-              </div>
-
-            </Card>
-
-          </motion.div>
-        )}
-
-      </AnimatePresence>
 
     </div>
   );
