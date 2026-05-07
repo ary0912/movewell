@@ -7,45 +7,45 @@
 ========================= */
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 39 100% 97%; /* #fffaf0 - Clay Canvas */
+    --foreground: 0 0% 4%;    /* #0a0a0a - Clay Ink */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 39 100% 97%;
+    --card-foreground: 0 0% 4%;
 
-    --primary: 213 94% 58%;
+    --primary: 0 0% 4%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 42 43% 95%;   /* #faf5e8 - Clay Surface Soft */
+    --secondary-foreground: 0 0% 4%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 46%;
+    --muted: 42 43% 95%;
+    --muted-foreground: 0 0% 41%; /* #6a6a6a */
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 213 94% 58%;
+    --border: 0 0% 90%;       /* #e5e5e5 */
+    --input: 0 0% 90%;
+    --ring: 0 0% 4%;
   }
 
   .dark {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 98%;
+    --background: 180 44% 7%;  /* #0a1a1a - Clay Surface Dark */
+    --foreground: 0 0% 100%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 98%;
+    --card: 180 44% 13%;       /* #1a2a2a */
+    --card-foreground: 0 0% 100%;
 
-    --primary: 213 94% 68%;
-    --primary-foreground: 222 47% 7%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 180 44% 7%;
 
-    --secondary: 222 47% 12%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 180 44% 13%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 222 47% 12%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 180 44% 13%;
+    --muted-foreground: 0 0% 63%;
 
-    --border: 222 47% 15%;
-    --input: 222 47% 15%;
-    --ring: 213 94% 68%;
+    --border: 180 44% 15%;
+    --input: 180 44% 15%;
+    --ring: 0 0% 100%;
   }
 }
 
@@ -60,6 +60,11 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium tracking-tight;
   }
 }
 
@@ -67,22 +72,25 @@
    COMPONENTS
 ========================= */
 @layer components {
-
-  .clinical-card {
-    @apply bg-card border border-border rounded-2xl;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
+  .clay-display {
+    @apply font-bold tracking-[-0.04em];
   }
 
-  .clinical-card:hover {
-    transform: translateY(-4px);
+  .clay-body-text {
+    @apply text-clay-body font-medium leading-relaxed;
   }
 
-  .btn-primary {
-    @apply bg-primary text-primary-foreground px-lg py-sm rounded-xl;
+
+  .feature-card {
+    @apply rounded-xl p-8 transition-transform hover:scale-[1.01] duration-300;
   }
 
-  .btn-secondary {
-    @apply bg-secondary text-secondary-foreground px-lg py-sm rounded-xl border border-border;
+  /* TipTap Placeholder */
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+    height: 0;
   }
 }

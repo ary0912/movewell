@@ -2,141 +2,290 @@
 
 import * as React from "react"
 import { motion } from "framer-motion"
+
 import { cn } from "@/lib/utils"
 
-const Motion = motion
+const MotionDiv = motion.div
 
-/* =========================
-   BASE CARD (UNCHANGED CORE)
-   ========================= */
+/* =========================================================
+   VARIANTS
+========================================================= */
+
+type CardVariant =
+  | "default"
+  | "glass"
+  | "cream"
+  | "pink"
+  | "teal"
+  | "lavender"
+  | "peach"
+  | "ochre"
+  | "dark"
+
+const variantStyles: Record<CardVariant, string> = {
+  /* =====================================================
+     DEFAULT
+  ===================================================== */
+  default: `
+    bg-white/92
+    border border-clay-hairline
+    text-clay-ink
+    backdrop-blur-xl
+    shadow-[0_8px_40px_rgba(0,0,0,0.04)]
+  `,
+
+  /* =====================================================
+     GLASS
+  ===================================================== */
+  glass: `
+    border border-white/40
+    bg-white/70
+    text-clay-ink
+    backdrop-blur-2xl
+    shadow-[0_8px_40px_rgba(0,0,0,0.05)]
+  `,
+
+  /* =====================================================
+     CREAM
+  ===================================================== */
+  cream: `
+    border border-clay-hairline/50
+    bg-clay-surface-card
+    text-clay-ink
+    shadow-[0_4px_20px_rgba(0,0,0,0.025)]
+  `,
+
+  /* =====================================================
+     FEATURE SURFACES
+  ===================================================== */
+  pink: `
+    border-none
+    bg-clay-brand-pink
+    text-white
+    shadow-[0_20px_50px_rgba(0,0,0,0.10)]
+  `,
+
+  teal: `
+    border-none
+    bg-clay-brand-teal
+    text-white
+    shadow-[0_20px_50px_rgba(0,0,0,0.10)]
+  `,
+
+  lavender: `
+    border-none
+    bg-clay-brand-lavender
+    text-clay-ink
+    shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+  `,
+
+  peach: `
+    border-none
+    bg-clay-brand-peach
+    text-clay-ink
+    shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+  `,
+
+  ochre: `
+    border-none
+    bg-clay-brand-ochre
+    text-clay-ink
+    shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+  `,
+
+  /* =====================================================
+     DARK
+  ===================================================== */
+  dark: `
+    border border-white/5
+    bg-clay-surface-dark-elevated
+    text-white
+    shadow-[0_20px_60px_rgba(0,0,0,0.22)]
+  `,
+}
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+export interface CardProps
+  extends Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    | "onAnimationStart"
+    | "onAnimationEnd"
+    | "onDrag"
+    | "onDragStart"
+    | "onDragEnd"
+    | "onDragEnter"
+    | "onDragLeave"
+    | "onDragOver"
+    | "onDrop"
+  > {
+  variant?: CardVariant
+  hover?: boolean
+  interactive?: boolean
+  glow?: boolean
+}
+
+/* =========================================================
+   COMPONENT
+========================================================= */
+
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  // Filter out native HTML drag/animation handlers to avoid conflicting framer-motion types
-  // Remove native drag/animation event handlers to avoid Framer Motion type conflicts
-  const {
-    onDrag,
-    onDragStart,
-    onDragEnd,
-    onDragEnter,
-    onDragLeave,
-    onDragOver,
-    onDrop,
-    onAnimationStart,
-    onAnimationEnd,
-    onAnimationIteration,
-    ...rest
-  } = props as React.HTMLAttributes<HTMLDivElement>
+  CardProps
+>(
+  (
+    {
+      className,
+      variant = "default",
+      hover = true,
+      interactive = false,
+      glow = true,
+      children,
+      ...props
+    },
+    ref
+  ) => {
 
-  return (
-    <Motion.div
-      ref={ref}
-      role="group"
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      className={cn(
-        "rounded-lg p-lg md:p-xl",
-        "bg-card border border-border",
-        "shadow-[0_6px_20px_rgba(2,6,23,0.06)]",
-        "transition-all duration-300",
-        className
-      )}
-      {...rest}
-    />
-  )
-})
-Card.displayName = "Card"
+    const isFeatureCard = [
+      "pink",
+      "teal",
+      "lavender",
+      "peach",
+      "ochre",
+    ].includes(variant)
 
-/* =========================
-   PREMIUM INTERACTIVE CARD
-   ========================= */
-interface Card3DProps {
-  title: string
-  description: string
-  icon?: React.ReactNode
-  onClick?: () => void
-  className?: string
-}
-
-const Card3D = ({
-  title,
-  description,
-  icon,
-  onClick,
-  className,
-}: Card3DProps) => {
-  const [hovered, setHovered] = React.useState(false)
+    const isDark =
+      variant === "dark"
 
     return (
-    <Motion.button
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
-      type="button"
-      aria-label={title}
-      className={cn(
-          "group w-full text-left cursor-pointer rounded-lg p-lg",
-          "bg-card border border-border",
-          "transition-all duration-300",
-          "shadow-sm hover:shadow-xl",
+      <MotionDiv
+        ref={ref}
+        whileHover={
+          hover
+            ? {
+              y: isFeatureCard ? -3 : -2,
+              scale: 1.002,
+            }
+            : undefined
+        }
+        transition={{
+          duration: 0.22,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className={cn(
+
+          /* BASE */
+          `
+          group
+          relative
+          w-full
+          overflow-hidden
+          transition-all duration-300
+          will-change-transform
+          `,
+
+          /* RADIUS */
+          isFeatureCard
+            ? "rounded-[30px]"
+            : "rounded-[26px]",
+
+          /* PADDING */
+          isFeatureCard
+            ? "p-8 md:p-10"
+            : "p-6 md:p-8",
+
+          /* INTERACTIVE */
+          interactive &&
+          `
+            cursor-pointer
+            `,
+
+          /* HOVER */
+          hover &&
+          !isFeatureCard &&
+          `
+            hover:border-clay-muted/20
+            hover:shadow-[0_18px_60px_rgba(0,0,0,0.07)]
+            `,
+
+          hover &&
+          isFeatureCard &&
+          `
+            hover:brightness-[1.02]
+            `,
+
+          variantStyles[variant],
+
           className
         )}
-      animate={{ y: hovered ? -6 : 0, scale: hovered ? 1.02 : 1 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-    >
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl pointer-events-none" />
+        {...props}
+      >
 
-      <div className="relative z-10 space-y-4">
-        {icon && <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">{icon}</div>}
+        {/* =================================================
+            AMBIENT GLOW
+        ================================================= */}
 
-        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        {glow &&
+          !isDark && (
+            <div
+              className="
+                pointer-events-none
+                absolute inset-0
+                opacity-70
+                transition-opacity duration-500
+                group-hover:opacity-100
+                bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.72),transparent_34%)]
+              "
+            />
+          )}
 
-        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+        {/* =================================================
+            FEATURE CARD LIGHT
+        ================================================= */}
 
-        {onClick && <div className="text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-all">Explore →</div>}
-      </div>
-    </Motion.button>
-  )
-}
+        {isFeatureCard && (
+          <div
+            className="
+              pointer-events-none
+              absolute right-[-80px] top-[-80px]
+              h-[220px] w-[220px]
+              rounded-full
+              bg-white/10
+              blur-3xl
+              transition-transform duration-700
+              group-hover:scale-110
+            "
+          />
+        )}
 
-/* =========================
-   SUB COMPONENTS (UNCHANGED)
-   ========================= */
-interface CardSubProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string
-}
+        {/* =================================================
+            BORDER SHINE
+        ================================================= */}
 
-const CardHeader = ({ className, ...props }: CardSubProps) => (
-  <div className={cn("mb-6 space-y-1.5", className)} {...props} />
+        <div
+          className="
+            pointer-events-none
+            absolute inset-0
+            rounded-[inherit]
+            ring-1 ring-inset ring-white/[0.03]
+          "
+        />
+
+        {/* =================================================
+            CONTENT
+        ================================================= */}
+
+        <div className="relative z-10">
+          {children}
+        </div>
+
+      </MotionDiv>
+    )
+  }
 )
 
-const CardTitle = ({ className, ...props }: CardSubProps) => (
-  <h3 className={cn("text-xl font-semibold text-slate-900", className)} {...props} />
-)
+Card.displayName = "Card"
 
-const CardDescription = ({ className, ...props }: CardSubProps) => (
-  <p className={cn("text-sm text-slate-500", className)} {...props} />
-)
-
-const CardContent = ({ className, ...props }: CardSubProps) => (
-  <div className={cn("", className)} {...props} />
-)
-
-const CardFooter = ({ className, ...props }: CardSubProps) => (
-  <div className={cn("pt-4", className)} {...props} />
-)
-
-/* =========================
-   EXPORTS
-   ========================= */
-export {
-  Card,
-  Card3D,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter
-}
+export { Card }

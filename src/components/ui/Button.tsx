@@ -1,54 +1,124 @@
+'use client'
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { motion } from "framer-motion"
+
 import { cn } from "@/lib/utils"
 
-// Motion helper (use the motion object directly to preserve types)
-const Motion = motion
+const MotionButton = motion.button
 
-/* =========================
+/* =========================================================
    VARIANTS
-   ========================= */
+========================================================= */
+
 const buttonVariants = cva(
-  `inline-flex items-center justify-center gap-2
-  whitespace-nowrap text-sm font-medium
+  `
+  relative inline-flex shrink-0 items-center justify-center gap-2
+  whitespace-nowrap
+  overflow-hidden
+  select-none
+
+  font-semibold
+  tracking-[-0.01em]
+
   transition-all duration-300 ease-out
-  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40
-  disabled:pointer-events-none disabled:opacity-50
+
+  focus-visible:outline-none
+  focus-visible:ring-2
+  focus-visible:ring-clay-primary/20
+
+  disabled:pointer-events-none
+  disabled:opacity-50
   `,
   {
     variants: {
       variant: {
-
-        /* primary */
         primary: `
-          bg-primary text-primary-foreground rounded-lg px-lg py-sm
-          shadow-[0_8px_20px_rgba(2,6,23,0.08)]
-          hover:shadow-[0_12px_30px_rgba(2,6,23,0.1)]
+          bg-clay-primary
+          text-white
+          shadow-[0_10px_30px_rgba(0,0,0,0.10)]
+          hover:bg-clay-primary/92
         `,
 
-        /* secondary */
         secondary: `
-          bg-card text-foreground border border-border rounded-lg px-lg py-sm
-          hover:bg-muted
+          border border-clay-hairline
+          bg-white
+          text-clay-ink
+          hover:bg-clay-surface-soft
         `,
 
-        clinical: `
-          bg-foreground text-background rounded-lg px-lg py-sm
-          shadow-[0_8px_24px_rgba(0,0,0,0.08)]
+        outline: `
+          border border-clay-hairline
+          bg-transparent
+          text-clay-ink
+          hover:bg-clay-surface-soft
         `,
 
-        rich: `relative overflow-hidden text-left w-full rounded-lg p-md
-          bg-card border border-border shadow-[0_10px_30px_rgba(2,6,23,0.04)]
-          hover:shadow-[0_20px_50px_rgba(2,6,23,0.06)]
+        ghost: `
+          bg-transparent
+          text-clay-ink
+          hover:bg-clay-surface-soft
+        `,
+
+        onColor: `
+          bg-white
+          text-clay-ink
+          hover:bg-clay-surface-soft
+        `,
+
+        teal: `
+          bg-clay-brand-teal
+          text-white
+          shadow-[0_12px_30px_rgba(26,58,58,0.18)]
+          hover:bg-[#244848]
+        `,
+
+        rich: `
+          border border-clay-hairline
+          bg-white/90
+          backdrop-blur-xl
+          shadow-[0_6px_24px_rgba(0,0,0,0.04)]
+
+          hover:bg-white
+          hover:border-clay-muted/20
         `,
       },
 
       size: {
-        default: "",
-        sm: "text-xs px-md py-sm",
-        lg: "text-md px-xl py-md",
+        sm: `
+          h-9
+          rounded-xl
+          px-4
+          text-[13px]
+        `,
+
+        default: `
+          h-11
+          rounded-2xl
+          px-6
+          text-[14px]
+        `,
+
+        lg: `
+          h-[52px]
+          rounded-2xl
+          px-8
+          text-[15px]
+        `,
+
+        xl: `
+          h-[60px]
+          rounded-[20px]
+          px-10
+          text-[15px]
+        `,
+
+        icon: `
+          h-11 w-11
+          rounded-2xl
+        `,
       },
     },
 
@@ -59,109 +129,279 @@ const buttonVariants = cva(
   }
 )
 
-/* =========================
-   PROPS
-   ========================= */
+/* =========================================================
+   TYPES
+========================================================= */
+
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    | "onAnimationStart"
+    | "onAnimationEnd"
+    | "onDrag"
+    | "onDragStart"
+    | "onDragEnd"
+    | "onDragEnter"
+    | "onDragLeave"
+    | "onDragOver"
+    | "onDrop"
+  >,
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isLoading?: boolean
-
-  /* NEW */
   icon?: React.ReactNode
   subtitle?: string
 }
 
-/* =========================
+/* =========================================================
    COMPONENT
-   ========================= */
+========================================================= */
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
       variant,
       size,
+
       asChild = false,
       isLoading = false,
+
       icon,
       subtitle,
       children,
+
+      disabled,
+
+      type,
+
       ...props
     },
     ref
   ) => {
-    const Comp: React.ElementType = asChild ? Slot : Motion.button
 
-    // Filter out native HTML drag/animation handlers to avoid conflicting framer-motion types
-    // Remove native drag/animation event handlers to avoid Framer Motion type conflicts
-    const {
-      onDrag,
-      onDragStart,
-      onDragEnd,
-      onDragEnter,
-      onDragLeave,
-      onDragOver,
-      onDrop,
-      onAnimationStart,
-      onAnimationEnd,
-      onAnimationIteration,
-      ...htmlProps
-    } = props as React.ButtonHTMLAttributes<HTMLButtonElement>
+    /* =========================================
+       AS CHILD
+    ========================================= */
 
-    if (variant === "rich") {
+    if (asChild) {
       return (
-        <Comp
-          ref={ref}
-          type={htmlProps.type ?? "button"}
-          aria-busy={isLoading}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.97 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className={cn("group", buttonVariants({ variant, size }), className)}
-          {...htmlProps}
+        <Slot
+          className={cn(
+            buttonVariants({
+              variant,
+              size,
+            }),
+            className
+          )}
         >
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl pointer-events-none" />
-
-          <div className="relative z-10 flex items-center gap-4 w-full">
-            {icon && (
-              <div className="p-3 rounded-lg bg-primary/10 text-primary transition-all">
-                {icon}
-              </div>
-            )}
-
-            <div className="flex-1 text-left">
-              <p className="text-foreground font-semibold text-base">{children}</p>
-              {subtitle && <p className="text-muted-foreground text-sm mt-1">{subtitle}</p>}
-            </div>
-
-            <div className="text-muted-foreground transition-all">→</div>
-          </div>
-        </Comp>
+          {children}
+        </Slot>
       )
     }
 
-    return (
-      <Motion.button
-        ref={ref}
-        type={htmlProps.type ?? "button"}
-        aria-busy={isLoading}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.97 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className={cn(buttonVariants({ variant, size }), className)}
-        disabled={htmlProps.disabled || isLoading}
-        {...htmlProps}
-      >
-        {isLoading ? (
-          <div className="flex items-center gap-2" aria-hidden>
-            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            <span className="sr-only">Loading</span>
+    /* =========================================
+       SPINNER COLOR
+    ========================================= */
+
+    const spinnerColor =
+      variant === "secondary" ||
+        variant === "outline" ||
+        variant === "ghost" ||
+        variant === "onColor" ||
+        variant === "rich"
+        ? "border-clay-ink border-t-transparent"
+        : "border-white border-t-transparent"
+
+    /* =========================================
+       RICH BUTTON
+    ========================================= */
+
+    if (variant === "rich") {
+      return (
+        <MotionButton
+          ref={ref}
+          type={type ?? "button"}
+          aria-busy={isLoading}
+          disabled={disabled || isLoading}
+          whileHover={{
+            y: -1,
+          }}
+          whileTap={{
+            scale: 0.99,
+          }}
+          transition={{
+            duration: 0.22,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className={cn(
+            buttonVariants({
+              variant,
+              size,
+            }),
+            `
+            group
+            w-full
+            items-start
+            justify-between
+            p-5
+            text-left
+            `,
+            className
+          )}
+          {...props}
+        >
+
+          {/* GLOW */}
+          <div
+            className="
+              pointer-events-none
+              absolute inset-0
+              opacity-0
+              transition-opacity duration-500
+              group-hover:opacity-100
+              bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.7),transparent_35%)]
+            "
+          />
+
+          {/* CONTENT */}
+          <div className="relative z-10 flex w-full items-start justify-between gap-6">
+
+            <div className="flex items-start gap-4">
+
+              {icon && (
+                <div
+                  className="
+                    flex h-12 w-12 shrink-0 items-center justify-center
+                    rounded-2xl
+                    bg-clay-surface-soft
+                    text-clay-brand-teal
+                  "
+                >
+                  {icon}
+                </div>
+              )}
+
+              <div className="space-y-1">
+
+                <div
+                  className="
+                    text-[15px]
+                    font-semibold
+                    tracking-[-0.02em]
+                    text-clay-ink
+                  "
+                >
+                  {children}
+                </div>
+
+                {subtitle && (
+                  <p
+                    className="
+                      text-sm
+                      leading-relaxed
+                      text-clay-body
+                    "
+                  >
+                    {subtitle}
+                  </p>
+                )}
+
+              </div>
+
+            </div>
+
+            <div
+              className="
+                mt-1
+                text-clay-muted
+                transition-transform duration-300
+                group-hover:translate-x-0.5
+              "
+            >
+              →
+            </div>
+
           </div>
-        ) : (
-          children
+
+        </MotionButton>
+      )
+    }
+
+    /* =========================================
+       STANDARD BUTTON
+    ========================================= */
+
+    return (
+      <MotionButton
+        ref={ref}
+        type={type ?? "button"}
+        aria-busy={isLoading}
+        disabled={disabled || isLoading}
+        whileHover={{
+          y: -1,
+        }}
+        whileTap={{
+          scale: 0.985,
+        }}
+        transition={{
+          duration: 0.2,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className={cn(
+          buttonVariants({
+            variant,
+            size,
+          }),
+          "group",
+          className
         )}
-      </Motion.button>
+        {...props}
+      >
+
+        {/* HOVER LIGHT */}
+        <div
+          className="
+            pointer-events-none
+            absolute inset-0
+            opacity-0
+            transition-opacity duration-300
+            group-hover:opacity-100
+            bg-white/[0.06]
+          "
+        />
+
+        {/* CONTENT */}
+        <div className="relative z-10 flex items-center gap-2">
+
+          {isLoading ? (
+            <>
+              <div
+                className={cn(
+                  "h-4 w-4 rounded-full border-2 animate-spin",
+                  spinnerColor
+                )}
+              />
+
+              <span className="sr-only">
+                Loading
+              </span>
+            </>
+          ) : (
+            <>
+              {icon && (
+                <span className="flex items-center justify-center">
+                  {icon}
+                </span>
+              )}
+
+              <span>{children}</span>
+            </>
+          )}
+
+        </div>
+
+      </MotionButton>
     )
   }
 )

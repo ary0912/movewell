@@ -1,7 +1,8 @@
 // Centralized UI exports (named exports for consistent API)
 export { Button } from './Button'
-export { Card, Card3D, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card'
+export { Card } from './Card'
 export { Input } from './Input'
+
 export { default as Slider } from './Slider'
 
 // ProgressBar is a default export; re-export as named and default for compatibility

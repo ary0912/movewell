@@ -9,16 +9,16 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Container = ({ children, className, ...rest }: ContainerProps) => {
   return (
-    <div className={cn("w-full px-4 sm:px-6 lg:px-8", className)} {...rest}>
-      <div className="mx-auto max-w-6xl">{children}</div>
+    <div className={cn("w-full px-6 sm:px-8 lg:px-12", className)} {...rest}>
+      <div className="mx-auto max-w-[1100px]">{children}</div>
     </div>
   )
 }
 
 export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="py-8">
+    <div className="min-h-screen bg-clay-canvas text-clay-ink antialiased">
+      <main className="py-12 md:py-16">
         <Container>{children}</Container>
       </main>
     </div>

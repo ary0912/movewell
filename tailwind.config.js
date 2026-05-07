@@ -10,30 +10,50 @@ export default {
   theme: {
     extend: {
       spacing: {
-        xs: '4px',
-        sm: '8px',
-        md: '12px',
-        lg: '16px',
-        xl: '24px',
-        '2xl': '32px',
+        'xxs': '4px',
+        'xs': '8px',
+        'sm': '12px',
+        'md': '16px',
+        'lg': '24px',
+        'xl': '32px',
+        'xxl': '48px',
+        'section': '96px',
       },
       borderRadius: {
-        'sm': '6px',
-        'md': '10px',
+        'xs': '6px',
+        'sm': '8px',
+        'md': '12px',
         'lg': '16px',
+        'xl': '24px',
+        'pill': '9999px',
+        'full': '9999px',
       },
       transitionDuration: {
         100: '100ms',
         200: '200ms',
         300: '300ms',
+        400: '400ms',
+      },
+      boxShadow: {
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.04)',
+        'DEFAULT': '0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
+        'md': '0 8px 24px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03)',
+        'lg': '0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.03)',
+        'xl': '0 20px 48px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.04)',
+        '2xl': '0 32px 64px rgba(0, 0, 0, 0.12), 0 16px 24px rgba(0, 0, 0, 0.06)',
       },
       fontSize: {
-        xs: ['12px', { lineHeight: '16px' }],
-        sm: ['14px', { lineHeight: '20px' }],
-        md: ['16px', { lineHeight: '24px' }],
-        base: ['16px', { lineHeight: '24px' }],
-        lg: ['18px', { lineHeight: '28px' }],
-        xl: ['20px', { lineHeight: '28px' }],
+        'display-xl': ['72px', { lineHeight: '1', letterSpacing: '-0.035em', fontWeight: '500' }],
+        'display-lg': ['56px', { lineHeight: '1.05', letterSpacing: '-0.035em', fontWeight: '500' }],
+        'display-md': ['40px', { lineHeight: '1.1', letterSpacing: '-0.025em', fontWeight: '500' }],
+        'display-sm': ['32px', { lineHeight: '1.15', letterSpacing: '-0.015em', fontWeight: '500' }],
+        'title-lg': ['24px', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'title-md': ['18px', { lineHeight: '1.4', fontWeight: '600' }],
+        'title-sm': ['16px', { lineHeight: '1.4', fontWeight: '600' }],
+        'body-md': ['16px', { lineHeight: '1.55', fontWeight: '400' }],
+        'body-sm': ['14px', { lineHeight: '1.55', fontWeight: '400' }],
+        'caption': ['13px', { lineHeight: '1.4', fontWeight: '500' }],
+        'button': ['14px', { lineHeight: '1', fontWeight: '600' }],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -63,77 +83,41 @@ export default {
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
 
-        // MoveWell Color System (Based on EightShapes)
-        emerald: {
-          '05': '#f0fdf4',
-          '10': '#dcfce7',
-          '20': '#bbf7d0',
-          '30': '#86efac',
-          '40': '#4ade80',
-          '50': '#22c55e', // Primary brand
-          '60': '#16a34a',
-          '70': '#15803d', // Dark brand
-          '80': '#166534',
-          '90': '#064e3b',
-          '95': '#022c1d',
+        // Clay Design System Colors
+        clay: {
+          primary: "#0a0a0a",
+          ink: "#0a0a0a",
+          body: "#3a3a3a",
+          canvas: "#fffaf0",
+          "surface-soft": "#faf5e8",
+          "surface-card": "#f5f0e0",
+          "surface-strong": "#ebe6d6",
+          "brand-pink": "#ff4d8b",
+          "brand-teal": "#1a3a3a",
+          "brand-lavender": "#b8a4ed",
+          "brand-peach": "#ffb084",
+          "brand-ochre": "#e8b94a",
+          "brand-mint": "#a4d4c5",
+          "brand-coral": "#ff6b5a",
         },
 
-        blue: {
-          '05': '#f0f9ff',
-          '10': '#e0f2fe',
-          '20': '#bae6fd',
-          '30': '#7dd3fc',
-          '40': '#38bdf8',
-          '50': '#0ea5e9', // Interactive primary
-          '60': '#0284c7', // Interactive hover
-          '70': '#0369a1', // Interactive active
-          '80': '#075985',
-          '90': '#0c3d66',
-          '95': '#051e2d',
-        },
-
-        gray: {
-          '02': '#fafafa',
-          '05': '#f5f5f5',
-          '10': '#ebebeb',
-          '20': '#d4d4d4',
-          '30': '#bdbdbd',
-          '70': '#4a4a4a',
-          '80': '#323232',
-          '90': '#1a1a1a',
-          '95': '#0d0d0d',
-        },
-
-        // Feedback Colors
         success: {
+          DEFAULT: '#22c55e',
           '05': '#f0fdf4',
-          '20': '#bbf7d0',
-          '50': '#22c55e',
-          '80': '#166534',
         },
-
         warning: {
+          DEFAULT: '#f59e0b',
           '05': '#fffbeb',
-          '20': '#fde68a',
-          '50': '#fbbf24',
-          '80': '#92400e',
         },
-
         error: {
+          DEFAULT: '#ef4444',
           '05': '#fef2f2',
-          '20': '#fecaca',
-          '50': '#ef4444',
-          '80': '#7f1d1d',
-        },
-
-        info: {
-          '05': '#f0f9ff',
-          '20': '#bae6fd',
-          '50': '#0ea5e9',
-          '80': '#075985',
         },
       },
     },
   },
-  plugins: [tailwindAnimate],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography")
+  ],
 }

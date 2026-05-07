@@ -1,25 +1,26 @@
-// Central design tokens for spacing, radii, type scale, and motion.
 export const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 24,
-  '2xl': 32,
+  xxs: 4,
+  xs: 8,
+  sm: 12,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
+  section: 96,
 }
 
 export const radius = {
-  sm: '6px',
-  md: '10px',
+  xs: '6px',
+  sm: '8px',
+  md: '12px',
   lg: '16px',
+  xl: '24px',
+  pill: '9999px',
 }
 
 export const type = {
-  xs: '12px',
-  sm: '14px',
-  md: '16px',
-  lg: '18px',
-  xl: '20px',
+  display: 'Plain Black, Inter, sans-serif',
+  body: 'Inter, sans-serif',
 }
 
 export const motion = {
