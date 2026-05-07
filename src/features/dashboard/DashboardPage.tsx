@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
 
 import { fetchHealthData } from "@services/assessmentService"
 
@@ -15,23 +16,16 @@ import {
 } from "@utils/scoring"
 
 import {
-  TIME_RANGES
-} from "@utils/constants"
-
-import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
-  YAxis,
   Tooltip,
   ResponsiveContainer,
   Radar,
   RadarChart,
   PolarGrid,
   PolarAngleAxis,
-  PolarRadiusAxis,
-  AreaChart,
-  Area
+  PolarRadiusAxis
 } from "recharts"
 
 import {
@@ -49,21 +43,26 @@ import {
   Activity,
   ArrowUpRight,
   ArrowDownRight,
-  Brain,
   Calendar,
   TrendingUp,
   Sparkles,
-  Clock3,
-  ChevronRight,
   HeartPulse,
-  Waves,
-  ShieldCheck,
   BookOpen,
+  Target,
+  Flame,
+  Zap,
+  Brain,
+  ShieldCheck,
+  MoonStar,
+  TimerReset,
+  Dumbbell,
+  ChevronRight
 } from "lucide-react"
 
 import type { HealthData } from "@/types"
 
 function DashboardPage() {
+
   const navigate = useNavigate()
 
   const [healthData, setHealthData] =
@@ -71,9 +70,6 @@ function DashboardPage() {
 
   const [loading, setLoading] =
     useState(true)
-
-  const [selectedRange, setSelectedRange] =
-    useState<string>("WEEK")
 
   const [journalContent, setJournalContent] =
     useState(() => {
@@ -83,41 +79,57 @@ function DashboardPage() {
     })
 
   useEffect(() => {
+
     localStorage.setItem(
       "movewell-journal",
       journalContent
     )
+
   }, [journalContent])
 
   useEffect(() => {
+
     const load = async () => {
+
       try {
+
         const data =
           await fetchHealthData() as HealthData
 
         setHealthData(data)
+
       } catch (err) {
+
         console.error(err)
+
       } finally {
+
         setLoading(false)
+
       }
+
     }
 
     load()
+
   }, [])
 
   if (loading) {
     return (
       <div className="min-h-screen bg-clay-canvas flex items-center justify-center px-6">
+
         <div className="flex flex-col items-center gap-5">
 
           <div className="relative">
+
             <div className="h-14 w-14 rounded-full border-[3px] border-clay-hairline" />
 
             <div className="absolute inset-0 h-14 w-14 rounded-full border-[3px] border-clay-primary border-t-transparent animate-spin" />
+
           </div>
 
           <div className="space-y-2 text-center">
+
             <p className="text-sm font-semibold text-clay-ink">
               Loading dashboard
             </p>
@@ -125,23 +137,29 @@ function DashboardPage() {
             <p className="text-sm text-clay-muted">
               Preparing your recovery insights...
             </p>
+
           </div>
 
         </div>
+
       </div>
     )
   }
 
   if (!healthData?.history?.length) {
+
     return (
       <div className="min-h-screen bg-clay-canvas flex items-center justify-center px-6">
+
         <Card
           variant="cream"
           className="max-w-[520px] rounded-[32px] p-10 md:p-12 text-center"
         >
 
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-clay-surface-strong">
+
             <Activity className="h-7 w-7 text-clay-primary" />
+
           </div>
 
           <h2 className="text-3xl font-medium tracking-[-0.04em] text-clay-ink">
@@ -163,6 +181,7 @@ function DashboardPage() {
           </Button>
 
         </Card>
+
       </div>
     )
   }
@@ -190,9 +209,10 @@ function DashboardPage() {
     current.mobilityScore
 
   return (
-    <main className="min-h-screen bg-clay-canvas">
 
-      {/* AMBIENT */}
+    <main className="min-h-screen overflow-x-hidden bg-clay-canvas">
+
+      {/* BACKGROUND */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
 
         <div className="absolute left-[-200px] top-[100px] h-[500px] w-[500px] rounded-full bg-clay-brand-mint/10 blur-[120px]" />
@@ -201,92 +221,205 @@ function DashboardPage() {
 
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1440px] px-5 py-10 md:px-8 md:py-12 space-y-8">
+      {/* MAIN */}
+      <div className="relative z-10 px-4 pt-5 pb-16">
 
-        {/* HEADER */}
-        <section className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div
+          className="
+    mx-auto
+    w-full
+    max-w-[1280px]
+    px-0
+    space-y-8
+  "
+        >
 
-          <div className="space-y-5">
+          {/* HEADER */}
+          <motion.section
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
+          >
 
-            <div className="inline-flex items-center gap-3 rounded-full border border-clay-hairline bg-white/80 px-4 py-2 backdrop-blur-xl">
+            <div className="space-y-4">
 
-              <div className="h-2 w-2 rounded-full bg-clay-brand-teal animate-pulse" />
+              <div className="inline-flex items-center gap-3 rounded-full border border-clay-hairline bg-white/80 px-4 py-2 backdrop-blur-xl">
 
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-clay-muted">
-                Live Recovery Dashboard
-              </span>
+                <div className="h-2 w-2 rounded-full bg-clay-brand-teal animate-pulse" />
 
-            </div>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-clay-muted">
+                  Live Recovery Dashboard
+                </span>
 
-            <div className="space-y-3">
+              </div>
 
-              <h1 className="text-[3rem] leading-[0.95] tracking-[-0.06em] text-clay-ink md:text-[4.6rem]">
-                Your movement
-                <br />
-                intelligence.
-              </h1>
+              <div className="space-y-2">
 
-              <p className="max-w-2xl text-[16px] leading-[1.9] text-clay-body">
-                Track recovery progression, monitor
-                movement health, and uncover
-                actionable insights through your
-                personalized recovery ecosystem.
-              </p>
+                <h1 className="text-[3rem] leading-[0.92] tracking-[-0.07em] text-clay-ink md:text-[4.9rem]">
+                  Your movement
+                  <br />
+                  intelligence.
+                </h1>
 
-            </div>
+                <p className="max-w-2xl text-[16px] leading-[1.9] text-clay-body">
+                  Track recovery progression, monitor
+                  movement health, and uncover
+                  actionable insights through your
+                  personalized recovery ecosystem.
+                </p>
 
-          </div>
-
-          {/* RIGHT ACTIONS */}
-          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-
-            <div className="flex items-center gap-3 rounded-2xl border border-clay-hairline bg-white/70 px-5 py-4 backdrop-blur-xl">
-
-              <Calendar className="h-4 w-4 text-clay-muted" />
-
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.16em] text-clay-muted">
-                  Last Updated
-                </div>
-
-                <div className="mt-1 text-sm font-semibold text-clay-ink">
-                  Today · 9:42 AM
-                </div>
               </div>
 
             </div>
 
-            <Button
-              size="lg"
-              onClick={() => navigate("/assessment")}
+            <div
+              className="
+    flex flex-col
+    items-start
+    gap-4
+    sm:flex-row
+    sm:items-center
+    lg:flex-shrink-0
+  "
             >
-              New Assessment
-            </Button>
 
-          </div>
+              <div className="flex items-center gap-3 rounded-2xl border border-clay-hairline bg-white/75 px-5 py-4 backdrop-blur-xl">
 
-        </section>
+                <Calendar className="h-4 w-4 text-clay-muted" />
 
-        {/* MAIN GRID */}
-        <section className="grid grid-cols-12 gap-6">
+                <div>
 
-          {/* HERO CARD */}
+                  <div className="text-[10px] uppercase tracking-[0.16em] text-clay-muted">
+                    Last Updated
+                  </div>
+
+                  <div className="mt-1 text-sm font-semibold text-clay-ink">
+                    Today · 9:42 AM
+                  </div>
+
+                </div>
+
+              </div>
+
+              <Button
+                size="lg"
+                onClick={() => navigate("/assessment")}
+              >
+                New Assessment
+              </Button>
+
+            </div>
+
+          </motion.section>
+
+          {/* STATS */}
+          <section
+            className="
+    grid
+    grid-cols-12
+    gap-6
+    overflow-hidden
+  "
+          >
+            {[
+              {
+                icon: Flame,
+                label: "Recovery Score",
+                value: `${Math.round(current.overallScore)}/100`,
+                color: "bg-orange-50"
+              },
+              {
+                icon: Target,
+                label: "Mobility",
+                value: `${Math.round(current.mobilityScore)}%`,
+                color: "bg-blue-50"
+              },
+              {
+                icon: HeartPulse,
+                label: "Pain Level",
+                value: `${Math.round(current.painScore)}%`,
+                color: "bg-red-50"
+              },
+              {
+                icon: Zap,
+                label: "Performance",
+                value: `${Math.round(current.impactScore)}%`,
+                color: "bg-green-50"
+              }
+            ].map((item, index) => (
+
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: index * 0.08
+                }}
+                className="
+                  col-span-12 sm:col-span-6 xl:col-span-3
+                "
+              >
+
+                <Card
+                  variant="cream"
+                  className="
+                    rounded-[32px]
+                    border border-clay-hairline/60
+                    bg-white/90
+                    p-6
+                    transition-all duration-300
+                    hover:-translate-y-[3px]
+                    hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]
+                  "
+                >
+
+                  <div className="flex items-center justify-between">
+
+                    <div>
+
+                      <div className="text-[11px] uppercase tracking-[0.16em] text-clay-muted">
+                        {item.label}
+                      </div>
+
+                      <div className="mt-4 text-4xl tracking-[-0.05em] text-clay-ink">
+                        {item.value}
+                      </div>
+
+                    </div>
+
+                    <div className={cn(
+                      "flex h-14 w-14 items-center justify-center rounded-2xl transition-transform duration-300 hover:scale-105",
+                      item.color
+                    )}>
+                      <item.icon className="h-6 w-6 text-clay-ink" />
+                    </div>
+
+                  </div>
+
+                </Card>
+
+              </motion.div>
+
+            ))}
+
+          </section>
+
+          {/* HERO */}
           <Card
             variant="cream"
             className="
-              col-span-12 lg:col-span-8
-              rounded-[36px]
+              rounded-[40px]
               border border-clay-hairline/60
-              bg-white/90
-              p-7 md:p-8
+              bg-white/85
               backdrop-blur-xl
+              p-7 md:p-8
             "
           >
 
             <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
 
-              {/* LEFT */}
-              <div className="space-y-7">
+              <div className="space-y-6">
 
                 <div className="space-y-3">
 
@@ -302,7 +435,7 @@ function DashboardPage() {
 
                   <div className="flex items-end gap-4">
 
-                    <div className="text-[4.5rem] leading-none tracking-[-0.08em] text-clay-ink md:text-[6rem]">
+                    <div className="text-[4.8rem] leading-none tracking-[-0.08em] text-clay-ink md:text-[6rem]">
                       {Math.round(current.overallScore)}
                     </div>
 
@@ -312,33 +445,36 @@ function DashboardPage() {
 
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
+                </div>
 
-                    <div className="rounded-full bg-clay-brand-teal px-4 py-2 text-sm font-semibold text-white">
-                      {interpretation.label}
+                <div className="flex flex-wrap items-center gap-3">
+
+                  <div className="rounded-full bg-clay-brand-teal px-4 py-2 text-sm font-semibold text-white">
+                    {interpretation.label}
+                  </div>
+
+                  {improvement !== null && (
+
+                    <div
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold",
+                        improvement >= 0
+                          ? "bg-green-50 text-green-700"
+                          : "bg-red-50 text-red-700"
+                      )}
+                    >
+
+                      {improvement >= 0
+                        ? <ArrowUpRight className="h-4 w-4" />
+                        : <ArrowDownRight className="h-4 w-4" />
+                      }
+
+                      {Math.abs(improvement)}%
+                      vs baseline
+
                     </div>
 
-                    {improvement !== null && (
-                      <div
-                        className={cn(
-                          "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold",
-                          improvement >= 0
-                            ? "bg-green-50 text-green-700"
-                            : "bg-red-50 text-red-700"
-                        )}
-                      >
-                        {improvement >= 0 ? (
-                          <ArrowUpRight className="h-4 w-4" />
-                        ) : (
-                          <ArrowDownRight className="h-4 w-4" />
-                        )}
-
-                        {Math.abs(improvement)}%
-                        vs baseline
-                      </div>
-                    )}
-
-                  </div>
+                  )}
 
                 </div>
 
@@ -351,12 +487,24 @@ function DashboardPage() {
 
               </div>
 
-              {/* RIGHT MINI CHART */}
-              <div className="h-[220px] w-full max-w-[360px] rounded-[28px] bg-clay-surface-soft p-5">
+              {/* CHART */}
+              <div
+                className="
+    h-[240px]
+    w-full
+    max-w-full
+    lg:max-w-[380px]
+    overflow-hidden
+    rounded-[30px]
+    bg-clay-surface-soft
+    p-5
+  "
+              >
 
                 <div className="mb-5 flex items-center justify-between">
 
                   <div>
+
                     <div className="text-sm font-semibold text-clay-ink">
                       Recovery Trend
                     </div>
@@ -364,6 +512,7 @@ function DashboardPage() {
                     <div className="mt-1 text-xs text-clay-muted">
                       Last 7 days
                     </div>
+
                   </div>
 
                   <TrendingUp className="h-5 w-5 text-clay-brand-teal" />
@@ -383,10 +532,11 @@ function DashboardPage() {
                         x2="0"
                         y2="1"
                       >
+
                         <stop
                           offset="0%"
                           stopColor="#1a3a3a"
-                          stopOpacity={0.25}
+                          stopOpacity={0.22}
                         />
 
                         <stop
@@ -404,25 +554,23 @@ function DashboardPage() {
                       tickLine={false}
                       axisLine={false}
                       tick={{
-                        fill: "#8a8a8a",
-                        fontSize: 10
+                        fontSize: 10,
+                        fill: "#8b8b8b"
                       }}
                     />
 
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "#fffaf0",
                         borderRadius: "16px",
-                        border: "1px solid #e5e5e5",
-                        boxShadow:
-                          "0 4px 18px rgba(0,0,0,0.04)"
+                        border: "1px solid #ececec",
+                        background: "#fff"
                       }}
                     />
 
                     <Area
                       type="monotone"
                       dataKey="overallScore"
-                      stroke="#1a3a3a"
+                      stroke="#163434"
                       strokeWidth={2.5}
                       fill="url(#fill)"
                     />
@@ -437,566 +585,390 @@ function DashboardPage() {
 
           </Card>
 
-          {/* TODAY SUMMARY */}
-          <Card
-            variant="cream"
-            className="
-              col-span-12 lg:col-span-4
-              rounded-[36px]
-              border border-clay-hairline/60
-              bg-white/90
-              p-7
-              backdrop-blur-xl
-            "
-          >
+          {/* RECOVERY INTELLIGENCE */}
+          <section className="space-y-4">
 
-            <div className="flex h-full flex-col justify-between">
+            <div>
 
-              <div className="space-y-7">
-
-                <div className="space-y-3">
-
-                  <div className="inline-flex items-center gap-2 rounded-full bg-clay-surface-soft px-4 py-2">
-
-                    <Clock3 className="h-4 w-4 text-clay-brand-teal" />
-
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-clay-muted">
-                      Today Summary
-                    </span>
-
-                  </div>
-
-                  <h2 className="text-2xl tracking-[-0.04em] text-clay-ink">
-                    Recovery readiness is stable today.
-                  </h2>
-
-                </div>
-
-                <div className="space-y-4">
-
-                  {[
-                    {
-                      icon: HeartPulse,
-                      label: "Pain Response",
-                      value: "Improving"
-                    },
-                    {
-                      icon: Waves,
-                      label: "Mobility",
-                      value: "Stable"
-                    },
-                    {
-                      icon: ShieldCheck,
-                      label: "Recovery",
-                      value: "Moderate"
-                    }
-                  ].map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between rounded-2xl bg-clay-surface-soft px-4 py-4"
-                    >
-
-                      <div className="flex items-center gap-3">
-
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
-                          <item.icon className="h-4 w-4 text-clay-brand-teal" />
-                        </div>
-
-                        <span className="text-sm font-medium text-clay-body">
-                          {item.label}
-                        </span>
-
-                      </div>
-
-                      <span className="text-sm font-semibold text-clay-ink">
-                        {item.value}
-                      </span>
-
-                    </div>
-                  ))}
-
-                </div>
-
+              <div className="text-[11px] uppercase tracking-[0.18em] text-clay-muted">
+                Recovery Intelligence
               </div>
 
-              <button
-                className="
-                  mt-8 flex items-center justify-between
-                  rounded-2xl border border-clay-hairline
-                  bg-clay-canvas px-5 py-4
-                  transition-all duration-300
-                  hover:bg-clay-surface-soft
-                "
-              >
-
-                <div className="text-left">
-                  <div className="text-sm font-semibold text-clay-ink">
-                    View detailed recommendations
-                  </div>
-
-                  <div className="mt-1 text-xs text-clay-muted">
-                    Personalized recovery actions
-                  </div>
-                </div>
-
-                <ChevronRight className="h-5 w-5 text-clay-muted" />
-
-              </button>
+              <h2 className="mt-2 text-3xl tracking-[-0.05em] text-clay-ink">
+                Personalized movement insights.
+              </h2>
 
             </div>
 
-          </Card>
-
-        </section>
-
-        {/* TABS */}
-        <Tabs
-          defaultValue="analytics"
-          className="space-y-8"
-        >
-
-          <TabsList
-            className="
-              h-auto rounded-full border border-clay-hairline
-              bg-white/80 p-2 backdrop-blur-xl
-              overflow-x-auto
-            "
-          >
-
-            <TabsTrigger
-              value="analytics"
-              className="rounded-full px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.12em]"
+            <Tabs
+              defaultValue="insights"
+              className="space-y-8"
             >
-              Analytics
-            </TabsTrigger>
 
-            <TabsTrigger
-              value="insights"
-              className="rounded-full px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.12em]"
-            >
-              Insights
-            </TabsTrigger>
-
-            <TabsTrigger
-              value="journal"
-              className="rounded-full px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.12em]"
-            >
-              Journal
-            </TabsTrigger>
-
-          </TabsList>
-
-          {/* ANALYTICS */}
-          <TabsContent value="analytics">
-
-            <div className="grid grid-cols-12 gap-6">
-
-              {/* MAIN CHART */}
-              <Card
-                variant="cream"
+              <TabsList
                 className="
-                  col-span-12 lg:col-span-8
-                  rounded-[36px]
-                  bg-white/90
-                  border border-clay-hairline/60
-                  p-7
+                  h-auto rounded-full border border-clay-hairline
+                  bg-white/80 p-2 backdrop-blur-xl
                 "
               >
 
-                <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <TabsTrigger
+                  value="insights"
+                  className="rounded-full px-6 py-3 text-[13px]"
+                >
+                  Insights
+                </TabsTrigger>
 
-                  <div>
+                <TabsTrigger
+                  value="journal"
+                  className="rounded-full px-6 py-3 text-[13px]"
+                >
+                  Journal
+                </TabsTrigger>
 
-                    <h2 className="text-2xl tracking-[-0.04em] text-clay-ink">
-                      Performance trajectory
-                    </h2>
+              </TabsList>
 
-                    <p className="mt-2 text-sm text-clay-muted">
-                      Longitudinal recovery movement trends.
-                    </p>
+              {/* INSIGHTS */}
+              <TabsContent value="insights">
 
-                  </div>
+                <div
+                  className="
+    grid
+    grid-cols-12
+    gap-6
+    overflow-hidden
+  "
+                >
 
-                  <div className="flex gap-2 rounded-full bg-clay-surface-soft p-1">
+                  {/* RADAR */}
+                  <Card
+                    variant="cream"
+                    className="
+                      col-span-12 lg:col-span-5
+                      rounded-[36px]
+                      bg-white/90
+                      border border-clay-hairline/60
+                      p-7
+                    "
+                  >
 
-                    {Object.keys(TIME_RANGES).map((key) => (
-                      <button
-                        key={key}
-                        onClick={() =>
-                          setSelectedRange(key)
-                        }
-                        className={cn(
-                          "rounded-full px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] transition-all",
-                          selectedRange === key
-                            ? "bg-white text-clay-ink shadow-sm"
-                            : "text-clay-muted"
-                        )}
-                      >
-                        {key}
-                      </button>
-                    ))}
+                    <div className="mb-6">
 
-                  </div>
-
-                </div>
-
-                <div className="h-[340px] rounded-[28px] bg-clay-surface-soft p-4">
-
-                  <ResponsiveContainer width="100%" height="100%">
-
-                    <LineChart data={healthData.history}>
-
-                      <XAxis
-                        dataKey="date"
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{
-                          fill: "#8a8a8a",
-                          fontSize: 10
-                        }}
-                      />
-
-                      <YAxis
-                        domain={[0, 100]}
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{
-                          fill: "#8a8a8a",
-                          fontSize: 10
-                        }}
-                      />
-
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#fffaf0",
-                          borderRadius: "18px",
-                          border: "1px solid #e5e5e5",
-                          boxShadow:
-                            "0 4px 18px rgba(0,0,0,0.04)"
-                        }}
-                      />
-
-                      <Line
-                        type="monotone"
-                        dataKey="overallScore"
-                        stroke="#1a3a3a"
-                        strokeWidth={2.5}
-                        dot={{
-                          r: 3,
-                          fill: "#1a3a3a"
-                        }}
-                        activeDot={{
-                          r: 5
-                        }}
-                      />
-
-                    </LineChart>
-
-                  </ResponsiveContainer>
-
-                </div>
-
-              </Card>
-
-              {/* AI INSIGHT */}
-              <Card
-                variant="lavender"
-                className="
-                  col-span-12 lg:col-span-4
-                  rounded-[36px]
-                  p-7
-                "
-              >
-
-                <div className="flex h-full flex-col justify-between">
-
-                  <div className="space-y-6">
-
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/40">
-                      <Brain className="h-7 w-7 text-clay-ink" />
-                    </div>
-
-                    <div>
-
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-clay-ink/60">
-                        AI Observation
-                      </div>
-
-                      <h2 className="mt-3 text-3xl tracking-[-0.05em] text-clay-ink">
-                        Recovery momentum is improving.
+                      <h2 className="text-2xl tracking-[-0.04em] text-clay-ink">
+                        System balance
                       </h2>
 
+                      <p className="mt-2 text-sm text-clay-muted">
+                        Relative movement equilibrium.
+                      </p>
+
                     </div>
 
-                    <p className="text-[15px] leading-[1.8] text-clay-ink/80">
-                      Based on your last three
-                      assessments, movement stability
-                      is increasing consistently.
-                      Maintaining mobility sessions
-                      for the next 14 days could
-                      improve recovery efficiency
-                      further.
-                    </p>
+                    <div className="h-[320px]">
 
-                  </div>
+                      <ResponsiveContainer width="100%" height="100%">
 
-                  <Button
-                    variant="onColor"
-                    className="mt-10 w-full"
-                  >
-                    Optimize Recovery
-                  </Button>
+                        <RadarChart
+                          data={[
+                            {
+                              subject: "Pain",
+                              A: current.painScore
+                            },
+                            {
+                              subject: "Mobility",
+                              A: current.mobilityScore
+                            },
+                            {
+                              subject: "Impact",
+                              A: current.impactScore
+                            }
+                          ]}
+                        >
 
-                </div>
+                          <PolarGrid stroke="#dadada" />
 
-              </Card>
+                          <PolarAngleAxis
+                            dataKey="subject"
+                            tick={{
+                              fill: "#6f6f6f",
+                              fontSize: 12
+                            }}
+                          />
 
-            </div>
+                          <PolarRadiusAxis tick={false} />
 
-          </TabsContent>
+                          <Radar
+                            dataKey="A"
+                            stroke="#163434"
+                            fill="#163434"
+                            fillOpacity={0.16}
+                            strokeWidth={2}
+                          />
 
-          {/* INSIGHTS */}
-          <TabsContent value="insights">
+                        </RadarChart>
 
-            <div className="grid grid-cols-12 gap-6">
+                      </ResponsiveContainer>
 
-              {/* RADAR */}
-              <Card
-                variant="cream"
-                className="
-                  col-span-12 lg:col-span-5
-                  rounded-[36px]
-                  bg-white/90
-                  border border-clay-hairline/60
-                  p-7
-                "
-              >
+                    </div>
 
-                <div className="mb-6">
+                  </Card>
 
-                  <h2 className="text-2xl tracking-[-0.04em] text-clay-ink">
-                    System balance
-                  </h2>
+                  {/* RIGHT PANEL */}
+                  <div className="col-span-12 lg:col-span-7 space-y-6">
 
-                  <p className="mt-2 text-sm text-clay-muted">
-                    Relative movement equilibrium.
-                  </p>
+                    <InsightCard
+                      title={
+                        isPainHigh
+                          ? "Primary focus area"
+                          : "Balanced recovery pattern"
+                      }
+                      description={
+                        isPainHigh
+                          ? "Pain markers remain elevated."
+                          : "Movement patterns are stabilizing."
+                      }
+                      body={
+                        isPainHigh
+                          ? "Prioritize recovery and anti-inflammatory routines over performance training this week."
+                          : "Current recovery progression is healthy and consistent."
+                      }
+                    />
 
-                </div>
+                    {/* MINI GRID */}
+                    <div className="grid md:grid-cols-2 gap-6">
 
-                <div className="h-[320px]">
+                      <Card
+                        variant="cream"
+                        className="rounded-[30px] bg-white/90 border border-clay-hairline/60 p-6"
+                      >
 
-                  <ResponsiveContainer width="100%" height="100%">
+                        <div className="flex items-start justify-between">
 
-                    <RadarChart
-                      data={[
-                        {
-                          subject: "Pain",
-                          A: current.painScore
-                        },
-                        {
-                          subject: "Mobility",
-                          A: current.mobilityScore
-                        },
-                        {
-                          subject: "Impact",
-                          A: current.impactScore
-                        }
-                      ]}
-                    >
+                          <div>
 
-                      <PolarGrid stroke="#e5e5e5" />
+                            <div className="text-[11px] uppercase tracking-[0.16em] text-clay-muted">
+                              Daily Readiness
+                            </div>
 
-                      <PolarAngleAxis
-                        dataKey="subject"
-                        tick={{
-                          fill: "#4a4a4a",
-                          fontSize: 11
-                        }}
-                      />
+                            <div className="mt-3 text-4xl tracking-[-0.05em] text-clay-ink">
+                              82%
+                            </div>
 
-                      <PolarRadiusAxis
-                        tick={false}
-                        axisLine={false}
-                      />
+                            <p className="mt-3 text-sm leading-[1.7] text-clay-body">
+                              Ready for moderate movement
+                              intensity and recovery work.
+                            </p>
 
-                      <Radar
-                        dataKey="A"
-                        stroke="#1a3a3a"
-                        fill="#1a3a3a"
-                        fillOpacity={0.18}
-                        strokeWidth={2}
-                      />
-
-                    </RadarChart>
-
-                  </ResponsiveContainer>
-
-                </div>
-
-              </Card>
-
-              {/* INSIGHT STACK */}
-              <div className="col-span-12 lg:col-span-7 space-y-6">
-
-                <InsightCard
-                  title={
-                    isPainHigh
-                      ? "Primary focus area"
-                      : "Balanced recovery pattern"
-                  }
-                  description={
-                    isPainHigh
-                      ? "Pain markers remain elevated."
-                      : "Movement patterns are stabilizing."
-                  }
-                  body={
-                    isPainHigh
-                      ? "Prioritize recovery and anti-inflammatory routines over performance training this week."
-                      : "Current recovery progression is healthy and consistent."
-                  }
-                />
-
-                <div className="grid md:grid-cols-3 gap-6">
-
-                  {[
-                    {
-                      label: "Pain",
-                      value: current.painScore,
-                      icon: HeartPulse
-                    },
-                    {
-                      label: "Mobility",
-                      value: current.mobilityScore,
-                      icon: Waves
-                    },
-                    {
-                      label: "Impact",
-                      value: current.impactScore,
-                      icon: Activity
-                    }
-                  ].map((item, i) => (
-                    <Card
-                      key={i}
-                      variant="cream"
-                      className="rounded-[30px] bg-white/90 border border-clay-hairline/60 p-6"
-                    >
-
-                      <div className="flex items-center justify-between">
-
-                        <div>
-
-                          <div className="text-[11px] uppercase tracking-[0.16em] text-clay-muted">
-                            {item.label}
                           </div>
 
-                          <div className="mt-4 text-5xl tracking-[-0.06em] text-clay-ink">
-                            {Math.round(item.value)}
+                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-50">
+                            <ShieldCheck className="h-5 w-5 text-green-700" />
                           </div>
 
                         </div>
 
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-clay-surface-soft">
-                          <item.icon className="h-5 w-5 text-clay-brand-teal" />
+                      </Card>
+
+                      <Card
+                        variant="cream"
+                        className="rounded-[30px] bg-white/90 border border-clay-hairline/60 p-6"
+                      >
+
+                        <div className="flex items-start justify-between">
+
+                          <div>
+
+                            <div className="text-[11px] uppercase tracking-[0.16em] text-clay-muted">
+                              Recovery Risk
+                            </div>
+
+                            <div className="mt-3 text-4xl tracking-[-0.05em] text-clay-ink">
+                              Low
+                            </div>
+
+                            <p className="mt-3 text-sm leading-[1.7] text-clay-body">
+                              Pain indicators are stable
+                              without aggressive flare-ups.
+                            </p>
+
+                          </div>
+
+                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50">
+                            <TimerReset className="h-5 w-5 text-red-600" />
+                          </div>
+
+                        </div>
+
+                      </Card>
+
+                    </div>
+
+                    {/* WEEKLY GOAL */}
+                    <Card
+                      variant="cream"
+                      className="
+                        rounded-[34px]
+                        border border-clay-hairline/60
+                        bg-white/90
+                        p-7
+                      "
+                    >
+
+                      <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+
+                        <div className="space-y-4">
+
+                          <div className="inline-flex items-center gap-2 rounded-full bg-clay-surface-soft px-4 py-2">
+
+                            <Dumbbell className="h-4 w-4 text-clay-brand-teal" />
+
+                            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-clay-muted">
+                              Weekly Goal
+                            </span>
+
+                          </div>
+
+                          <div>
+
+                            <h3 className="text-2xl tracking-[-0.04em] text-clay-ink">
+                              4 / 5 mobility sessions completed
+                            </h3>
+
+                            <p className="mt-3 max-w-xl text-[15px] leading-[1.8] text-clay-body">
+                              You’re maintaining consistent
+                              movement therapy habits this week.
+                            </p>
+
+                          </div>
+
+                        </div>
+
+                        <div className="w-full max-w-[240px]">
+
+                          <div className="mb-3 flex items-center justify-between text-sm">
+
+                            <span className="text-clay-muted">
+                              Weekly Progress
+                            </span>
+
+                            <span className="font-semibold text-clay-ink">
+                              80%
+                            </span>
+
+                          </div>
+
+                          <div className="h-3 overflow-hidden rounded-full bg-clay-surface-soft">
+
+                            <div className="h-full w-[80%] rounded-full bg-clay-brand-teal" />
+
+                          </div>
+
                         </div>
 
                       </div>
 
                     </Card>
-                  ))}
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </TabsContent>
-
-          {/* JOURNAL */}
-          <TabsContent value="journal">
-
-            <Card
-              variant="cream"
-              className="
-                rounded-[36px]
-                bg-white/90
-                border border-clay-hairline/60
-                p-7 md:p-8
-              "
-            >
-
-              <div className="space-y-8">
-
-                <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-
-                  <div>
-
-                    <div className="inline-flex items-center gap-2 rounded-full bg-clay-surface-soft px-4 py-2">
-
-                      <BookOpen className="h-4 w-4 text-clay-brand-teal" />
-
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-clay-muted">
-                        Recovery Journal
-                      </span>
-
-                    </div>
-
-                    <h2 className="mt-5 text-3xl tracking-[-0.05em] text-clay-ink">
-                      Reflect on your movement today.
-                    </h2>
-
-                    <p className="mt-3 max-w-2xl text-[15px] leading-[1.8] text-clay-body">
-                      Track physical sensations,
-                      movement quality, stiffness,
-                      recovery response, and daily
-                      observations over time.
-                    </p>
-
-                  </div>
-
-                  <div className="rounded-2xl bg-clay-surface-soft px-5 py-4">
-
-                    <div className="text-[10px] uppercase tracking-[0.16em] text-clay-muted">
-                      Journal prompts
-                    </div>
-
-                    <ul className="mt-3 space-y-2 text-sm text-clay-body">
-                      <li>• How did movement feel today?</li>
-                      <li>• Any stiffness after waking?</li>
-                      <li>• What improved since yesterday?</li>
-                    </ul>
 
                   </div>
 
                 </div>
 
-                <RichTextEditor
-                  value={journalContent}
-                  onChange={setJournalContent}
-                  placeholder="Write today's recovery observations..."
-                />
+              </TabsContent>
 
-                <div className="flex flex-col gap-4 border-t border-clay-hairline pt-6 sm:flex-row sm:items-center sm:justify-between">
+              {/* JOURNAL */}
+              <TabsContent value="journal">
 
-                  <p className="text-xs italic text-clay-muted">
-                    Journal entries are automatically
-                    saved and encrypted.
-                  </p>
+                <Card
+                  variant="cream"
+                  className="
+                    rounded-[36px]
+                    bg-white/90
+                    border border-clay-hairline/60
+                    p-7 md:p-8
+                  "
+                >
 
-                  <Button>
-                    Save Journal Entry
-                  </Button>
+                  <div className="space-y-8">
 
-                </div>
+                    <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
-              </div>
+                      <div>
 
-            </Card>
+                        <div className="inline-flex items-center gap-2 rounded-full bg-clay-surface-soft px-4 py-2">
 
-          </TabsContent>
+                          <BookOpen className="h-4 w-4 text-clay-brand-teal" />
 
-        </Tabs>
+                          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-clay-muted">
+                            Recovery Journal
+                          </span>
+
+                        </div>
+
+                        <h2 className="mt-5 text-3xl tracking-[-0.05em] text-clay-ink">
+                          Reflect on your movement today.
+                        </h2>
+
+                        <p className="mt-3 max-w-2xl text-[15px] leading-[1.8] text-clay-body">
+                          Track stiffness, soreness,
+                          movement quality, energy levels,
+                          and physical observations.
+                        </p>
+
+                      </div>
+
+                      <div className="rounded-2xl bg-clay-surface-soft px-5 py-4">
+
+                        <div className="text-[10px] uppercase tracking-[0.16em] text-clay-muted">
+                          Journal prompts
+                        </div>
+
+                        <ul className="mt-3 space-y-2 text-sm text-clay-body">
+                          <li>• How did movement feel today?</li>
+                          <li>• Any stiffness after waking?</li>
+                          <li>• What improved since yesterday?</li>
+                        </ul>
+
+                      </div>
+
+                    </div>
+
+                    <RichTextEditor
+                      value={journalContent}
+                      onChange={setJournalContent}
+                      placeholder="Write today's recovery observations..."
+                    />
+
+                    <div className="flex flex-col gap-4 border-t border-clay-hairline pt-6 sm:flex-row sm:items-center sm:justify-between">
+
+                      <div className="flex items-center gap-2 text-sm text-clay-muted">
+
+                        <MoonStar className="h-4 w-4" />
+
+                        Auto-saved & encrypted
+
+                      </div>
+
+                      <Button className="gap-2">
+
+                        Save Journal Entry
+
+                        <ChevronRight className="h-4 w-4" />
+
+                      </Button>
+
+                    </div>
+
+                  </div>
+
+                </Card>
+
+              </TabsContent>
+
+            </Tabs>
+
+          </section>
+
+        </div>
 
       </div>
 
