@@ -7,6 +7,7 @@ import DashboardPage from '@features/dashboard/DashboardPage'
 import DemoPage from '@pages/DemoPage'
 import { Navbar1 } from '@components/ui/navbar-1'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 
 function App() {
   const location = useLocation()
@@ -36,6 +37,7 @@ function App() {
           </AnimatePresence>
         </main>
       </AssessmentProvider>
+      <Analytics />
     </div>
   )
 }
