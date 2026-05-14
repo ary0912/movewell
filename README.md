@@ -1,339 +1,528 @@
-# MoveWell – Musculoskeletal Health Assessment & Progress Dashboard
+<div align="center">
 
-A **production-quality, professional** frontend-first web application that helps users complete health assessments, view results, and track musculoskeletal health progress over time.
+# MoveWell
 
-## 🎯 Project Overview
+### Musculoskeletal Recovery Intelligence Platform
 
-MoveWell is a modern health tech platform demonstrating:
+A production-grade health-tech frontend focused on movement assessment, recovery analytics, and longitudinal health insights.
 
-- **Expert UX/UI Design** - Professional, accessible, and intuitive interface
-- **Frontend Excellence** - Clean React + TypeScript architecture
-- **Health Data Insights** - Meaningful scoring and progress tracking
-- **Accessibility First** - WCAG-compliant, keyboard-navigable, semantic HTML
-- **Performance Optimized** - Fast build, minimal bundle, optimized charts
-- **Real-World Application** - Complete assessment workflow + dashboard
+<br />
 
-### Core Features
+<img src="https://img.shields.io/badge/React-19-black?style=for-the-badge&logo=react" />
+<img src="https://img.shields.io/badge/TypeScript-Strict-black?style=for-the-badge&logo=typescript" />
+<img src="https://img.shields.io/badge/Vite-5-black?style=for-the-badge&logo=vite" />
+<img src="https://img.shields.io/badge/Tailwind-CSS-black?style=for-the-badge&logo=tailwindcss" />
+<img src="https://img.shields.io/badge/Accessibility-WCAG%202.1-black?style=for-the-badge" />
 
-✅ **Multi-Step Assessment Wizard** - Guided pain & mobility evaluation
-✅ **Real-Time Results** - Instant health scoring and insights
-✅ **Progress Dashboard** - Chart-based tracking over time
-✅ **Responsive Design** - Mobile-first, works on all devices
-✅ **Privacy-Focused** - Client-side processing, secure data handling
-✅ **Professional UI** - Gradient design, smooth animations, modern components
+<br />
+<br />
+
+<img width="100%" alt="MoveWell Banner" src="https://dummyimage.com/1400x600/f7f3eb/1a1a1a&text=MoveWell+Recovery+Intelligence+Dashboard" />
+
+</div>
 
 ---
 
-## 🏗️ Tech Stack
+# Overview
+
+MoveWell is a modern recovery intelligence platform designed to explore how frontend engineering, health-focused UX systems, and longitudinal analytics can combine into a scalable product experience.
+
+The application guides users through structured movement assessments, generates synthesized recovery insights, and visualizes progression through an analytics-driven dashboard.
+
+The project emphasizes:
+
+- scalable frontend architecture
+- calm enterprise UI systems
+- accessibility-first interactions
+- low cognitive load interfaces
+- reusable design systems
+- product-oriented React engineering
+
+---
+
+# Product Experience
+
+## Assessment Workflow
+
+Structured multi-step movement assessment system covering:
+
+- pain mapping
+- pain intensity
+- mobility restrictions
+- daily impact analysis
+- movement limitations
+- recovery review synthesis
+
+### UX Principles
+
+- progressive disclosure
+- minimal friction inputs
+- responsive interaction systems
+- accessible keyboard navigation
+- contextual visual hierarchy
+- low-noise interfaces
+
+---
+
+## Recovery Results Engine
+
+Generates a synthesized movement profile using weighted recovery scoring systems.
+
+### Includes
+
+- overall recovery score
+- mobility evaluation
+- pain analysis
+- lifestyle impact metrics
+- movement intelligence insights
+- personalized recovery recommendations
+
+---
+
+## Recovery Dashboard
+
+Longitudinal analytics dashboard built for movement tracking and recovery progression visualization.
+
+### Dashboard Features
+
+- recovery trend visualization
+- score progression analytics
+- movement balance radar
+- insight generation
+- journal system
+- recovery history
+- health metric breakdowns
+- movement stability indicators
+
+---
+
+# Frontend Architecture
+
+## Tech Stack
 
 | Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Framework** | React 19 + TypeScript | Component-based UI |
-| **Build Tool** | Vite 5 | Fast dev & production builds |
-| **Styling** | Tailwind CSS 3 | Utility-first CSS framework |
-| **Charts** | Recharts | Data visualization |
-| **Routing** | React Router 7 | Client-side navigation |
-| **State** | React Context + Hooks | Form & app state management |
-| **Linting** | ESLint + Prettier | Code quality |
-| **Accessibility** | ARIA labels, semantic HTML | WCAG 2.1 compliance |
+|---|---|---|
+| Framework | React 19 + TypeScript | Component architecture |
+| Build Tool | Vite 5 | Development & production builds |
+| Styling | Tailwind CSS | Design system implementation |
+| Motion | Framer Motion | Interaction transitions |
+| Charts | Recharts | Analytics visualization |
+| Routing | React Router 7 | Client-side routing |
+| State | React Context + Hooks | Scoped state management |
+| Forms | React Hook Form | Assessment validation |
+| Linting | ESLint + TypeScript | Code quality enforcement |
 
 ---
 
-## 📁 Project Structure
+# Frontend Engineering Decisions
 
+## Why React Context Instead of Redux
+
+The assessment workflow contains localized state requirements and predictable update patterns.
+
+React Context + hooks provided:
+- lower complexity
+- reduced boilerplate
+- cleaner scalability
+- faster iteration cycles
+
+without introducing unnecessary global abstractions.
+
+---
+
+## Why Client-Side Rendering
+
+MoveWell is interaction-heavy rather than SEO-dependent.
+
+Client-side rendering improves:
+- dashboard responsiveness
+- interaction continuity
+- state persistence
+- development simplicity
+
+while reducing infrastructure complexity.
+
+---
+
+## Component System Strategy
+
+The UI architecture is built around reusable primitives:
+
+```txt
+Button
+Card
+Badge
+Tabs
+Progress Indicators
+Input Systems
+Surface Variants
 ```
+
+This enables:
+- scalable UI composition
+- design consistency
+- maintainability
+- reduced duplication
+- faster iteration
+
+across all product surfaces.
+
+---
+
+# Design Philosophy
+
+MoveWell intentionally avoids:
+- excessive gradients
+- over-animation
+- template-style SaaS design
+- high cognitive load dashboards
+- noisy visual systems
+
+The interface prioritizes:
+- visual restraint
+- subtle motion
+- calm hierarchy
+- readability
+- enterprise clarity
+- accessibility
+
+Inspired by:
+- Linear
+- Raycast
+- Vercel
+- modern health-tech products
+
+---
+
+# Project Structure
+
+```txt
 src/
-├── components/           # Reusable UI components
-│   ├── common/          # Common components (ProgressIndicator)
-│   └── ui/              # UI primitives (Button, Card, Input, Badge, etc.)
-├── features/            # Feature modules
-│   ├── assessment/      # Multi-step assessment flow
-│   └── dashboard/       # Progress tracking & results
-├── context/             # React Context for state
-├── hooks/               # Custom React hooks (extensible)
-├── pages/               # Page-level components (Landing, etc.)
-├── services/            # Mock API & data access layer
-├── styles/              # Global styles & CSS utilities
-├── types/               # TypeScript type definitions
-└── utils/               # Helper functions & constants
+├── components/
+│   ├── common/
+│   └── ui/
+│
+├── context/
+│
+├── features/
+│   ├── assessment/
+│   └── dashboard/
+│
+├── hooks/
+├── pages/
+├── services/
+├── styles/
+├── types/
+└── utils/
 ```
 
 ---
 
-## 🚀 Quick Start
+# Assessment System
 
-### Prerequisites
-- Node.js 18+ (ideally 20+)
-- npm or yarn
+## Step 1 — Pain Mapping
 
-### Installation
+Visual anatomical selection of affected movement regions.
+
+---
+
+## Step 2 — Pain Intensity
+
+Structured 0–10 pain severity evaluation.
+
+---
+
+## Step 3 — Mobility Evaluation
+
+Functional movement resistance assessment.
+
+---
+
+## Step 4 — Daily Impact
+
+Evaluates influence on:
+- work
+- sleep
+- movement
+- recovery quality
+
+---
+
+## Step 5 — Review & Synthesis
+
+Assessment confirmation and movement intelligence generation.
+
+---
+
+# Recovery Scoring System
+
+## Pain Score
+
+Generated from:
+- affected body regions
+- pain intensity averages
+
+Lower scores indicate healthier movement conditions.
+
+---
+
+## Mobility Score
+
+Calculated using:
+- stiffness levels
+- range-of-motion resistance
+- movement limitations
+
+---
+
+## Impact Score
+
+Measures:
+- productivity limitations
+- sleep disruption
+- recovery interference
+- daily movement restriction
+
+---
+
+## Overall Recovery Score
+
+| Metric | Weight |
+|---|---|
+| Pain | 40% |
+| Mobility | 35% |
+| Lifestyle Impact | 25% |
+
+---
+
+# Dashboard Analytics
+
+## Recovery Tracking
+
+The dashboard provides:
+- movement trajectory visualization
+- score history analysis
+- recovery stability monitoring
+- progression analytics
+- longitudinal health insights
+
+---
+
+## Insight Layer
+
+The platform surfaces:
+- dominant recovery limitations
+- movement instability indicators
+- recovery momentum patterns
+- progression consistency metrics
+
+through contextual insight systems.
+
+---
+
+## Journal System
+
+Persistent local journaling for:
+- movement observations
+- stiffness tracking
+- recovery notes
+- daily mobility reflections
+
+---
+
+# Accessibility
+
+MoveWell was designed using accessibility-first engineering principles.
+
+## Accessibility Features
+
+- semantic HTML structure
+- keyboard navigation
+- visible focus states
+- WCAG-compliant contrast
+- ARIA labels
+- accessible validation states
+- responsive interaction systems
+- screen-reader compatibility
+
+---
+
+# Performance Considerations
+
+## Optimization Strategy
+
+- modular component architecture
+- scoped state management
+- reusable UI primitives
+- controlled animation usage
+- responsive chart rendering
+- minimized unnecessary rerenders
+- lightweight frontend structure
+
+---
+
+# Engineering Highlights
+
+- Feature-based frontend architecture
+- Strict TypeScript implementation
+- Reusable design system primitives
+- Responsive dashboard systems
+- Accessible interaction patterns
+- Longitudinal analytics visualization
+- Persistent journal state management
+- Structured assessment workflows
+- Production deployment readiness
+
+---
+
+# Screenshots
+
+## Recovery Dashboard
+
+<img width="100%" alt="Dashboard Preview" src="https://dummyimage.com/1400x800/f7f3eb/1a1a1a&text=Recovery+Dashboard+Preview" />
+
+---
+
+## Assessment Workflow
+
+<img width="100%" alt="Assessment Flow" src="https://dummyimage.com/1400x800/f7f3eb/1a1a1a&text=Assessment+Workflow+Preview" />
+
+---
+
+## Recovery Results
+
+<img width="100%" alt="Results Page" src="https://dummyimage.com/1400x800/f7f3eb/1a1a1a&text=Recovery+Results+Preview" />
+
+---
+
+# Local Development
+
+## Prerequisites
 
 ```bash
-# Clone the repository (or navigate to project)
-cd /Users/aryanlodha/Desktop/Move\ App
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Open browser to http://localhost:5173
+Node.js 18+
+npm or yarn
 ```
 
-### Build for Production
+---
+
+## Installation
 
 ```bash
-# Creates optimized production build
+npm install
+```
+
+---
+
+## Start Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+## Build Production Version
+
+```bash
 npm run build
+```
 
-# Preview production build locally
+---
+
+## Preview Production Build
+
+```bash
 npm run preview
+```
 
-# Run linter
+---
+
+## Run ESLint
+
+```bash
 npm run lint
 ```
 
 ---
 
-## 📱 Pages & Features
+# Deployment
 
-### 1. Landing Page (`/`)
-- Value proposition with professional hero section
-- Feature highlights (Quick Assessment, Smart Analysis, Track Progress)
-- Privacy assurance & trust indicators
-- Call-to-action buttons
+The project is deployment-ready for:
 
-### 2. Assessment Flow (`/assessment`)
-- **Step 1: Pain Map** - Select body areas with pain
-- **Step 2: Pain Intensity** - Rate intensity 0-10 for each area
-- **Step 3: Mobility** - Assess movement difficulty
-- **Step 4: Daily Impact** - Measure life impact (work, sleep, activity)
-- **Step 5: Review** - Confirm answers before submission
-
-**UX Features:**
-- Progress indicator showing current step
-- Client-side validation & error messages
-- Keyboard navigation throughout
-- Responsive on mobile devices
-
-### 3. Results Page (`/results`)
-- **Overall Health Score** - 0-100 scale with color-coded interpretation
-- **Component Breakdown** - Pain, Mobility, Impact scores with progress bars
-- **Pain Areas** - Visual display of affected body regions
-- **Recommendations** - Personalized health insights
-- **Privacy Notice** - Data security assurance
-
-### 4. Dashboard (`/dashboard`)
-- **Current Status Card** - Latest assessment scores
-- **Progress Chart** - Line chart of scores over time
-- **Time Range Filters** - Last 7, 30, 90 days, 1 year
-- **Summary Stats** - Total assessments, latest date, trend direction
-- **History-Based Insights** - Improvement calculations
+- Vercel
+- Netlify
+- Cloudflare Pages
 
 ---
 
-## 🎨 Design System
+## Recommended Deployment
 
-### Color Palette
-- **Primary**: Blue gradient (professional & health-focused)
-- **Success**: Green (positive indicators)
-- **Warning**: Amber (caution, requires attention)
-- **Danger**: Red (concerning findings)
-- **Neutral**: Slate (background, text)
-
-### Typography
-- **Headings**: Plus Jakarta Sans (modern, bold)
-- **Body**: Inter (readable, professional)
-- **Weights**: 400, 500, 600, 700
-
-### Components
-- **Button**: Primary, Secondary, Tertiary variants
-- **Card**: Elevated with hover effects
-- **Input**: Text fields with validation states
-- **Badge**: Status indicators with colors
-- **Progress Bar**: Visual representation of scores
-- **Progress Indicator**: Multi-step form navigation
-
----
-
-## ♿ Accessibility
-
-✅ **WCAG 2.1 Level AA Compliant**
-- Semantic HTML (buttons, forms, main landmarks)
-- ARIA labels & descriptions for form controls
-- Focus-visible states on all interactive elements
-- Keyboard navigation throughout
-- Color contrast ratios >4.5:1
-- Form validation with error messages
-- Loading states with aria-busy
-
----
-
-## 📊 Scoring System
-
-### Pain Score (0-100)
-- Based on number and intensity of pain areas
-- Formula: Average intensity across selected areas × 10
-- Lower is better
-
-### Mobility Score (0-100)
-- Based on difficulty ratings for 4 key movements
-- Formula: Average difficulty × 10
-- Lower is better
-
-### Impact Score (0-100)
-- Based on effect on work, sleep, daily activities
-- Formula: Average impact × 10
-- Lower is better
-
-### Overall Score (Weighted)
-- Pain: 40%, Mobility: 35%, Impact: 25%
-- Ranges: 0-20 (Excellent), 21-40 (Good), 41-60 (Moderate), 61-100 (Poor)
-
----
-
-## 🔄 State Management
-
-Uses **React Context + Hooks** (no Redux needed):
-- `AssessmentContext` - Multi-step form state
-- Custom hooks for data fetching (extensible)
-- Local component state for UI interactions
-
-**Service Layer** (`assessmentService.ts`):
-- Mock API with simulated network delays
-- Easy to swap for real backend
-- 30-day history simulation
-- Assessment persistence
-
----
-
-## 🧪 Performance Metrics
-
-- **Build Time**: ~10 seconds
-- **Bundle Size**: ~652KB JS (gzipped: ~189KB)
-- **CSS**: ~26KB (gzipped: ~5KB)
-- **Lighthouse Score**: Optimized for 90+
-- **Core Web Vitals**: Optimized
-
----
-
-## 🌐 Deployment
-
-### One-Click Deploy to Vercel (Recommended)
+### Vercel
 
 ```bash
-# Option 1: Via GitHub (easiest)
-1. Push code to GitHub
-2. Go to vercel.com
-3. Import GitHub repository
-4. Click "Deploy"
-5. Done! Your app is live
-
-# Option 2: Via Vercel CLI
-npm i -g vercel
-vercel login
-cd /path/to/project
+npm install -g vercel
 vercel
 ```
 
-### Deploy to Netlify
+---
 
-```bash
-# Connect to Netlify and drag-drop the dist folder
-# Or connect GitHub repo for auto-deployments
-npm run build
-# Deploy the dist/ folder
-```
+# Future Expansion
 
-**See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.**
+The architecture supports future integration of:
+
+- backend APIs
+- authentication systems
+- clinician dashboards
+- wearable integrations
+- AI-assisted recovery insights
+- PDF exports
+- cloud persistence
+- notification systems
+
+without major frontend restructuring.
 
 ---
 
-## 🔒 Privacy & Security
+# Repository Goals
 
-- ✅ All data processed client-side (no server requests)
-- ✅ Assessment data stored in browser's context
-- ✅ No external API calls (mock service only)
-- ✅ No cookies or tracking
-- ✅ Complies with privacy-first design principles
+MoveWell was built to demonstrate:
 
----
-
-## 📈 Code Quality
-
-- **TypeScript** - Strict mode enabled
-- **ESLint** - Code quality rules
-- **Prettier** - Automatic formatting
-- **Component Structure** - Reusable, testable, documented
-- **Comments** - Explain *why*, not *what*
+- scalable frontend systems
+- modern React architecture
+- health-tech UX workflows
+- dashboard design systems
+- enterprise frontend thinking
+- accessibility-first engineering
+- maintainable component composition
 
 ---
 
-## 🎓 Learning Resources
+# Status
 
-This project demonstrates:
-- Modern React patterns (hooks, context)
-- TypeScript best practices
-- Accessible UI component design
-- Responsive CSS with Tailwind
-- Professional UX workflows
-- State management without Redux
-- Testing-ready architecture
-
----
-
-## 🚀 Future Enhancements
-
-Potential additions (without major refactoring):
-- Backend API integration
-- User authentication
-- Email notifications
-- Export assessment PDFs
-- Mobile app version (React Native)
-- Therapist dashboard
-- Integration with wearables
-- Machine learning insights
+| Area | Status |
+|---|---|
+| Responsive Design | ✅ |
+| Accessibility | ✅ |
+| Type Safety | ✅ |
+| Dashboard Analytics | ✅ |
+| Assessment System | ✅ |
+| Production Deployment | ✅ |
 
 ---
 
-## 📝 License
+# Author
 
-This project is for educational and portfolio purposes.
+## Aryan Lodha
+
+Frontend Engineer · UI/UX Systems Designer · MSc Data Science
+
+GitHub: <https://github.com/ary0912>
 
 ---
 
-## 👨‍💻 About
+<div align="center">
 
-Built with ❤️ for health tech. Demonstrates frontend excellence in:
-- UX/UI Design
-- React Architecture
-- Accessibility
-- Performance
-- Professional Code Quality
+### Built for scalable frontend engineering, product UX systems, and modern health-tech interfaces.
 
-**Status**: ✅ Production-Ready | 🚀 Deployable | 🎯 Feature-Complete
-
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+</div>
