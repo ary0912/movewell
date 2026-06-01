@@ -208,12 +208,10 @@ function DemoPage() {
                   text-white
                 "
               >
-                Start Assessment
-
-                <ArrowRight
-                  className="ml-2"
-                  size={17}
-                />
+                <span className="flex items-center gap-2 whitespace-nowrap">
+                  Start Assessment
+                  <ArrowRight size={17} />
+                </span>
               </Button>
 
               <Button

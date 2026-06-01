@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 
@@ -14,6 +14,11 @@ import {
   getScoreInterpretation,
   calculateImprovement
 } from "@utils/scoring"
+
+import {
+  formatDateTime,
+  getRelativeTime
+} from "@utils/helpers"
 
 import {
   AreaChart,
@@ -69,6 +74,22 @@ function DashboardPage() {
 
   const [loading, setLoading] =
     useState(true)
+
+  const [now, setNow] =
+    useState(Date.now())
+
+  const lastUpdatedLabel = useMemo(() => {
+    if (!healthData) return ""
+    return getRelativeTime(healthData.lastUpdated)
+  }, [healthData, now])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, 30000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const [journalContent, setJournalContent] =
     useState(() => {
@@ -294,8 +315,14 @@ function DashboardPage() {
                   </div>
 
                   <div className="mt-1 text-sm font-semibold text-clay-ink">
-                    Today · 9:42 AM
+                    {lastUpdatedLabel}
                   </div>
+
+                  {healthData && (
+                    <div className="text-[11px] text-clay-muted">
+                      {formatDateTime(healthData.lastUpdated)}
+                    </div>
+                  )}
 
                 </div>
 

@@ -6,6 +6,7 @@ import {
 } from "react"
 
 import {
+  NavLink,
   useNavigate,
   useLocation
 } from "react-router-dom"
@@ -22,6 +23,7 @@ import {
   Activity,
   BarChart3,
   FlaskConical,
+  Workflow,
   ArrowRight,
 } from "lucide-react"
 
@@ -42,6 +44,11 @@ const navItems = [
     name: "Dashboard",
     path: "/dashboard",
     icon: BarChart3,
+  },
+  {
+    name: "Content",
+    path: "/content",
+    icon: Workflow,
   },
   {
     name: "Protocol",
@@ -114,39 +121,6 @@ const Navbar1 = () => {
   return (
     <>
 
-      {/* CUSTOM CURSOR */}
-      <div
-        className="
-          pointer-events-none
-          fixed left-0 top-0 z-[999]
-          hidden h-5 w-5
-          -translate-x-1/2 -translate-y-1/2
-          rounded-full
-          border border-teal-500/40
-          bg-teal-500/10
-          backdrop-blur-md
-          transition-transform duration-200
-          md:block
-        "
-        id="custom-cursor"
-      />
-
-      {/* CURSOR SCRIPT */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            document.addEventListener("mousemove", (e) => {
-              const cursor =
-                document.getElementById("custom-cursor")
-
-              if(cursor){
-                cursor.style.left = e.clientX + "px"
-                cursor.style.top = e.clientY + "px"
-              }
-            })
-          `,
-        }}
-      />
 
       {/* DESKTOP NAV */}
       <motion.div
@@ -207,21 +181,22 @@ const Navbar1 = () => {
             />
 
             {/* LEFT */}
-            <div
+            <button
+              type="button"
               onClick={() =>
-                handleNavigate("/")
-              }
-              role="link"
-              tabIndex={0}
-              onKeyDown={(e) =>
-                e.key === "Enter" &&
                 handleNavigate("/")
               }
               className="
                 relative z-10
                 flex items-center gap-4
-                cursor-pointer
-                group
+                rounded-2xl
+                px-2 py-2
+                text-left
+                transition-colors duration-200
+                hover:bg-clay-surface-soft
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-clay-primary/25
               "
             >
 
@@ -284,7 +259,7 @@ const Navbar1 = () => {
 
               </div>
 
-            </div>
+            </button>
 
             {/* CENTER NAV */}
             <nav
@@ -297,89 +272,63 @@ const Navbar1 = () => {
 
               {navItems.map((item) => {
 
-                const isActive =
-                  location.pathname === item.path
-
                 const Icon = item.icon
 
                 return (
 
-                  <button
+                  <NavLink
                     key={item.name}
-                    onClick={() =>
-                      handleNavigate(item.path)
+                    to={item.path}
+                    className={({ isActive }) =>
+                      cn(
+                        "group relative",
+                        "flex items-center gap-2",
+                        "h-11 px-5",
+                        "rounded-2xl",
+                        "text-[13px]",
+                        "font-semibold",
+                        "tracking-[-0.01em]",
+                        "transition-all duration-300",
+                        isActive
+                          ? "text-[#111827]"
+                          : "text-[#6B7280] hover:text-[#111827]"
+                      )
                     }
-                    aria-current={
-                      isActive
-                        ? "page"
-                        : undefined
-                    }
-                    className={cn(
-                      "group relative",
-                      "flex items-center gap-2",
-                      "h-11 px-5",
-                      "rounded-2xl",
-                      "text-[13px]",
-                      "font-semibold",
-                      "tracking-[-0.01em]",
-                      "transition-all duration-300",
-                      isActive
-                        ? "text-[#111827]"
-                        : "text-[#6B7280] hover:text-[#111827]"
-                    )}
                   >
 
-                    {/* ACTIVE BG */}
-                    {isActive && (
+                    {({ isActive }) => (
+                      <>
+                        {isActive && (
+                          <motion.div
+                            layoutId="navbar-active"
+                            transition={{
+                              type: "spring",
+                              stiffness: 380,
+                              damping: 30,
+                            }}
+                            className="
+                              absolute inset-0
+                              rounded-2xl
+                              border border-black/[0.04]
+                              bg-white
+                              shadow-[0_4px_20px_rgba(0,0,0,0.05)]
+                            "
+                          />
+                        )}
 
-                      <motion.div
-                        layoutId="navbar-active"
-                        transition={{
-                          type: "spring",
-                          stiffness: 380,
-                          damping: 30,
-                        }}
-                        className="
-                          absolute inset-0
-                          rounded-2xl
-                          border border-black/[0.04]
-                          bg-white
-                          shadow-[0_4px_20px_rgba(0,0,0,0.05)]
-                        "
-                      />
+                        <div className="absolute inset-0 rounded-2xl bg-teal-500/[0.05] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
+                        <div className="relative z-10 flex items-center gap-2">
+                          <Icon
+                            size={16}
+                            strokeWidth={isActive ? 2.4 : 2}
+                          />
+                          <span>{item.name}</span>
+                        </div>
+                      </>
                     )}
 
-                    {/* HOVER GLOW */}
-                    <div
-                      className="
-                        absolute inset-0
-                        rounded-2xl
-                        bg-teal-500/[0.05]
-                        opacity-0
-                        transition-opacity duration-300
-                        group-hover:opacity-100
-                      "
-                    />
-
-                    <div className="relative z-10 flex items-center gap-2">
-
-                      <Icon
-                        size={16}
-                        strokeWidth={
-                          isActive
-                            ? 2.4
-                            : 2
-                        }
-                      />
-
-                      <span>
-                        {item.name}
-                      </span>
-
-                    </div>
-
-                  </button>
+                  </NavLink>
 
                 )
               })}
@@ -426,7 +375,8 @@ const Navbar1 = () => {
                 onClick={() =>
                   setIsOpen(true)
                 }
-                aria-label="Open Menu"
+                aria-label="Open menu"
+                aria-haspopup="true"
                 aria-expanded={isOpen}
                 className={cn(
                   "md:hidden",

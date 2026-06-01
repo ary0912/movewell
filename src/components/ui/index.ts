@@ -21,6 +21,8 @@ export type { InputProps } from './Input'
 ======================================================= */
 
 export { default as Slider } from './Slider'
+export { default as AssessmentCard } from './AssessmentCard'
+export { default as AssessmentSlider } from './AssessmentSlider'
 
 export {
   default as Tooltip,

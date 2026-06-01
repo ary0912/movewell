@@ -30,6 +30,8 @@ import {
   Activity,
   CheckCircle2,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 /* =========================================================
@@ -1102,7 +1104,12 @@ function AssessmentPage() {
 
                 bg-clay-hairline
               "
-            >
+                role="progressbar"
+                aria-label="Assessment progress"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(progress)}
+              >
 
               <motion.div
                 initial={false}
@@ -1123,7 +1130,7 @@ function AssessmentPage() {
 
                 className="
                   h-full
-                  bg-[#111111]
+                  bg-clay-ink
                 "
               />
 
@@ -1133,18 +1140,18 @@ function AssessmentPage() {
 
         </div>
 
-      </section>
+        </section>
 
-      {/* =================================================
-          HERO
-      ================================================= */}
+        {/* =================================================
+            HERO
+        ================================================= */}
 
-      <section
-        className="
-          pt-14
-          px-6
-        "
-      >
+        <section
+          className="
+            pt-14
+            px-6
+          "
+        >
 
         <div
           className="
@@ -1307,51 +1314,43 @@ function AssessmentPage() {
             className="
               mt-12
 
-              flex items-center
-              justify-between
+              flex flex-col gap-4
+              sm:flex-row sm:items-center
+              sm:justify-between
             "
           >
 
-            <Button
-              variant="secondary"
-              onClick={
-                handlePrevious
-              }
-              disabled={
-                currentStep === 0
-              }
-              className="
-                h-12
-                rounded-2xl
-                px-6
-              "
-            >
-              Back
-            </Button>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                variant="secondary"
+                size="lg"
+                icon={<ChevronLeft size={16} />}
+                onClick={handlePrevious}
+                disabled={currentStep === 0}
+              >
+                Back
+              </Button>
 
-            {currentStep <
-              STEPS.length - 1 && (
+              <div
+                className="
+                  text-sm font-medium
+                  text-clay-body
+                "
+              >
+                Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].label}
+              </div>
+            </div>
 
-                <Button
-                  onClick={
-                    handleNext
-                  }
-                  className="
-                    h-12
-
-                    rounded-2xl
-
-                    bg-[#111111]
-
-                    px-7
-
-                    text-white
-                  "
-                >
-                  Continue
-                </Button>
-
-              )}
+            {currentStep < STEPS.length - 1 && (
+              <Button
+                variant="primary"
+                size="lg"
+                icon={<ChevronRight size={16} />}
+                onClick={handleNext}
+              >
+                Continue
+              </Button>
+            )}
 
           </div>
 

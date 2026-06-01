@@ -2,12 +2,11 @@
 
 import { MOBILITY_QUESTIONS } from "@utils/constants";
 
-import { Card } from "@components/ui/Card";
-
-import { cn } from "@/lib/utils";
+import AssessmentCard from "@components/ui/AssessmentCard";
+import AssessmentSlider from "@components/ui/AssessmentSlider";
 
 import { useFormContext } from "react-hook-form";
-
+import { getSeverity } from "@utils/scoring";
 import type {
   AssessmentFormValues,
 } from "@utils/schemas";
@@ -151,44 +150,6 @@ function StepMobility() {
       (item) =>
         item.difficulty >= 7
     ).length;
-
-  const getSeverity = (
-    difficulty: number
-  ) => {
-
-    if (difficulty <= 2) {
-
-      return {
-        label: "Fluid",
-        tone:
-          "bg-clay-brand-mint/14 text-clay-ink",
-      };
-    }
-
-    if (difficulty <= 5) {
-
-      return {
-        label: "Restricted",
-        tone:
-          "bg-clay-brand-peach/14 text-clay-ink",
-      };
-    }
-
-    if (difficulty <= 7) {
-
-      return {
-        label: "Elevated",
-        tone:
-          "bg-clay-brand-ochre/14 text-clay-ink",
-      };
-    }
-
-    return {
-      label: "Severe",
-      tone:
-        "bg-clay-brand-pink/14 text-clay-ink",
-    };
-  };
 
   /* =====================================================
      UI
@@ -480,352 +441,46 @@ function StepMobility() {
                 }}
               >
 
-                <Card
-                  variant="cream"
-                  hover={false}
-                  className="
-                    relative overflow-hidden
-
-                    rounded-[28px]
-
-                    border border-clay-hairline/60
-
-                    bg-white/[0.78]
-
-                    px-5 py-5
-
-                    backdrop-blur-xl
-
-                    transition-all duration-300
-
-                    hover:border-black/5
-                    hover:shadow-[0_10px_30px_rgba(0,0,0,0.03)]
-                  "
+                <AssessmentCard
+                  categoryLabel={config.label}
+                  title={question.question}
+                  statusLabel={severity.label}
+                  statusTone={severity.tone}
+                  icon={Icon}
+                  iconAccent={config.accent}
+                  glowClass={config.glow}
+                  score={difficulty}
+                  scoreSuffix="/10"
+                  scoreDescription="Mobility difficulty rating"
+                  className="min-h-[330px]"
                 >
-
-                  {/* GLOW */}
-
-                  <div
-                    className={cn(
-
-                      `
-                      absolute inset-0
-
-                      bg-gradient-to-br
-
-                      opacity-70
-                      `,
-
-                      config.glow
-                    )}
+                  <AssessmentSlider
+                    title="Difficulty"
+                    description="Rate how challenging this movement feels right now."
+                    valueLabel={`${difficulty}/10`}
+                    helperText={severity.description}
+                    min={0}
+                    max={10}
+                    step={1}
+                    value={difficulty}
+                    tickLabels={[
+                      'Fluid',
+                      'Mild',
+                      'Restricted',
+                      'High',
+                      'Severe',
+                    ]}
+                    leftLabel="0"
+                    rightLabel="10"
+                    aria-label={`Mobility difficulty for ${question.question}`}
+                    onChange={(e) =>
+                      handleDifficultyChange(
+                        question.id,
+                        Number(e.target.value)
+                      )
+                    }
                   />
-
-                  <div className="relative z-10">
-
-                    {/* =====================================
-                        HEADER
-                    ===================================== */}
-
-                    <div
-                      className="
-                        flex items-start
-                        justify-between
-                        gap-4
-                      "
-                    >
-
-                      {/* LEFT */}
-
-                      <div className="flex gap-4">
-
-                        <div
-                          className={cn(
-
-                            `
-                            flex h-11 w-11
-                            shrink-0
-                            items-center justify-center
-
-                            rounded-[16px]
-                            `,
-
-                            config.accent
-                          )}
-                        >
-                          <Icon size={18} />
-                        </div>
-
-                        <div>
-
-                          <div
-                            className="
-                              flex flex-wrap
-                              items-center gap-2
-                            "
-                          >
-
-                            <span
-                              className="
-                                text-[10px]
-                                font-semibold
-                                uppercase
-                                tracking-[0.14em]
-                                text-clay-muted
-                              "
-                            >
-                              {config.label}
-                            </span>
-
-                            <span
-                              className={cn(
-
-                                `
-                                rounded-full
-
-                                px-2.5 py-1
-
-                                text-[9px]
-                                font-semibold
-
-                                uppercase
-
-                                tracking-[0.12em]
-                                `,
-
-                                severity.tone
-                              )}
-                            >
-                              {severity.label}
-                            </span>
-
-                          </div>
-
-                          <h3
-                            className="
-                              mt-2
-
-                              max-w-[320px]
-
-                              text-[1.15rem]
-
-                              leading-[1.35]
-
-                              tracking-[-0.03em]
-
-                              text-clay-ink
-                            "
-                          >
-                            {question.question}
-                          </h3>
-
-                        </div>
-
-                      </div>
-
-                      {/* SCORE */}
-
-                      <div
-                        className="
-                          flex items-center gap-1.5
-
-                          rounded-[16px]
-
-                          border border-clay-hairline
-
-                          bg-clay-canvas
-
-                          px-3 py-2
-                        "
-                      >
-
-                        <div
-                          className="
-                            text-[1.35rem]
-
-                            leading-none
-
-                            tracking-[-0.05em]
-
-                            text-clay-ink
-
-                            clay-display
-                          "
-                        >
-                          {difficulty}
-                        </div>
-
-                        <div
-                          className="
-                            text-[10px]
-                            font-medium
-                            text-clay-muted
-                          "
-                        >
-                          /10
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                    {/* =====================================
-                        SLIDER
-                    ===================================== */}
-
-                    <div className="mt-6">
-
-                      {/* TRACK */}
-
-                      <div className="relative">
-
-                        <div
-                          className="
-                            h-[8px]
-
-                            overflow-hidden
-
-                            rounded-full
-
-                            bg-clay-surface-strong
-                          "
-                        >
-
-                          <motion.div
-                            initial={false}
-
-                            animate={{
-                              width: `${difficulty * 10}%`,
-                            }}
-
-                            transition={{
-                              duration: 0.35,
-                            }}
-
-                            className="
-                              h-full
-
-                              rounded-full
-
-                              bg-[#111111]
-                            "
-                          />
-
-                        </div>
-
-                        {/* INPUT */}
-
-                        <input
-                          id={`mobility-${question.id}`}
-                          type="range"
-                          min="0"
-                          max="10"
-                          value={difficulty}
-
-                          onChange={(e) =>
-                            handleDifficultyChange(
-                              question.id,
-                              Number(
-                                e.target.value
-                              )
-                            )
-                          }
-
-                          aria-label={`Mobility difficulty for ${question.question}`}
-
-                          className="
-                            absolute inset-0
-
-                            h-[8px] w-full
-
-                            cursor-pointer
-
-                            appearance-none
-
-                            bg-transparent
-
-                            opacity-0
-                          "
-                        />
-
-                      </div>
-
-                      {/* SCALE */}
-
-                      <div
-                        className="
-                          mt-4
-
-                          flex items-center
-                          justify-between
-                        "
-                      >
-
-                        {[
-                          "Fluid",
-                          "Mild",
-                          "Restricted",
-                          "High",
-                          "Severe",
-                        ].map((label, i) => (
-
-                          <div
-                            key={label}
-                            className="
-                              flex flex-col
-                              items-center gap-1.5
-                            "
-                          >
-
-                            <div
-                              className={cn(
-
-                                `
-                                h-2 w-2
-
-                                rounded-full
-
-                                transition-all duration-300
-                                `,
-
-                                difficulty >=
-                                  i * 2
-                                  ? "bg-[#111111]"
-                                  : "bg-clay-hairline"
-                              )}
-                            />
-
-                            <span
-                              className={cn(
-
-                                `
-                                text-[9px]
-
-                                font-semibold
-
-                                uppercase
-
-                                tracking-[0.12em]
-                                `,
-
-                                difficulty >=
-                                  i * 2
-                                  ? "text-clay-ink"
-                                  : "text-clay-muted-soft"
-                              )}
-                            >
-                              {label}
-                            </span>
-
-                          </div>
-                        ))}
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </Card>
+                </AssessmentCard>
 
               </motion.div>
             );

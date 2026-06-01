@@ -66,6 +66,50 @@ export function calculateOverallScore(
   return Math.round(painScore * 0.4 + mobilityScore * 0.35 + impactScore * 0.25);
 }
 
+export interface AssessmentSeverity {
+  label: string
+  tone: string
+  description: string
+}
+
+export function getSeverity(
+  value: number
+): AssessmentSeverity {
+  if (value <= 2) {
+    return {
+      label: "Minimal",
+      tone: "bg-clay-brand-mint/14 text-clay-ink",
+      description:
+        "Low symptom levels. Movement feels easy and causes little disruption.",
+    };
+  }
+
+  if (value <= 5) {
+    return {
+      label: "Moderate",
+      tone: "bg-clay-brand-peach/14 text-clay-ink",
+      description:
+        "Noticeable symptoms or restriction, but still manageable with care.",
+    };
+  }
+
+  if (value <= 7) {
+    return {
+      label: "Elevated",
+      tone: "bg-clay-brand-ochre/14 text-clay-ink",
+      description:
+        "Increased discomfort or limitation that may affect daily routine.",
+    };
+  }
+
+  return {
+    label: "Severe",
+    tone: "bg-clay-brand-pink/14 text-clay-ink",
+    description:
+      "High severity. This area likely needs rest, support, or professional attention.",
+  };
+}
+
 /**
  * Get score interpretation and color coding
  * Returns threshold object with label and color for UI display
